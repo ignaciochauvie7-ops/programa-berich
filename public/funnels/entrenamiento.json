@@ -1,0 +1,666 @@
+{
+  "id": "entrenamiento",
+  "slug": "entrenamiento",
+  "title": "Programa Berich",
+  "startStepId": "inicio",
+  "theme": {
+    "accent": "#00e676",
+    "accentSoft": "rgba(0, 230, 118, 0.18)",
+    "background": "#000000"
+  },
+  "steps": [
+    {
+      "id": "inicio",
+      "type": "video_youtube",
+      "headline": "RECURSO GRATUITO",
+      "youtubeUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
+      "formCta": {
+        "label": "Ir al formulario"
+      },
+      "formNextId": "form_intro"
+    },
+    {
+      "id": "form_intro",
+      "type": "content",
+      "headline": "PROGRAMA BERICH",
+      "body": "Completá el formulario para encontrar el plan perfecto para vos.\n\nTe llevará menos de 1 minuto.",
+      "continueLabel": "¡Empezar!",
+      "continueVariant": "form",
+      "nextId": "q_sexo"
+    },
+    {
+      "id": "q_sexo",
+      "type": "question_single",
+      "headline": "¿Cuál es tu sexo?",
+      "body": "Elegí una opción para personalizar tu experiencia.",
+      "options": [
+        {
+          "id": "hombre",
+          "label": "Hombre",
+          "variant": "hombre",
+          "nextId": "edad_hombre"
+        },
+        {
+          "id": "mujer",
+          "label": "Mujer",
+          "variant": "mujer",
+          "nextId": "edad_mujer"
+        }
+      ]
+    },
+    {
+      "id": "edad_hombre",
+      "type": "question_single",
+      "headline": "¿Cuál es tu edad?",
+      "body": "Elegí el rango que mejor te represente.",
+      "options": [
+        { "id": "eh_m20", "label": "-20", "nextId": "altura_hombre" },
+        { "id": "eh_2030", "label": "20-30", "nextId": "altura_hombre" },
+        { "id": "eh_3045", "label": "30-45", "nextId": "altura_hombre" },
+        { "id": "eh_4560", "label": "45-60", "nextId": "altura_hombre" },
+        { "id": "eh_p60", "label": "+60", "nextId": "altura_hombre" }
+      ]
+    },
+    {
+      "id": "edad_mujer",
+      "type": "question_single",
+      "headline": "¿Cuál es tu edad?",
+      "body": "Elegí el rango que mejor te represente.",
+      "options": [
+        { "id": "em_m20", "label": "-20", "nextId": "altura_mujer" },
+        { "id": "em_2030", "label": "20-30", "nextId": "altura_mujer" },
+        { "id": "em_3045", "label": "30-45", "nextId": "altura_mujer" },
+        { "id": "em_4560", "label": "45-60", "nextId": "altura_mujer" },
+        { "id": "em_p60", "label": "+60", "nextId": "altura_mujer" }
+      ]
+    },
+    {
+      "id": "altura_hombre",
+      "type": "height_slider",
+      "headline": "Altura",
+      "body": "Deslizá para ajustar. Cambiá entre cm y pies (ft) cuando quieras.",
+      "minCm": 120,
+      "maxCm": 220,
+      "defaultCm": 175,
+      "nextId": "peso_hombre"
+    },
+    {
+      "id": "altura_mujer",
+      "type": "height_slider",
+      "headline": "Altura",
+      "body": "Deslizá para ajustar. Cambiá entre cm y pies (ft) cuando quieras.",
+      "minCm": 120,
+      "maxCm": 210,
+      "defaultCm": 160,
+      "nextId": "peso_mujer"
+    },
+    {
+      "id": "peso_hombre",
+      "type": "weight_slider",
+      "headline": "Peso",
+      "body": "Deslizá para ajustar. Cambiá entre kg y libras (lb) cuando quieras.",
+      "minKg": 45,
+      "maxKg": 180,
+      "defaultKg": 75,
+      "nextId": "carga_hombre"
+    },
+    {
+      "id": "peso_mujer",
+      "type": "weight_slider",
+      "headline": "Peso",
+      "body": "Deslizá para ajustar. Cambiá entre kg y libras (lb) cuando quieras.",
+      "minKg": 40,
+      "maxKg": 150,
+      "defaultKg": 55,
+      "nextId": "carga_mujer"
+    },
+    {
+      "id": "carga_hombre",
+      "type": "analysis_loading",
+      "body": "Esto solo toma unos segundos.",
+      "durationMs": 5200,
+      "nextId": "objetivo_hombre",
+      "phases": [
+        {
+          "title": "Analizando tus respuestas",
+          "subtitle": "Procesamos tu perfil para recomendarte lo mejor."
+        },
+        {
+          "title": "Buscando perfiles similares al tuyo",
+          "subtitle": "Comparamos miles de casos con objetivos parecidos."
+        }
+      ],
+      "showcaseImages": []
+    },
+    {
+      "id": "carga_mujer",
+      "type": "analysis_loading",
+      "body": "Esto solo toma unos segundos.",
+      "durationMs": 5200,
+      "nextId": "objetivo_mujer",
+      "phases": [
+        {
+          "title": "Analizando tus respuestas",
+          "subtitle": "Procesamos tu perfil para recomendarte lo mejor."
+        },
+        {
+          "title": "Buscando perfiles similares al tuyo",
+          "subtitle": "Comparamos miles de casos con objetivos parecidos."
+        }
+      ],
+      "showcaseImages": []
+    },
+    {
+      "id": "objetivo_hombre",
+      "type": "question_single",
+      "headline": "¿Cuál es tu objetivo?",
+      "body": "Elegí la opción que mejor describe lo que buscás.",
+      "options": [
+        {
+          "id": "oh_musculo",
+          "label": "Ganar músculo",
+          "nextId": "peso_objetivo_hombre_musculo"
+        },
+        { "id": "oh_grasa", "label": "Perder grasa", "nextId": "peso_objetivo_hombre_meta" },
+        {
+          "id": "oh_recomp",
+          "label": "Recomposición corporal",
+          "nextId": "peso_objetivo_hombre_meta"
+        }
+      ]
+    },
+    {
+      "id": "objetivo_mujer",
+      "type": "question_single",
+      "headline": "¿Cuál es tu objetivo?",
+      "body": "Elegí la opción que mejor describe lo que buscás.",
+      "options": [
+        {
+          "id": "om_musculo",
+          "label": "Ganar músculo",
+          "nextId": "peso_objetivo_mujer_musculo"
+        },
+        { "id": "om_grasa", "label": "Perder grasa", "nextId": "peso_objetivo_mujer_meta" },
+        {
+          "id": "om_recomp",
+          "label": "Recomposición corporal",
+          "nextId": "peso_objetivo_mujer_meta"
+        }
+      ]
+    },
+    {
+      "id": "peso_objetivo_hombre_musculo",
+      "type": "weight_slider",
+      "headline": "¿Cuál es tu peso objetivo?",
+      "body": "Con foco en ganar músculo, indicá el peso que te gustaría alcanzar. Deslizá y cambiá entre kg y lb.",
+      "minKg": 55,
+      "maxKg": 130,
+      "defaultKg": 80,
+      "continueLabel": "Continuar",
+      "nextId": "impedimento_hombre_musculo"
+    },
+    {
+      "id": "peso_objetivo_hombre_meta",
+      "type": "weight_slider",
+      "headline": "¿Cuál es tu peso objetivo?",
+      "body": "Para perder grasa o recomponer, indicá el peso meta que te gustaría alcanzar. Deslizá y cambiá entre kg y lb.",
+      "minKg": 50,
+      "maxKg": 150,
+      "defaultKg": 72,
+      "continueLabel": "Continuar",
+      "nextId": "impedimento_hombre_meta"
+    },
+    {
+      "id": "peso_objetivo_mujer_musculo",
+      "type": "weight_slider",
+      "headline": "¿Cuál es tu peso objetivo?",
+      "body": "Con foco en ganar músculo, indicá el peso que te gustaría alcanzar. Deslizá y cambiá entre kg y lb.",
+      "minKg": 45,
+      "maxKg": 85,
+      "defaultKg": 58,
+      "continueLabel": "Continuar",
+      "nextId": "impedimento_mujer_musculo"
+    },
+    {
+      "id": "peso_objetivo_mujer_meta",
+      "type": "weight_slider",
+      "headline": "¿Cuál es tu peso objetivo?",
+      "body": "Para perder grasa o recomponer, indicá el peso meta que te gustaría alcanzar. Deslizá y cambiá entre kg y lb.",
+      "minKg": 42,
+      "maxKg": 120,
+      "defaultKg": 52,
+      "continueLabel": "Continuar",
+      "nextId": "impedimento_mujer_meta"
+    },
+    {
+      "id": "impedimento_hombre_musculo",
+      "type": "question_single",
+      "headline": "¿Qué te ha impedido lograr tus objetivos?",
+      "body": "Pensando en ganar músculo, elegí la opción que mejor describa lo que te frena.",
+      "options": [
+        {
+          "id": "ihm_empezar",
+          "label": "No sé por dónde empezar",
+          "nextId": "prefin_hombre_musculo_1"
+        },
+        {
+          "id": "ihm_como",
+          "label": "Como mucho y no subo de peso",
+          "nextId": "prefin_hombre_musculo_1"
+        },
+        {
+          "id": "ihm_entreno",
+          "label": "Entreno pero no crezco",
+          "nextId": "prefin_hombre_musculo_1"
+        },
+        {
+          "id": "ihm_cambios",
+          "label": "No noto cambios",
+          "nextId": "prefin_hombre_musculo_1"
+        },
+        {
+          "id": "ihm_tiempo",
+          "label": "No tengo tiempo para entrenar",
+          "nextId": "prefin_hombre_musculo_1"
+        }
+      ]
+    },
+    {
+      "id": "impedimento_hombre_meta",
+      "type": "question_single",
+      "headline": "¿Qué te ha impedido lograr tus objetivos?",
+      "body": "Pensando en perder grasa o recomponer, elegí la opción que mejor describa lo que te frena.",
+      "options": [
+        {
+          "id": "ihk_hambre",
+          "label": "Hambre constante y ansiedad",
+          "nextId": "prefin_hombre_meta_1"
+        },
+        {
+          "id": "ihk_comer",
+          "label": "No saber qué comer",
+          "nextId": "prefin_hombre_meta_1"
+        },
+        {
+          "id": "ihk_dieta",
+          "label": "Odio hacer dieta",
+          "nextId": "prefin_hombre_meta_1"
+        },
+        {
+          "id": "ihk_tiempo",
+          "label": "Falta de tiempo",
+          "nextId": "prefin_hombre_meta_1"
+        },
+        {
+          "id": "ihk_constancia",
+          "label": "Me cuesta ser constante",
+          "nextId": "prefin_hombre_meta_1"
+        },
+        {
+          "id": "ihk_empezar",
+          "label": "No sé por dónde empezar",
+          "nextId": "prefin_hombre_meta_1"
+        }
+      ]
+    },
+    {
+      "id": "impedimento_mujer_musculo",
+      "type": "question_single",
+      "headline": "¿Qué te ha impedido lograr tus objetivos?",
+      "body": "Pensando en ganar músculo, elegí la opción que mejor describa lo que te frena.",
+      "options": [
+        {
+          "id": "imm_empezar",
+          "label": "No sé por dónde empezar",
+          "nextId": "prefin_mujer_musculo_1"
+        },
+        {
+          "id": "imm_como",
+          "label": "Como mucho y no subo de peso",
+          "nextId": "prefin_mujer_musculo_1"
+        },
+        {
+          "id": "imm_entreno",
+          "label": "Entreno pero no crezco",
+          "nextId": "prefin_mujer_musculo_1"
+        },
+        {
+          "id": "imm_cambios",
+          "label": "No noto cambios",
+          "nextId": "prefin_mujer_musculo_1"
+        },
+        {
+          "id": "imm_tiempo",
+          "label": "No tengo tiempo para entrenar",
+          "nextId": "prefin_mujer_musculo_1"
+        }
+      ]
+    },
+    {
+      "id": "impedimento_mujer_meta",
+      "type": "question_single",
+      "headline": "¿Qué te ha impedido lograr tus objetivos?",
+      "body": "Pensando en perder grasa o recomponer, elegí la opción que mejor describa lo que te frena.",
+      "options": [
+        {
+          "id": "imk_hambre",
+          "label": "Hambre constante y ansiedad",
+          "nextId": "prefin_mujer_meta_1"
+        },
+        {
+          "id": "imk_comer",
+          "label": "No saber qué comer",
+          "nextId": "prefin_mujer_meta_1"
+        },
+        {
+          "id": "imk_dieta",
+          "label": "Odio hacer dieta",
+          "nextId": "prefin_mujer_meta_1"
+        },
+        {
+          "id": "imk_tiempo",
+          "label": "Falta de tiempo",
+          "nextId": "prefin_mujer_meta_1"
+        },
+        {
+          "id": "imk_constancia",
+          "label": "Me cuesta ser constante",
+          "nextId": "prefin_mujer_meta_1"
+        },
+        {
+          "id": "imk_empezar",
+          "label": "No sé por dónde empezar",
+          "nextId": "prefin_mujer_meta_1"
+        }
+      ]
+    },
+    {
+      "id": "prefin_hombre_musculo_1",
+      "type": "prefinal_loading",
+      "headline": "Analizando tus respuestas…",
+      "body": "Estamos evaluando tu perfil para encontrar el mejor plan para ti.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando tu objetivo físico",
+        "Evaluando tu punto de partida",
+        "Identificando obstáculos principales"
+      ],
+      "nextId": "prefin_hombre_musculo_2"
+    },
+    {
+      "id": "prefin_hombre_musculo_2",
+      "type": "prefinal_loading",
+      "headline": "Comparando tu perfil con otros casos similares…",
+      "body": "Cruzamos datos con perfiles parecidos para afinar tu plan.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Calculando nivel de dificultad",
+        "Detectando el tipo de plan ideal"
+      ],
+      "nextId": "moneda_hombre_musculo"
+    },
+    {
+      "id": "prefin_hombre_meta_1",
+      "type": "prefinal_loading",
+      "headline": "Analizando tus respuestas…",
+      "body": "Estamos evaluando tu perfil para encontrar el mejor plan para ti.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando tu objetivo físico",
+        "Evaluando tu punto de partida",
+        "Identificando obstáculos principales"
+      ],
+      "nextId": "prefin_hombre_meta_2"
+    },
+    {
+      "id": "prefin_hombre_meta_2",
+      "type": "prefinal_loading",
+      "headline": "Comparando tu perfil con otros casos similares…",
+      "body": "Cruzamos datos con perfiles parecidos para afinar tu plan.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Calculando nivel de dificultad",
+        "Detectando el tipo de plan ideal"
+      ],
+      "nextId": "moneda_hombre_meta"
+    },
+    {
+      "id": "prefin_mujer_musculo_1",
+      "type": "prefinal_loading",
+      "headline": "Analizando tus respuestas…",
+      "body": "Estamos evaluando tu perfil para encontrar el mejor plan para ti.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando tu objetivo físico",
+        "Evaluando tu punto de partida",
+        "Identificando obstáculos principales"
+      ],
+      "nextId": "prefin_mujer_musculo_2"
+    },
+    {
+      "id": "prefin_mujer_musculo_2",
+      "type": "prefinal_loading",
+      "headline": "Comparando tu perfil con otros casos similares…",
+      "body": "Cruzamos datos con perfiles parecidos para afinar tu plan.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Calculando nivel de dificultad",
+        "Detectando el tipo de plan ideal"
+      ],
+      "nextId": "moneda_mujer_musculo"
+    },
+    {
+      "id": "prefin_mujer_meta_1",
+      "type": "prefinal_loading",
+      "headline": "Analizando tus respuestas…",
+      "body": "Estamos evaluando tu perfil para encontrar el mejor plan para ti.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando tu objetivo físico",
+        "Evaluando tu punto de partida",
+        "Identificando obstáculos principales"
+      ],
+      "nextId": "prefin_mujer_meta_2"
+    },
+    {
+      "id": "prefin_mujer_meta_2",
+      "type": "prefinal_loading",
+      "headline": "Comparando tu perfil con otros casos similares…",
+      "body": "Cruzamos datos con perfiles parecidos para afinar tu plan.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Calculando nivel de dificultad",
+        "Detectando el tipo de plan ideal"
+      ],
+      "nextId": "moneda_mujer_meta"
+    },
+    {
+      "id": "moneda_hombre_musculo",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mhm_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu" },
+        { "id": "mhm_intl", "label": "Internacional (USD)", "nextId": "cierre_usd" }
+      ]
+    },
+    {
+      "id": "moneda_hombre_meta",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mhk_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu" },
+        { "id": "mhk_intl", "label": "Internacional (USD)", "nextId": "cierre_usd" }
+      ]
+    },
+    {
+      "id": "moneda_mujer_musculo",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmm_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu" },
+        { "id": "mmm_intl", "label": "Internacional (USD)", "nextId": "cierre_usd" }
+      ]
+    },
+    {
+      "id": "moneda_mujer_meta",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmk_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu" },
+        { "id": "mmk_intl", "label": "Internacional (USD)", "nextId": "cierre_usd" }
+      ]
+    },
+    {
+      "id": "cierre_uyu",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
+      "videoInsideUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
+      "highlightImage": {
+        "src": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80",
+        "alt": "Entrenamiento Berich"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "plusPlan": {
+        "name": "Programa Berich Completo + Tu Plan Personal",
+        "badge": "Más elegido",
+        "priceUyu": "3.890 UYU",
+        "priceUsd": "97 USD",
+        "whatsappExtra": "Acceso directo a mí por WhatsApp durante 6 meses para ajustar tu progreso, resolver dudas y asegurarnos de que llegás a tu objetivo.",
+        "bullets": [
+          "Todo lo incluido en Programa Berich Completo",
+          "Plan personalizado con mayor nivel de detalle",
+          "Prioridad en nuevas guías y recursos del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible; en el plan personal lo dejamos explícito según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra. El acompañamiento por WhatsApp del plan + Personal es por 6 meses."
+        },
+        {
+          "question": "¿Puedo cambiar de plan después?",
+          "answer": "Escribinos y vemos tu caso. La idea es que empieces con el plan que mejor encaje hoy y puedas evolucionar cuando lo necesites."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
+      "videoInsideUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
+      "highlightImage": {
+        "src": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80",
+        "alt": "Entrenamiento Berich"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "plusPlan": {
+        "name": "Programa Berich Completo + Tu Plan Personal",
+        "badge": "Más elegido",
+        "priceUyu": "3.890 UYU",
+        "priceUsd": "97 USD",
+        "whatsappExtra": "Acceso directo a mí por WhatsApp durante 6 meses para ajustar tu progreso, resolver dudas y asegurarnos de que llegás a tu objetivo.",
+        "bullets": [
+          "Todo lo incluido en Programa Berich Completo",
+          "Plan personalizado con mayor nivel de detalle",
+          "Prioridad en nuevas guías y recursos del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible; en el plan personal lo dejamos explícito según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra. El acompañamiento por WhatsApp del plan + Personal es por 6 meses."
+        },
+        {
+          "question": "¿Puedo cambiar de plan después?",
+          "answer": "Escribinos y vemos tu caso. La idea es que empieces con el plan que mejor encaje hoy y puedas evolucionar cuando lo necesites."
+        }
+      ]
+    }
+  ]
+}
