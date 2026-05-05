@@ -97,9 +97,20 @@ function StepControls({ step, onGoTo }: Props) {
         </div>
       )
     }
-    case 'question_single':
+    case 'question_single': {
+      const optionGap = step.style?.gap
+      const optionsStyle = optionGap !== undefined ? { gap: `${Math.max(0, optionGap)}px` } : undefined
       return (
-        <div className="funnel-options" role="radiogroup" aria-label={step.headline ?? 'Opciones'}>
+        <div
+          className="funnel-options"
+          role="radiogroup"
+          aria-label={step.headline ?? 'Opciones'}
+          style={{
+            ...(optionsStyle ?? {}),
+            marginTop: step.style?.topSpace ? `${step.style.topSpace}px` : undefined,
+            marginBottom: step.style?.bottomSpace ? `${step.style.bottomSpace}px` : undefined,
+          }}
+        >
           {step.options.map((o) => {
             const sexClass =
               o.variant === 'hombre'
@@ -107,11 +118,23 @@ function StepControls({ step, onGoTo }: Props) {
                 : o.variant === 'mujer'
                   ? ' funnel-option--sex-mujer'
                   : ''
+            const st = step.style?.options?.[o.id]
             return (
               <button
                 key={o.id}
                 type="button"
                 className={'funnel-option' + sexClass}
+                style={{
+                  background: st?.bg,
+                  color: st?.text,
+                  borderRadius: st?.radius ? `${st.radius}px` : undefined,
+                  fontSize: st?.fontSize ? `${st.fontSize}px` : undefined,
+                  paddingTop: st?.paddingY ? `${st.paddingY}px` : undefined,
+                  paddingBottom: st?.paddingY ? `${st.paddingY}px` : undefined,
+                  paddingLeft: st?.paddingX ? `${st.paddingX}px` : undefined,
+                  paddingRight: st?.paddingX ? `${st.paddingX}px` : undefined,
+                  width: st?.width ? `${st.width}%` : undefined,
+                }}
                 onClick={() => onGoTo(o.nextId, o.variant ? { branch: o.variant } : undefined)}
               >
                 {o.label}
@@ -120,6 +143,7 @@ function StepControls({ step, onGoTo }: Props) {
           })}
         </div>
       )
+    }
     case 'question_multi':
       return <QuestionMultiControls step={step} onGoTo={onGoTo} />
     case 'video_youtube':

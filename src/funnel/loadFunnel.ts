@@ -4,6 +4,19 @@ import type { FunnelDefinition } from './types'
 export { FunnelValidationError } from './validate'
 
 export async function loadFunnelBySlug(slug: string): Promise<FunnelDefinition> {
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(`funnel:draft:${slug}`)
+      if (raw) {
+        const draftJson = JSON.parse(raw) as unknown
+        const draft = parseFunnelDefinition(draftJson)
+        if (draft.slug === slug) return draft
+      }
+    } catch {
+      /* ignore malformed drafts and fallback to public file */
+    }
+  }
+
   const path = `/funnels/${encodeURIComponent(slug)}.json`
   let res: Response
   try {

@@ -33,6 +33,15 @@ function reqNumber(obj: Record<string, unknown>, key: string, ctx: string): numb
   return v
 }
 
+function optNumber(obj: Record<string, unknown>, key: string): number | undefined {
+  const v = obj[key]
+  if (v === undefined || v === null) return undefined
+  if (typeof v !== 'number' || !Number.isFinite(v)) {
+    throw new FunnelValidationError(`Invalid optional number "${key}"`)
+  }
+  return v
+}
+
 function optString(obj: Record<string, unknown>, key: string): string | undefined {
   const v = obj[key]
   if (v === undefined || v === null) return undefined
@@ -157,7 +166,64 @@ function parseStep(raw: unknown, index: number): FunnelStep {
           variant,
         }
       })
-      return { ...base, type: 'question_single', options }
+      let style:
+        | {
+            gap?: number
+            topSpace?: number
+            bottomSpace?: number
+            options?: Record<
+              string,
+              {
+                bg?: string
+                text?: string
+                radius?: number
+                fontSize?: number
+                paddingY?: number
+                paddingX?: number
+                width?: number
+              }
+            >
+          }
+        | undefined
+      if (raw.style !== undefined && raw.style !== null) {
+        if (!isRecord(raw.style)) throw new FunnelValidationError(`${ctx}.style must be object`)
+        style = {
+          gap: optNumber(raw.style, 'gap'),
+          topSpace: optNumber(raw.style, 'topSpace'),
+          bottomSpace: optNumber(raw.style, 'bottomSpace'),
+        }
+        if (raw.style.options !== undefined && raw.style.options !== null) {
+          if (!isRecord(raw.style.options)) {
+            throw new FunnelValidationError(`${ctx}.style.options must be object`)
+          }
+          const perOption: Record<
+            string,
+            {
+              bg?: string
+              text?: string
+              radius?: number
+              fontSize?: number
+              paddingY?: number
+              paddingX?: number
+              width?: number
+            }
+          > = {}
+          for (const [key, value] of Object.entries(raw.style.options)) {
+            if (!isRecord(value)) throw new FunnelValidationError(`${ctx}.style.options.${key} must be object`)
+            perOption[key] = {
+              bg: optString(value, 'bg'),
+              text: optString(value, 'text'),
+              radius: optNumber(value, 'radius'),
+              fontSize: optNumber(value, 'fontSize'),
+              paddingY: optNumber(value, 'paddingY'),
+              paddingX: optNumber(value, 'paddingX'),
+              width: optNumber(value, 'width'),
+            }
+          }
+          style.options = perOption
+        }
+      }
+      return { ...base, type: 'question_single', options, style }
     }
     case 'question_multi': {
       const opts = raw.options

@@ -7,8 +7,12 @@ import { StepRenderer } from './StepRenderer'
 import {
   appendVisitedId,
   clearFunnelSession,
+  popStepHistory,
   readBranch,
+  readStepHistory,
   readStoredStepId,
+  seedStepHistory,
+  pushStepHistory,
   writeBranch,
   writeStoredStepId,
 } from './session'
@@ -36,6 +40,7 @@ export function FunnelPlayer() {
   const [currentId, setCurrentId] = useState<string | null>(null)
   const [visitedCount, setVisitedCount] = useState(0)
   const [branch, setBranch] = useState<FunnelBranch | null>(null)
+  const [canGoBack, setCanGoBack] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -61,6 +66,12 @@ export function FunnelPlayer() {
         const visited = appendVisitedId(slug, initial)
         setVisitedCount(visited.size)
         writeStoredStepId(slug, initial)
+        const storedHistory = restart ? [] : readStepHistory(slug)
+        const history =
+          storedHistory.length > 0 && storedHistory[storedHistory.length - 1] === initial
+            ? storedHistory
+            : seedStepHistory(slug, initial)
+        setCanGoBack(history.length > 1)
         setBranch(readBranch(slug))
       })
       .catch((e: unknown) => {
@@ -95,11 +106,21 @@ export function FunnelPlayer() {
       }
       setCurrentId(id)
       writeStoredStepId(slug, id)
+      const history = pushStepHistory(slug, id)
+      setCanGoBack(history.length > 1)
       const visited = appendVisitedId(slug, id)
       setVisitedCount(visited.size)
     },
     [byId, slug],
   )
+
+  const goBack = useCallback(() => {
+    const { previous, history } = popStepHistory(slug)
+    if (!previous || !byId?.has(previous)) return
+    setCurrentId(previous)
+    writeStoredStepId(slug, previous)
+    setCanGoBack(history.length > 1)
+  }, [byId, slug])
 
   const progress = useMemo(() => {
     if (!def) return 0
@@ -141,6 +162,7 @@ export function FunnelPlayer() {
   }
 
   const isBerichClose = step.type === 'berich_close'
+  const showBackButton = step.id !== 'inicio'
   const showTopBar = step.type !== 'video_youtube' && !isBerichClose
   const centerStage =
     !isBerichClose &&
@@ -184,6 +206,17 @@ export function FunnelPlayer() {
           (isBerichClose ? ' funnel-shell--berich' : '')
         }
       >
+        {showBackButton ? (
+          <button
+            type="button"
+            className="funnel-back"
+            onClick={goBack}
+            aria-label="Volver al paso anterior"
+            disabled={!canGoBack}
+          >
+            <span aria-hidden>←</span>
+          </button>
+        ) : null}
         {showTopBar ? (
           <header className="funnel-top">
             <span className="funnel-brand">{def.title}</span>

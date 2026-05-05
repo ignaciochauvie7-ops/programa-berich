@@ -39,9 +39,27 @@ export type QuestionSingleOption = {
   variant?: 'hombre' | 'mujer'
 }
 
+export type QuestionSingleOptionStyle = {
+  bg?: string
+  text?: string
+  radius?: number
+  fontSize?: number
+  paddingY?: number
+  paddingX?: number
+  width?: number
+}
+
+export type QuestionSingleStyle = {
+  gap?: number
+  topSpace?: number
+  bottomSpace?: number
+  options?: Record<string, QuestionSingleOptionStyle>
+}
+
 export type QuestionSingleStep = StepBase & {
   type: 'question_single'
   options: QuestionSingleOption[]
+  style?: QuestionSingleStyle
 }
 
 export type QuestionMultiStep = StepBase & {
