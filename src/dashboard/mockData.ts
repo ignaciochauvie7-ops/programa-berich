@@ -32,13 +32,6 @@ export const funnels: FunnelItem[] = [
     status: 'Activo',
     updatedAt: 'Hoy 05:20',
   },
-  {
-    id: 'f2',
-    name: 'Lead Magnet Junio',
-    slug: 'lead-junio',
-    status: 'Borrador',
-    updatedAt: 'Ayer 21:10',
-  },
 ]
 
 export const programs: ProgramItem[] = [
@@ -65,7 +58,7 @@ export const students: StudentItem[] = [
     lastName: 'Perez',
     email: 'lucas.perez@email.com',
     joinedAt: '2026-04-28',
-    paid: '3.890 UYU',
+    paid: '2.390 UYU',
     status: 'Activo',
   },
   {
@@ -74,7 +67,7 @@ export const students: StudentItem[] = [
     lastName: 'Sosa',
     email: 'camila.sosa@email.com',
     joinedAt: '2026-04-30',
-    paid: '97 USD',
+    paid: '59 USD',
     status: 'Pendiente',
   },
   {

@@ -162,7 +162,7 @@ export type BerichCloseFaqItem = {
   answer: string
 }
 
-/** Pantalla final de oferta: videos, imagen, planes duplicados, grilla FAQ. */
+/** Pantalla final de oferta: videos, imagen, plan, grilla FAQ. */
 export type BerichCloseStep = StepBase & {
   type: 'berich_close'
   currency: 'uyu' | 'usd'
@@ -170,7 +170,6 @@ export type BerichCloseStep = StepBase & {
   videoInsideUrl: string
   highlightImage: { src: string; alt?: string }
   basicPlan: BerichClosePlan
-  plusPlan: BerichClosePlan & { badge: string; whatsappExtra: string }
   transformations: { src: string; alt?: string }[]
   faq: BerichCloseFaqItem[]
 }

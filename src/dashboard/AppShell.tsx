@@ -27,7 +27,7 @@ export function DashboardRoutes() {
   return (
     <Routes>
       <Route element={<DashboardLayout />}>
-        <Route path="/" element={<Navigate to="/dashboard/funnels" replace />} />
+        <Route path="/" element={<Navigate to="/control/funnels" replace />} />
         <Route path="/funnels" element={<FunnelsPage />} />
         <Route path="/funnels/:slug" element={<Navigate to="flujo" replace />} />
         <Route path="/funnels/:slug/flujo" element={<FunnelBuilderPage />} />

@@ -105,6 +105,19 @@
   gap: 0.9rem;
 }
 
+.admin-cards--lessons {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .admin-cards--lessons {
+    grid-template-columns: 1fr;
+  }
+}
+
 .admin-card {
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -263,7 +276,7 @@
 
 .admin-program-card__cover {
   position: relative;
-  height: 110px;
+  height: 160px;
   background:
     linear-gradient(130deg, rgba(0, 230, 118, 0.25), rgba(0, 0, 0, 0.25)),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 14px),
@@ -278,6 +291,21 @@
   position: absolute;
   inset: auto;
   pointer-events: none;
+}
+
+.admin-program-card__cover--image {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  background-color: #050a0e;
+  background-size: cover;
+  background-position: center 45%;
+  background-repeat: no-repeat;
+}
+
+.admin-program-card__cover--image::before,
+.admin-program-card__cover--image::after {
+  content: none;
 }
 
 @keyframes coverFloat {
@@ -531,6 +559,87 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.admin-video-embed {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #000;
+}
+
+.admin-video-embed iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.admin-video-embed--large iframe {
+  min-height: 280px;
+}
+
+.admin-card--lesson {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-color: rgba(0, 230, 118, 0.22);
+  background: linear-gradient(145deg, rgba(5, 9, 14, 0.96), rgba(4, 7, 10, 0.96));
+  box-shadow: inset 0 0 0 1px rgba(0, 230, 118, 0.08);
+}
+
+.admin-lesson-title {
+  margin: 0 0 0.75rem;
+  width: 100%;
+  text-align: center;
+  text-wrap: balance;
+  color: #d8fff0;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+
+.admin-card--lesson .admin-video-embed {
+  width: 100%;
+  align-self: stretch;
+}
+
+.admin-lesson-actions {
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-btn--lesson-done {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  border-color: rgba(0, 230, 118, 0.55);
+  color: #d8fff0;
+  background: linear-gradient(130deg, rgba(0, 230, 118, 0.22), rgba(0, 230, 118, 0.06));
+  box-shadow: 0 0 24px rgba(0, 230, 118, 0.12);
+}
+
+.admin-btn--lesson-done:hover {
+  border-color: rgba(0, 230, 118, 0.85);
+  background: linear-gradient(130deg, rgba(0, 230, 118, 0.32), rgba(0, 230, 118, 0.1));
+}
+
+.admin-btn--lesson-done--on {
+  border-color: rgba(184, 255, 240, 0.45);
+  background: rgba(0, 230, 118, 0.12);
+  color: #b8fff0;
+}
+
+.admin-btn--lesson-home {
+  align-self: center;
+  min-width: 12rem;
+}
+
 .admin-flow {
   height: min(68vh, 760px);
   border-radius: 16px;
@@ -546,6 +655,7 @@
 }
 
 .flow-node {
+  position: relative;
   width: 420px;
   border-radius: 12px;
   padding: 0.65rem 0.7rem 0.45rem;
@@ -553,6 +663,20 @@
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   color: #f4f6fb;
   box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Los handles quedan por debajo del preview en el stacking; subimos z-index para que el drop conecte. */
+.flow-node .react-flow__handle {
+  z-index: 5;
+}
+
+.flow-node .flow-node__handle-target {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(120, 200, 255, 0.85);
+  background: rgba(10, 24, 40, 0.95);
+  left: -7px;
 }
 
 .flow-node__id {
@@ -662,6 +786,48 @@
   font-size: 0.72rem;
   color: rgba(244, 246, 251, 0.75);
   padding-right: 18px;
+}
+
+.flow-node__manual-handles {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.flow-node__manual-handle-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 22px;
+  padding-right: 14px;
+}
+
+.flow-node__manual-handle-label {
+  font-size: 0.68rem;
+  color: rgba(244, 246, 251, 0.72);
+  margin-right: 0.35rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-node .react-flow__handle.flow-node__handle-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 232, 135, 0.95);
+  background: rgba(10, 24, 18, 0.95);
+  right: -6px;
+  transform: none;
+}
+
+.flow-node__no-handles {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: rgba(244, 246, 251, 0.65);
 }
 
 .admin-flow__legend-title {

@@ -64,19 +64,10 @@ function PlanCard({
   )
 }
 
-function PricingDeck({
-  currency,
-  basic,
-  plus,
-}: {
-  currency: 'uyu' | 'usd'
-  basic: BerichClosePlan
-  plus: BerichClosePlan
-}) {
+function PricingDeck({ currency, plan }: { currency: 'uyu' | 'usd'; plan: BerichClosePlan }) {
   return (
-    <div className="funnel-berich-plans" aria-label="Planes y precios">
-      <PlanCard currency={currency} plan={basic} featured={false} />
-      <PlanCard currency={currency} plan={plus} featured />
+    <div className="funnel-berich-plans funnel-berich-plans--single" aria-label="Plan y precio">
+      <PlanCard currency={currency} plan={plan} featured />
     </div>
   )
 }
@@ -137,14 +128,14 @@ export function BerichCloseView({ step }: Props) {
       </figure>
 
       <section className="funnel-berich-block">
-        <PricingDeck currency={step.currency} basic={step.basicPlan} plus={step.plusPlan} />
+        <PricingDeck currency={step.currency} plan={step.basicPlan} />
       </section>
 
       <TransformGrid images={step.transformations} />
 
       <section className="funnel-berich-block funnel-berich-block--repeat">
-        <h2 className="funnel-berich-section-title funnel-berich-section-title--sub">Elegí tu plan</h2>
-        <PricingDeck currency={step.currency} basic={step.basicPlan} plus={step.plusPlan} />
+        <h2 className="funnel-berich-section-title funnel-berich-section-title--sub">Tu plan</h2>
+        <PricingDeck currency={step.currency} plan={step.basicPlan} />
       </section>
 
       <FaqSection items={step.faq} />

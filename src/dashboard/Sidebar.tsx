@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom'
 
 const links = [
-  { to: '/dashboard/funnels', label: 'Funnels' },
-  { to: '/dashboard/programas', label: 'Programas' },
-  { to: '/dashboard/alumnos', label: 'Alumnos' },
-  { to: '/dashboard/pagos', label: 'Pagos' },
-  { to: '/dashboard/ajustes', label: 'Ajustes' },
+  { to: '/control/funnels', label: 'Funnels' },
+  { to: '/control/programas', label: 'Programas' },
+  { to: '/control/alumnos', label: 'Alumnos' },
+  { to: '/control/pagos', label: 'Pagos' },
+  { to: '/control/ajustes', label: 'Ajustes' },
 ]
 
 export function Sidebar() {
@@ -13,7 +13,7 @@ export function Sidebar() {
     <aside className="admin-sidebar" aria-label="Navegacion principal">
       <div className="admin-sidebar__brand">
         <span className="admin-sidebar__dot" aria-hidden />
-        <span>Berich Admin</span>
+        <span>Centro de Control</span>
       </div>
       <nav className="admin-sidebar__nav">
         {links.map((link) => (

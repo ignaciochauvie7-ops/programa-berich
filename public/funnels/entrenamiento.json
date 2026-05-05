@@ -557,20 +557,6 @@
         "ctaLabel": "Comprar ahora",
         "ctaHref": "#"
       },
-      "plusPlan": {
-        "name": "Programa Berich Completo + Tu Plan Personal",
-        "badge": "Más elegido",
-        "priceUyu": "3.890 UYU",
-        "priceUsd": "97 USD",
-        "whatsappExtra": "Acceso directo a mí por WhatsApp durante 6 meses para ajustar tu progreso, resolver dudas y asegurarnos de que llegás a tu objetivo.",
-        "bullets": [
-          "Todo lo incluido en Programa Berich Completo",
-          "Plan personalizado con mayor nivel de detalle",
-          "Prioridad en nuevas guías y recursos del programa"
-        ],
-        "ctaLabel": "Comprar ahora",
-        "ctaHref": "#"
-      },
       "transformations": [
         { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
         { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
@@ -586,15 +572,15 @@
         },
         {
           "question": "¿Sirve si entreno en casa o en el gimnasio?",
-          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible; en el plan personal lo dejamos explícito según tu contexto."
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
         },
         {
           "question": "¿Cuánto dura el acceso?",
-          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra. El acompañamiento por WhatsApp del plan + Personal es por 6 meses."
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
         },
         {
-          "question": "¿Puedo cambiar de plan después?",
-          "answer": "Escribinos y vemos tu caso. La idea es que empieces con el plan que mejor encaje hoy y puedas evolucionar cuando lo necesites."
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
         }
       ]
     },
@@ -621,20 +607,6 @@
         "ctaLabel": "Comprar ahora",
         "ctaHref": "#"
       },
-      "plusPlan": {
-        "name": "Programa Berich Completo + Tu Plan Personal",
-        "badge": "Más elegido",
-        "priceUyu": "3.890 UYU",
-        "priceUsd": "97 USD",
-        "whatsappExtra": "Acceso directo a mí por WhatsApp durante 6 meses para ajustar tu progreso, resolver dudas y asegurarnos de que llegás a tu objetivo.",
-        "bullets": [
-          "Todo lo incluido en Programa Berich Completo",
-          "Plan personalizado con mayor nivel de detalle",
-          "Prioridad en nuevas guías y recursos del programa"
-        ],
-        "ctaLabel": "Comprar ahora",
-        "ctaHref": "#"
-      },
       "transformations": [
         { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
         { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
@@ -650,15 +622,15 @@
         },
         {
           "question": "¿Sirve si entreno en casa o en el gimnasio?",
-          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible; en el plan personal lo dejamos explícito según tu contexto."
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
         },
         {
           "question": "¿Cuánto dura el acceso?",
-          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra. El acompañamiento por WhatsApp del plan + Personal es por 6 meses."
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
         },
         {
-          "question": "¿Puedo cambiar de plan después?",
-          "answer": "Escribinos y vemos tu caso. La idea es que empieces con el plan que mejor encaje hoy y puedas evolucionar cuando lo necesites."
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
         }
       ]
     }

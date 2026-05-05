@@ -20,10 +20,10 @@ export function FunnelsPage() {
             <p className="admin-card__meta">Slug: /f/{funnel.slug}</p>
             <p className="admin-card__meta">Actualizado: {funnel.updatedAt}</p>
             <div className="admin-card__actions">
-              <Link to={`/dashboard/funnels/${funnel.slug}/flujo`} className="admin-btn admin-btn--ghost">
+              <Link to={`/control/funnels/${funnel.slug}/flujo`} className="admin-btn admin-btn--ghost">
                 Flujo
               </Link>
-              <Link to={`/dashboard/funnels/${funnel.slug}/editor`} className="admin-btn admin-btn--ghost">
+              <Link to={`/control/funnels/${funnel.slug}/editor`} className="admin-btn admin-btn--ghost">
                 Editor
               </Link>
               <button type="button" className="admin-btn admin-btn--ghost">

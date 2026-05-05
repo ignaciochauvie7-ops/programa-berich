@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { StepRenderer } from '../../funnel/StepRenderer'
 import type { FunnelDefinition, FunnelStep } from '../../funnel/types'
 import { parseFunnelDefinition } from '../../funnel/validate'
@@ -78,6 +78,8 @@ function clampNumber(value: string, fallback: number): number {
 
 export function FunnelEditorPage() {
   const { slug = 'entrenamiento' } = useParams<{ slug: string }>()
+  const [searchParams] = useSearchParams()
+  const stepFromUrl = searchParams.get('step')
   const [def, setDef] = useState<FunnelDefinition | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
@@ -93,7 +95,9 @@ export function FunnelEditorPage() {
       .then((next) => {
         if (cancelled) return
         setDef(next)
-        setSelectedId(next.steps[0]?.id ?? '')
+        const fromUrl =
+          stepFromUrl && next.steps.some((s) => s.id === stepFromUrl) ? stepFromUrl : (next.steps[0]?.id ?? '')
+        setSelectedId(fromUrl)
         setPrivateNames(readPrivateNames(slug))
         setPast([])
         setFuture([])
@@ -107,6 +111,12 @@ export function FunnelEditorPage() {
       cancelled = true
     }
   }, [slug])
+
+  useEffect(() => {
+    if (!def || !stepFromUrl) return
+    if (!def.steps.some((s) => s.id === stepFromUrl)) return
+    setSelectedId(stepFromUrl)
+  }, [def, stepFromUrl])
 
   useEffect(() => {
     writePrivateNames(slug, privateNames)
@@ -230,7 +240,7 @@ export function FunnelEditorPage() {
           <a className="admin-btn admin-btn--ghost" href={`/f/${slug}?restart=1`} target="_blank" rel="noreferrer">
             Abrir preview publica
           </a>
-          <Link to="/dashboard/funnels" className="admin-btn admin-btn--ghost">
+          <Link to="/control/funnels" className="admin-btn admin-btn--ghost">
             Volver
           </Link>
         </div>

@@ -11,11 +11,11 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-/** Umbrales dentro de t∈[0,1] para mostrar cada check (uno tras otro, antes de terminar la barra). */
-function checkVisible(t: number, index: number, total: number): boolean {
+/** Cada check se activa cuando la barra alcanza la misma fracción del tiempo (t), alineado con progressStart→End. */
+function checkOn(t: number, index: number, total: number): boolean {
   if (total <= 0) return false
-  const start = 0.06 + (index / total) * 0.52
-  return t >= start
+  const threshold = (index + 1) / total
+  return t + 1e-9 >= threshold
 }
 
 export function PrefinalLoadingControls({ step, onGoTo }: Props) {
@@ -47,9 +47,10 @@ export function PrefinalLoadingControls({ step, onGoTo }: Props) {
 
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [effectiveDuration, onGoTo, step.nextId])
+  }, [effectiveDuration, onGoTo, step.id, step.nextId])
 
   const pct = p0 + (p1 - p0) * t
+  const pctRounded = Math.round(pct)
 
   return (
     <div className="funnel-prefin">
@@ -59,17 +60,17 @@ export function PrefinalLoadingControls({ step, onGoTo }: Props) {
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-valuenow={Math.round(pct)}
+          aria-valuenow={pctRounded}
         >
           <div className="funnel-prefin__fill" style={{ width: `${pct}%` }} />
         </div>
         <span className="funnel-prefin__pct" aria-hidden>
-          {Math.round(pct)}%
+          {pctRounded}%
         </span>
       </div>
       <ul className="funnel-prefin__checks" aria-label="Pasos completados">
         {checks.map((label, i) => {
-          const on = checkVisible(t, i, checks.length)
+          const on = checkOn(t, i, checks.length)
           return (
             <li key={i} className={'funnel-prefin__check' + (on ? ' funnel-prefin__check--on' : '')}>
               <span className="funnel-prefin__mark" aria-hidden>

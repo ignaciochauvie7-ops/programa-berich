@@ -16,7 +16,9 @@ import {
   writeBranch,
   writeStoredStepId,
 } from './session'
+import { computeTailDepthByStepId, funnelProgressRatio } from './funnelGraph'
 import { NeonDots } from './NeonDots'
+import { useFunnelMotion } from './funnelMotion'
 import './funnel.css'
 
 function buildIndex(steps: FunnelStep[]): Map<string, FunnelStep> {
@@ -33,12 +35,12 @@ function applyTheme(theme: FunnelDefinition['theme']): void {
 }
 
 export function FunnelPlayer() {
+  const motionPack = useFunnelMotion()
   const { slug = '' } = useParams<{ slug: string }>()
   const [def, setDef] = useState<FunnelDefinition | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentId, setCurrentId] = useState<string | null>(null)
-  const [visitedCount, setVisitedCount] = useState(0)
   const [branch, setBranch] = useState<FunnelBranch | null>(null)
   const [canGoBack, setCanGoBack] = useState(false)
 
@@ -63,8 +65,7 @@ export function FunnelPlayer() {
         const initial =
           stored && byId.has(stored) ? stored : d.startStepId
         setCurrentId(initial)
-        const visited = appendVisitedId(slug, initial)
-        setVisitedCount(visited.size)
+        appendVisitedId(slug, initial)
         writeStoredStepId(slug, initial)
         const storedHistory = restart ? [] : readStepHistory(slug)
         const history =
@@ -95,6 +96,10 @@ export function FunnelPlayer() {
   }, [slug])
 
   const byId = useMemo(() => (def ? buildIndex(def.steps) : null), [def])
+  const tailDepthByStepId = useMemo(
+    () => (def ? computeTailDepthByStepId(def.steps) : null),
+    [def],
+  )
 
   const goTo = useCallback(
     (stepId: string, meta?: GoToMeta) => {
@@ -108,8 +113,7 @@ export function FunnelPlayer() {
       writeStoredStepId(slug, id)
       const history = pushStepHistory(slug, id)
       setCanGoBack(history.length > 1)
-      const visited = appendVisitedId(slug, id)
-      setVisitedCount(visited.size)
+      appendVisitedId(slug, id)
     },
     [byId, slug],
   )
@@ -123,10 +127,14 @@ export function FunnelPlayer() {
   }, [byId, slug])
 
   const progress = useMemo(() => {
-    if (!def) return 0
-    const ratio = visitedCount / def.steps.length
-    return Math.min(1, Math.max(0, ratio))
-  }, [def, visitedCount])
+    if (!def || !currentId || !tailDepthByStepId) return 0
+    const history = readStepHistory(slug)
+    return funnelProgressRatio({
+      historyLength: history.length,
+      currentStepId: currentId,
+      tailDepthById: tailDepthByStepId,
+    })
+  }, [def, currentId, slug, tailDepthByStepId])
 
   const step = currentId && byId ? byId.get(currentId) : undefined
 
@@ -134,7 +142,14 @@ export function FunnelPlayer() {
     return (
       <div className="funnel-root">
         <NeonDots />
-        <div className="funnel-shell funnel-state">Cargando…</div>
+        <motion.div
+          className="funnel-shell funnel-state"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={motionPack.screen}
+        >
+          Cargando…
+        </motion.div>
       </div>
     )
   }
@@ -143,7 +158,12 @@ export function FunnelPlayer() {
     return (
       <div className="funnel-root">
         <NeonDots />
-        <div className="funnel-shell funnel-state">
+        <motion.div
+          className="funnel-shell funnel-state"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={motionPack.screen}
+        >
           <h1>No disponible</h1>
           <p>{err ?? 'Embudo incompleto.'}</p>
           <button
@@ -156,7 +176,7 @@ export function FunnelPlayer() {
           >
             Reintentar
           </button>
-        </div>
+        </motion.div>
       </div>
     )
   }
@@ -221,21 +241,41 @@ export function FunnelPlayer() {
           <header className="funnel-top">
             <span className="funnel-brand">{def.title}</span>
             <div className="funnel-progress" aria-hidden>
-              <div className="funnel-progress__fill" style={{ width: `${progress * 100}%` }} />
+              <motion.div
+                className="funnel-progress__fill"
+                initial={false}
+                animate={{ width: `${Math.round(progress * 1000) / 10}%` }}
+                transition={motionPack.progress}
+              />
             </div>
           </header>
         ) : null}
         <div className={'funnel-card' + (isBerichClose ? ' funnel-card--berich' : '')}>
-          <AnimatePresence mode="sync">
+          <AnimatePresence mode="wait">
             <motion.div
               key={step.id}
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              initial={{
+                opacity: 0,
+                y: motionPack.reduced ? 0 : 16,
+                scale: motionPack.reduced ? 1 : 0.99,
+                filter: motionPack.reduced ? 'none' : 'blur(6px)',
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: motionPack.reduced ? 'none' : 'blur(0px)',
+              }}
+              exit={{
+                opacity: 0,
+                y: motionPack.reduced ? 0 : -12,
+                scale: motionPack.reduced ? 1 : 0.995,
+                filter: motionPack.reduced ? 'none' : 'blur(4px)',
+              }}
+              transition={motionPack.screen}
               style={{ position: 'relative', zIndex: 1 }}
             >
-              <StepRenderer step={step} onGoTo={goTo} />
+              <StepRenderer step={step} onGoTo={goTo} motion={motionPack} />
             </motion.div>
           </AnimatePresence>
         </div>

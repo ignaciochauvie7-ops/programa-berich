@@ -60,9 +60,11 @@ export function AnalysisLoadingControls({ step, onGoTo }: Props) {
 
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [effectiveDuration, onGoTo, step.nextId])
+  }, [effectiveDuration, onGoTo, step.id, step.nextId])
 
+  /** Tiempo virtual 0…durationMs alineado con t∈[0,1] (misma línea de tiempo que la barra global). */
   const virtualMs = t * durationMs
+  const overallPct = Math.round(t * 100)
 
   let phaseIndex = 0
   for (let i = 0; i < starts.length; i++) {
@@ -81,24 +83,54 @@ export function AnalysisLoadingControls({ step, onGoTo }: Props) {
 
   return (
     <div className="funnel-analysis">
+      <div className="funnel-analysis__overall" aria-label={`Progreso del análisis ${overallPct} por ciento`}>
+        <div className="funnel-analysis__overall-head">
+          <span className="funnel-analysis__overall-title">Progreso</span>
+          <strong className="funnel-analysis__overall-pct">{overallPct}%</strong>
+        </div>
+        <div className="funnel-analysis__overall-track">
+          <div className="funnel-analysis__overall-fill" style={{ width: `${t * 100}%` }} />
+        </div>
+      </div>
+
       <div className="funnel-analysis__status" aria-live="polite">
         <p className="funnel-analysis__title">{active.title}</p>
         {active.subtitle ? <p className="funnel-analysis__subtitle">{active.subtitle}</p> : null}
       </div>
 
-      <div className="funnel-analysis__bars" role="group" aria-label="Progreso del análisis">
-        {phases.map((ph, i) => (
-          <div key={i} className="funnel-analysis__bar-block">
-            <div className="funnel-analysis__bar-label">{ph.title}</div>
-            <div className="funnel-analysis__bar-track">
+      <div className="funnel-analysis__bars" role="group" aria-label="Etapas del análisis">
+        {phases.map((ph, i) => {
+          const segStart = starts[i]
+          const segEnd = segStart + segmentMs[i]
+          const done = virtualMs >= segEnd - 1e-6
+          const pending = virtualMs < segStart + 1e-6
+          const activeRow = !done && !pending
+          const fill = barPercents[i] ?? 0
+
+          let statusLabel: string
+          if (done) statusLabel = '✓'
+          else if (pending) statusLabel = '…'
+          else statusLabel = `${Math.round(fill)}%`
+
+          return (
+            <div key={i} className="funnel-analysis__bar-block">
+              <div className="funnel-analysis__bar-label">{ph.title}</div>
+              <div className="funnel-analysis__bar-track">
+                <div className="funnel-analysis__bar-fill" style={{ width: `${fill}%` }} />
+              </div>
               <div
-                className="funnel-analysis__bar-fill"
-                style={{ width: `${barPercents[i] ?? 0}%` }}
-              />
+                className={
+                  'funnel-analysis__bar-status' +
+                  (done ? ' funnel-analysis__bar-status--done' : '') +
+                  (activeRow ? ' funnel-analysis__bar-status--active' : '')
+                }
+                aria-hidden
+              >
+                {statusLabel}
+              </div>
             </div>
-            <div className="funnel-analysis__bar-pct">{Math.round(barPercents[i] ?? 0)}%</div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <div className="funnel-analysis__showcase">

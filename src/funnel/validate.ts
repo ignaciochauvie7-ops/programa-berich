@@ -105,19 +105,6 @@ function parseBerichPlanBasic(raw: unknown, ctx: string): BerichClosePlan {
   }
 }
 
-function parseBerichPlanPlus(raw: unknown, ctx: string): BerichClosePlan & {
-  badge: string
-  whatsappExtra: string
-} {
-  if (!isRecord(raw)) throw new FunnelValidationError(`${ctx}: plan must be object`)
-  const base = parseBerichPlanBasic(raw, ctx)
-  return {
-    ...base,
-    badge: reqString(raw, 'badge', ctx),
-    whatsappExtra: reqString(raw, 'whatsappExtra', ctx),
-  }
-}
-
 function parseStep(raw: unknown, index: number): FunnelStep {
   const ctx = `steps[${index}]`
   if (!isRecord(raw)) throw new FunnelValidationError(`${ctx}: step must be object`)
@@ -443,7 +430,6 @@ function parseStep(raw: unknown, index: number): FunnelStep {
         alt: optString(raw.highlightImage, 'alt'),
       }
       const basicPlan = parseBerichPlanBasic(raw.basicPlan, `${ctx}.basicPlan`)
-      const plusPlan = parseBerichPlanPlus(raw.plusPlan, `${ctx}.plusPlan`)
       const transformsRaw = raw.transformations
       if (!Array.isArray(transformsRaw) || transformsRaw.length === 0) {
         throw new FunnelValidationError(`${ctx}: transformations must be a non-empty array`)
@@ -474,7 +460,6 @@ function parseStep(raw: unknown, index: number): FunnelStep {
         videoInsideUrl: reqString(raw, 'videoInsideUrl', ctx),
         highlightImage,
         basicPlan,
-        plusPlan,
         transformations,
         faq,
       }

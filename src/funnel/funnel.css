@@ -198,7 +198,12 @@
   border-radius: inherit;
   background: linear-gradient(90deg, var(--funnel-form-deep), var(--funnel-form));
   width: 0%;
-  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.funnel-body-wrap,
+.funnel-media-wrap,
+.funnel-controls-wrap {
+  min-height: 0;
 }
 
 .funnel-card {
@@ -589,6 +594,49 @@
   text-align: center;
 }
 
+.funnel-analysis__overall {
+  text-align: left;
+}
+
+.funnel-analysis__overall-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.funnel-analysis__overall-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--funnel-muted);
+  font-weight: 600;
+}
+
+.funnel-analysis__overall-pct {
+  font-size: 1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--funnel-accent);
+}
+
+.funnel-analysis__overall-track {
+  height: 10px;
+  border-radius: 99px;
+  background: var(--funnel-surface);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.funnel-analysis__overall-fill {
+  height: 100%;
+  border-radius: inherit;
+  width: 0%;
+  background: linear-gradient(90deg, var(--funnel-form-deep), var(--funnel-form));
+  box-shadow: 0 0 16px color-mix(in srgb, var(--funnel-form) 50%, transparent);
+}
+
 .funnel-analysis__status {
   min-height: 4.5rem;
 }
@@ -646,17 +694,24 @@
   width: 0%;
   background: linear-gradient(90deg, var(--funnel-form-deep), var(--funnel-form));
   box-shadow: 0 0 14px color-mix(in srgb, var(--funnel-form) 45%, transparent);
-  transition: width 0.06s linear;
 }
 
-.funnel-analysis__bar-pct {
+.funnel-analysis__bar-status {
   grid-column: 2;
   font-size: 0.78rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--funnel-accent);
+  color: rgba(244, 246, 251, 0.38);
   min-width: 2.5rem;
   text-align: right;
+}
+
+.funnel-analysis__bar-status--active {
+  color: var(--funnel-accent);
+}
+
+.funnel-analysis__bar-status--done {
+  color: var(--funnel-form);
 }
 
 .funnel-analysis__showcase {
@@ -769,7 +824,6 @@
   min-width: 0;
   background: linear-gradient(90deg, var(--funnel-form-deep), var(--funnel-form));
   box-shadow: 0 0 12px color-mix(in srgb, var(--funnel-form) 40%, transparent);
-  transition: width 0.05s linear;
 }
 
 .funnel-prefin__pct {
@@ -922,8 +976,13 @@
   align-items: stretch;
 }
 
+.funnel-berich-plans--single {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
 @media (min-width: 720px) {
-  .funnel-berich-plans {
+  .funnel-berich-plans:not(.funnel-berich-plans--single) {
     grid-template-columns: 1fr 1.14fr;
     gap: 1.1rem;
     align-items: start;
@@ -931,7 +990,7 @@
 }
 
 @media (max-width: 719px) {
-  .funnel-berich-plan--featured {
+  .funnel-berich-plans:not(.funnel-berich-plans--single) .funnel-berich-plan--featured {
     order: -1;
   }
 }
