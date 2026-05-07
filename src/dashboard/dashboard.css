@@ -880,6 +880,30 @@
   align-items: start;
 }
 
+.admin-editor-pro--builder {
+  min-height: min(82vh, 920px);
+}
+
+.admin-editor-pro--builder .admin-flow {
+  height: 100%;
+  min-height: min(80vh, 900px);
+}
+
+.admin-editor-pro--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 0.9rem;
+  background: #06080c;
+  min-height: 100vh;
+  grid-template-columns: 320px minmax(0, 1fr) 380px;
+}
+
+.admin-editor-pro--fullscreen .admin-flow {
+  min-height: calc(100vh - 1.8rem);
+  height: calc(100vh - 1.8rem);
+}
+
 .admin-editor-pro__left,
 .admin-editor-pro__center,
 .admin-editor-pro__right {

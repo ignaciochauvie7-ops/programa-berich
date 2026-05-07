@@ -251,17 +251,17 @@
         {
           "id": "ihm_entreno",
           "label": "Entreno pero no crezco",
-          "nextId": "prefin_hombre_musculo_1"
+          "nextId": "prefin_hombre_musculo_3"
         },
         {
           "id": "ihm_cambios",
           "label": "No noto cambios",
-          "nextId": "prefin_hombre_musculo_1"
+          "nextId": "prefin_hombre_musculo_3"
         },
         {
           "id": "ihm_tiempo",
           "label": "No tengo tiempo para entrenar",
-          "nextId": "prefin_hombre_musculo_1"
+          "nextId": "prefin_hombre_musculo_5"
         }
       ]
     },
@@ -274,32 +274,32 @@
         {
           "id": "ihk_hambre",
           "label": "Hambre constante y ansiedad",
-          "nextId": "prefin_hombre_meta_1"
+          "nextId": "prefin_hombre_meta_3"
         },
         {
           "id": "ihk_comer",
           "label": "No saber qué comer",
-          "nextId": "prefin_hombre_meta_1"
+          "nextId": "prefin_hombre_meta_3"
         },
         {
           "id": "ihk_dieta",
           "label": "Odio hacer dieta",
-          "nextId": "prefin_hombre_meta_1"
+          "nextId": "prefin_hombre_meta_3"
         },
         {
           "id": "ihk_tiempo",
           "label": "Falta de tiempo",
-          "nextId": "prefin_hombre_meta_1"
+          "nextId": "prefin_hombre_meta_5"
         },
         {
           "id": "ihk_constancia",
           "label": "Me cuesta ser constante",
-          "nextId": "prefin_hombre_meta_1"
+          "nextId": "prefin_hombre_meta_7"
         },
         {
           "id": "ihk_empezar",
           "label": "No sé por dónde empezar",
-          "nextId": "prefin_hombre_meta_1"
+          "nextId": "prefin_hombre_meta_7"
         }
       ]
     },
@@ -312,27 +312,27 @@
         {
           "id": "imm_empezar",
           "label": "No sé por dónde empezar",
-          "nextId": "prefin_mujer_musculo_1"
+          "nextId": "prefin_mujer_musculo_7"
         },
         {
           "id": "imm_como",
           "label": "Como mucho y no subo de peso",
-          "nextId": "prefin_mujer_musculo_1"
+          "nextId": "prefin_mujer_musculo_7"
         },
         {
           "id": "imm_entreno",
           "label": "Entreno pero no crezco",
-          "nextId": "prefin_mujer_musculo_1"
+          "nextId": "prefin_mujer_musculo_3"
         },
         {
           "id": "imm_cambios",
           "label": "No noto cambios",
-          "nextId": "prefin_mujer_musculo_1"
+          "nextId": "prefin_mujer_musculo_3"
         },
         {
           "id": "imm_tiempo",
           "label": "No tengo tiempo para entrenar",
-          "nextId": "prefin_mujer_musculo_1"
+          "nextId": "prefin_mujer_musculo_5"
         }
       ]
     },
@@ -345,32 +345,32 @@
         {
           "id": "imk_hambre",
           "label": "Hambre constante y ansiedad",
-          "nextId": "prefin_mujer_meta_1"
+          "nextId": "prefin_mujer_meta_7"
         },
         {
           "id": "imk_comer",
           "label": "No saber qué comer",
-          "nextId": "prefin_mujer_meta_1"
+          "nextId": "prefin_mujer_meta_7"
         },
         {
           "id": "imk_dieta",
           "label": "Odio hacer dieta",
-          "nextId": "prefin_mujer_meta_1"
+          "nextId": "prefin_mujer_meta_7"
         },
         {
           "id": "imk_tiempo",
           "label": "Falta de tiempo",
-          "nextId": "prefin_mujer_meta_1"
+          "nextId": "prefin_mujer_meta_5"
         },
         {
           "id": "imk_constancia",
           "label": "Me cuesta ser constante",
-          "nextId": "prefin_mujer_meta_1"
+          "nextId": "prefin_mujer_meta_3"
         },
         {
           "id": "imk_empezar",
           "label": "No sé por dónde empezar",
-          "nextId": "prefin_mujer_meta_1"
+          "nextId": "prefin_mujer_meta_3"
         }
       ]
     },
@@ -405,6 +405,36 @@
       "nextId": "moneda_hombre_musculo"
     },
     {
+      "id": "prefin_hombre_musculo_3",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu progreso de entrenamiento…",
+      "body": "Estamos evaluando por qué no estás viendo cambios para darte un plan más efectivo.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando tu objetivo físico",
+        "Detectando cuellos de botella de progreso",
+        "Evaluando consistencia y sobrecarga"
+      ],
+      "nextId": "prefin_hombre_musculo_4"
+    },
+    {
+      "id": "prefin_hombre_musculo_4",
+      "type": "prefinal_loading",
+      "headline": "Construyendo tu ruta para ganar masa muscular…",
+      "body": "Estamos armando la estrategia ideal para que dejes de entrenar sin resultados.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con casos similares",
+        "Ajustando entrenamiento y nutrición",
+        "Definiendo plan recomendado"
+      ],
+      "nextId": "moneda_hombre_musculo_2"
+    },
+    {
       "id": "prefin_hombre_meta_1",
       "type": "prefinal_loading",
       "headline": "Analizando tus respuestas…",
@@ -420,6 +450,36 @@
       "nextId": "prefin_hombre_meta_2"
     },
     {
+      "id": "prefin_hombre_musculo_5",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu disponibilidad de tiempo…",
+      "body": "Estamos evaluando cómo optimizar tus resultados con sesiones más eficientes.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Evaluando frecuencia semanal posible",
+        "Detectando limitantes de tiempo",
+        "Priorizando ejercicios de mayor impacto"
+      ],
+      "nextId": "prefin_hombre_musculo_6"
+    },
+    {
+      "id": "prefin_hombre_musculo_6",
+      "type": "prefinal_loading",
+      "headline": "Diseñando una ruta de progreso con poco tiempo…",
+      "body": "Estamos armando un plan práctico para ganar masa muscular sin entrenamientos eternos.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles ocupados similares",
+        "Ajustando estímulo por sesión",
+        "Definiendo estrategia sostenible"
+      ],
+      "nextId": "moneda_hombre_musculo_3"
+    },
+    {
       "id": "prefin_hombre_meta_2",
       "type": "prefinal_loading",
       "headline": "Comparando tu perfil con otros casos similares…",
@@ -433,6 +493,96 @@
         "Detectando el tipo de plan ideal"
       ],
       "nextId": "moneda_hombre_meta"
+    },
+    {
+      "id": "prefin_hombre_meta_3",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu relación con el hambre y la adherencia…",
+      "body": "Estamos evaluando por qué te cuesta sostener el plan para perder grasa.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando gatillos de ansiedad",
+        "Detectando barreras de alimentación",
+        "Evaluando adherencia nutricional"
+      ],
+      "nextId": "prefin_hombre_meta_4"
+    },
+    {
+      "id": "prefin_hombre_meta_4",
+      "type": "prefinal_loading",
+      "headline": "Construyendo una estrategia para perder grasa sin pasar hambre…",
+      "body": "Estamos armando tu ruta ideal para bajar grasa sin dietas extremas.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Ajustando plan de alimentación",
+        "Definiendo ruta de progreso sostenible"
+      ],
+      "nextId": "moneda_hombre_meta_2"
+    },
+    {
+      "id": "prefin_hombre_meta_5",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu disponibilidad para perder grasa…",
+      "body": "Estamos evaluando cómo lograr resultados con el tiempo real que tenés.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Evaluando tu agenda semanal",
+        "Detectando puntos críticos de adherencia",
+        "Priorizando acciones de mayor impacto"
+      ],
+      "nextId": "prefin_hombre_meta_6"
+    },
+    {
+      "id": "prefin_hombre_meta_6",
+      "type": "prefinal_loading",
+      "headline": "Diseñando una ruta para perder grasa con poco tiempo…",
+      "body": "Estamos armando un plan práctico y sostenible adaptado a tu rutina.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles ocupados similares",
+        "Ajustando estrategia nutricional",
+        "Definiendo plan recomendado"
+      ],
+      "nextId": "moneda_hombre_meta_3"
+    },
+    {
+      "id": "prefin_hombre_meta_7",
+      "type": "prefinal_loading",
+      "headline": "Analizando tus bloqueos de constancia…",
+      "body": "Estamos evaluando qué te impide sostener resultados en el tiempo.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando hábitos actuales",
+        "Detectando barreras de ejecución",
+        "Evaluando nivel de adherencia"
+      ],
+      "nextId": "prefin_hombre_meta_8"
+    },
+    {
+      "id": "prefin_hombre_meta_8",
+      "type": "prefinal_loading",
+      "headline": "Diseñando una ruta sostenible en el tiempo…",
+      "body": "Estamos armando un plan simple y consistente para que no vuelvas a abandonar.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Ajustando hábitos clave",
+        "Definiendo plan de progreso"
+      ],
+      "nextId": "moneda_hombre_meta_4"
     },
     {
       "id": "prefin_mujer_musculo_1",
@@ -465,6 +615,96 @@
       "nextId": "moneda_mujer_musculo"
     },
     {
+      "id": "prefin_mujer_musculo_3",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu progreso de entrenamiento…",
+      "body": "Estamos evaluando por qué no estás viendo cambios para darte un plan más efectivo.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando tu objetivo físico",
+        "Detectando cuellos de botella de progreso",
+        "Evaluando consistencia y sobrecarga"
+      ],
+      "nextId": "prefin_mujer_musculo_4"
+    },
+    {
+      "id": "prefin_mujer_musculo_4",
+      "type": "prefinal_loading",
+      "headline": "Construyendo tu ruta para ganar masa muscular…",
+      "body": "Estamos armando la estrategia ideal para que dejes de entrenar sin resultados.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con casos similares",
+        "Ajustando entrenamiento y nutrición",
+        "Definiendo plan recomendado"
+      ],
+      "nextId": "moneda_mujer_musculo_2"
+    },
+    {
+      "id": "prefin_mujer_musculo_5",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu disponibilidad de tiempo…",
+      "body": "Estamos evaluando cómo optimizar tus resultados con sesiones más eficientes.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Evaluando frecuencia semanal posible",
+        "Detectando limitantes de tiempo",
+        "Priorizando ejercicios de mayor impacto"
+      ],
+      "nextId": "prefin_mujer_musculo_6"
+    },
+    {
+      "id": "prefin_mujer_musculo_6",
+      "type": "prefinal_loading",
+      "headline": "Diseñando una ruta de progreso con poco tiempo…",
+      "body": "Estamos armando un plan práctico para ganar masa muscular sin entrenamientos eternos.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles ocupados similares",
+        "Ajustando estímulo por sesión",
+        "Definiendo estrategia sostenible"
+      ],
+      "nextId": "moneda_mujer_musculo_3"
+    },
+    {
+      "id": "prefin_mujer_musculo_7",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu punto de partida…",
+      "body": "Estamos evaluando por qué todavía no estás logrando subir masa muscular.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando tus hábitos actuales",
+        "Detectando barreras de alimentación",
+        "Evaluando estructura de entrenamiento"
+      ],
+      "nextId": "prefin_mujer_musculo_8"
+    },
+    {
+      "id": "prefin_mujer_musculo_8",
+      "type": "prefinal_loading",
+      "headline": "Diseñando una ruta para ganar masa muscular…",
+      "body": "Estamos armando un plan simple y efectivo para acelerar tu progreso.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Ajustando estrategia nutricional",
+        "Definiendo plan recomendado"
+      ],
+      "nextId": "moneda_mujer_musculo_4"
+    },
+    {
       "id": "prefin_mujer_meta_1",
       "type": "prefinal_loading",
       "headline": "Analizando tus respuestas…",
@@ -495,6 +735,96 @@
       "nextId": "moneda_mujer_meta"
     },
     {
+      "id": "prefin_mujer_meta_3",
+      "type": "prefinal_loading",
+      "headline": "Analizando tus bloqueos de constancia…",
+      "body": "Estamos evaluando qué te impide sostener resultados en el tiempo.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando hábitos actuales",
+        "Detectando barreras de ejecución",
+        "Evaluando nivel de adherencia"
+      ],
+      "nextId": "prefin_mujer_meta_4"
+    },
+    {
+      "id": "prefin_mujer_meta_4",
+      "type": "prefinal_loading",
+      "headline": "Diseñando una ruta sostenible en el tiempo…",
+      "body": "Estamos armando un plan simple y consistente para que no vuelvas a abandonar.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Ajustando hábitos clave",
+        "Definiendo plan de progreso"
+      ],
+      "nextId": "moneda_mujer_meta_2"
+    },
+    {
+      "id": "prefin_mujer_meta_5",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu disponibilidad para perder grasa…",
+      "body": "Estamos evaluando cómo lograr resultados con el tiempo real que tenés.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Evaluando tu agenda semanal",
+        "Detectando puntos críticos de adherencia",
+        "Priorizando acciones de mayor impacto"
+      ],
+      "nextId": "prefin_mujer_meta_6"
+    },
+    {
+      "id": "prefin_mujer_meta_6",
+      "type": "prefinal_loading",
+      "headline": "Diseñando una ruta para perder grasa con poco tiempo…",
+      "body": "Estamos armando un plan práctico y sostenible adaptado a tu rutina.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles ocupados similares",
+        "Ajustando estrategia nutricional",
+        "Definiendo plan recomendado"
+      ],
+      "nextId": "moneda_mujer_meta_3"
+    },
+    {
+      "id": "prefin_mujer_meta_7",
+      "type": "prefinal_loading",
+      "headline": "Analizando tu relación con el hambre y la adherencia…",
+      "body": "Estamos evaluando por qué te cuesta sostener el plan para perder grasa.",
+      "durationMs": 3600,
+      "progressStart": 0,
+      "progressEnd": 35,
+      "checks": [
+        "Analizando gatillos de ansiedad",
+        "Detectando barreras de alimentación",
+        "Evaluando adherencia nutricional"
+      ],
+      "nextId": "prefin_mujer_meta_8"
+    },
+    {
+      "id": "prefin_mujer_meta_8",
+      "type": "prefinal_loading",
+      "headline": "Construyendo una estrategia para perder grasa sin pasar hambre…",
+      "body": "Estamos armando tu ruta ideal para bajar grasa sin dietas extremas.",
+      "durationMs": 3800,
+      "progressStart": 35,
+      "progressEnd": 75,
+      "checks": [
+        "Comparando con perfiles similares",
+        "Ajustando plan de alimentación",
+        "Definiendo ruta de progreso sostenible"
+      ],
+      "nextId": "moneda_mujer_meta_4"
+    },
+    {
       "id": "moneda_hombre_musculo",
       "type": "question_single",
       "headline": "¿Desde dónde accedés al programa?",
@@ -502,6 +832,16 @@
       "options": [
         { "id": "mhm_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu" },
         { "id": "mhm_intl", "label": "Internacional (USD)", "nextId": "cierre_usd" }
+      ]
+    },
+    {
+      "id": "moneda_hombre_musculo_2",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mhm2_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_musculo_2" },
+        { "id": "mhm2_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_musculo_2" }
       ]
     },
     {
@@ -515,6 +855,46 @@
       ]
     },
     {
+      "id": "moneda_hombre_meta_2",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mhk2_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_meta_2" },
+        { "id": "mhk2_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_meta_2" }
+      ]
+    },
+    {
+      "id": "moneda_hombre_meta_3",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mhk3_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_meta_3" },
+        { "id": "mhk3_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_meta_3" }
+      ]
+    },
+    {
+      "id": "moneda_hombre_meta_4",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mhk4_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_meta_4" },
+        { "id": "mhk4_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_meta_4" }
+      ]
+    },
+    {
+      "id": "moneda_hombre_musculo_3",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mhm3_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_musculo_3" },
+        { "id": "mhm3_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_musculo_3" }
+      ]
+    },
+    {
       "id": "moneda_mujer_musculo",
       "type": "question_single",
       "headline": "¿Desde dónde accedés al programa?",
@@ -522,6 +902,36 @@
       "options": [
         { "id": "mmm_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu" },
         { "id": "mmm_intl", "label": "Internacional (USD)", "nextId": "cierre_usd" }
+      ]
+    },
+    {
+      "id": "moneda_mujer_musculo_2",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmm2_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_mujer_musculo_2" },
+        { "id": "mmm2_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_mujer_musculo_2" }
+      ]
+    },
+    {
+      "id": "moneda_mujer_musculo_3",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmm3_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_mujer_musculo_3" },
+        { "id": "mmm3_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_mujer_musculo_3" }
+      ]
+    },
+    {
+      "id": "moneda_mujer_musculo_4",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmm4_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_mujer_musculo_4" },
+        { "id": "mmm4_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_mujer_musculo_4" }
       ]
     },
     {
@@ -535,14 +945,44 @@
       ]
     },
     {
+      "id": "moneda_mujer_meta_2",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmk2_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_mujer_meta_2" },
+        { "id": "mmk2_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_mujer_meta_2" }
+      ]
+    },
+    {
+      "id": "moneda_mujer_meta_3",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmk3_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_mujer_meta_3" },
+        { "id": "mmk3_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_mujer_meta_3" }
+      ]
+    },
+    {
+      "id": "moneda_mujer_meta_4",
+      "type": "question_single",
+      "headline": "¿Desde dónde accedés al programa?",
+      "body": "Elegí tu región para ver precios en la moneda que te corresponde.",
+      "options": [
+        { "id": "mmk4_uy", "label": "Uruguay (UYU)", "nextId": "cierre_uyu_mujer_meta_4" },
+        { "id": "mmk4_intl", "label": "Internacional (USD)", "nextId": "cierre_usd_mujer_meta_4" }
+      ]
+    },
+    {
       "id": "cierre_uyu",
       "type": "berich_close",
       "currency": "uyu",
-      "videoIntroUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
-      "videoInsideUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
+      "videoIntroUrl": "https://youtu.be/O_daS_g7tI4",
+      "videoInsideUrl": "https://youtu.be/O_daS_g7tI4",
       "highlightImage": {
-        "src": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80",
-        "alt": "Entrenamiento Berich"
+        "src": "/campaign-assets/hombre-musculo-cierre.png",
+        "alt": "Metodo Berich para ganar masa muscular"
       },
       "basicPlan": {
         "name": "Programa Berich Completo",
@@ -588,11 +1028,1111 @@
       "id": "cierre_usd",
       "type": "berich_close",
       "currency": "usd",
-      "videoIntroUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
-      "videoInsideUrl": "https://www.youtube.com/watch?v=aqz-KE-bpkQ",
+      "videoIntroUrl": "https://youtu.be/O_daS_g7tI4",
+      "videoInsideUrl": "https://youtu.be/O_daS_g7tI4",
       "highlightImage": {
-        "src": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80",
-        "alt": "Entrenamiento Berich"
+        "src": "/campaign-assets/hombre-musculo-cierre.png",
+        "alt": "Metodo Berich para ganar masa muscular"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_musculo_2",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/t9tAW28gY7Q",
+      "videoInsideUrl": "https://youtu.be/t9tAW28gY7Q",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-musculo-camino-2-cierre.png",
+        "alt": "Metodo Berich para dejar de entrenar sin ver cambios"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_musculo_2",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/t9tAW28gY7Q",
+      "videoInsideUrl": "https://youtu.be/t9tAW28gY7Q",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-musculo-camino-2-cierre.png",
+        "alt": "Metodo Berich para dejar de entrenar sin ver cambios"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_musculo_3",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/0iEEchNgSRk",
+      "videoInsideUrl": "https://youtu.be/0iEEchNgSRk",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-musculo-camino-3-cierre.png",
+        "alt": "Metodo Berich para ganar musculo con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_musculo_3",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/0iEEchNgSRk",
+      "videoInsideUrl": "https://youtu.be/0iEEchNgSRk",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-musculo-camino-3-cierre.png",
+        "alt": "Metodo Berich para ganar musculo con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_meta_2",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/RkNTT8vdOZk",
+      "videoInsideUrl": "https://youtu.be/RkNTT8vdOZk",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-meta-camino-1-cierre.png",
+        "alt": "Metodo Berich para perder grasa sin pasar hambre"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_meta_2",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/RkNTT8vdOZk",
+      "videoInsideUrl": "https://youtu.be/RkNTT8vdOZk",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-meta-camino-1-cierre.png",
+        "alt": "Metodo Berich para perder grasa sin pasar hambre"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_meta_3",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/5BPEfV9E59Y",
+      "videoInsideUrl": "https://youtu.be/5BPEfV9E59Y",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-meta-camino-2-cierre.png",
+        "alt": "Metodo Berich para perder grasa con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_meta_3",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/5BPEfV9E59Y",
+      "videoInsideUrl": "https://youtu.be/5BPEfV9E59Y",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-meta-camino-2-cierre.png",
+        "alt": "Metodo Berich para perder grasa con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_meta_4",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/Ym9X02ubKHc",
+      "videoInsideUrl": "https://youtu.be/Ym9X02ubKHc",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-meta-camino-3-cierre.png",
+        "alt": "Metodo Berich para perder grasa de forma sostenible en el tiempo"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_meta_4",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/Ym9X02ubKHc",
+      "videoInsideUrl": "https://youtu.be/Ym9X02ubKHc",
+      "highlightImage": {
+        "src": "/campaign-assets/hombre-meta-camino-3-cierre.png",
+        "alt": "Metodo Berich para perder grasa de forma sostenible en el tiempo"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_mujer_musculo_2",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/t9tAW28gY7Q",
+      "videoInsideUrl": "https://youtu.be/t9tAW28gY7Q",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-musculo-camino-1-cierre.png",
+        "alt": "Metodo Berich mujer para dejar de entrenar sin ver cambios"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_mujer_musculo_2",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/t9tAW28gY7Q",
+      "videoInsideUrl": "https://youtu.be/t9tAW28gY7Q",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-musculo-camino-1-cierre.png",
+        "alt": "Metodo Berich mujer para dejar de entrenar sin ver cambios"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_mujer_musculo_3",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/0iEEchNgSRk",
+      "videoInsideUrl": "https://youtu.be/0iEEchNgSRk",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-musculo-camino-2-cierre.png",
+        "alt": "Metodo Berich mujer para ganar musculo con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_mujer_musculo_3",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/0iEEchNgSRk",
+      "videoInsideUrl": "https://youtu.be/0iEEchNgSRk",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-musculo-camino-2-cierre.png",
+        "alt": "Metodo Berich mujer para ganar musculo con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_mujer_musculo_4",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/O_daS_g7tI4",
+      "videoInsideUrl": "https://youtu.be/O_daS_g7tI4",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-musculo-camino-3-cierre.png",
+        "alt": "Metodo Berich mujer para ganar masa muscular"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_mujer_musculo_4",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/O_daS_g7tI4",
+      "videoInsideUrl": "https://youtu.be/O_daS_g7tI4",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-musculo-camino-3-cierre.png",
+        "alt": "Metodo Berich mujer para ganar masa muscular"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_mujer_meta_2",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/Ym9X02ubKHc",
+      "videoInsideUrl": "https://youtu.be/Ym9X02ubKHc",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-meta-camino-1-cierre.png",
+        "alt": "Metodo Berich mujer para perder grasa de forma sostenible en el tiempo"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_mujer_meta_2",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/Ym9X02ubKHc",
+      "videoInsideUrl": "https://youtu.be/Ym9X02ubKHc",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-meta-camino-1-cierre.png",
+        "alt": "Metodo Berich mujer para perder grasa de forma sostenible en el tiempo"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_mujer_meta_3",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/5BPEfV9E59Y",
+      "videoInsideUrl": "https://youtu.be/5BPEfV9E59Y",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-meta-camino-2-cierre.png",
+        "alt": "Metodo Berich mujer para perder grasa con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_mujer_meta_3",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/5BPEfV9E59Y",
+      "videoInsideUrl": "https://youtu.be/5BPEfV9E59Y",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-meta-camino-2-cierre.png",
+        "alt": "Metodo Berich mujer para perder grasa con poco tiempo disponible"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_uyu_mujer_meta_4",
+      "type": "berich_close",
+      "currency": "uyu",
+      "videoIntroUrl": "https://youtu.be/RkNTT8vdOZk",
+      "videoInsideUrl": "https://youtu.be/RkNTT8vdOZk",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-meta-camino-3-cierre.png",
+        "alt": "Metodo Berich mujer para perder grasa sin pasar hambre"
+      },
+      "basicPlan": {
+        "name": "Programa Berich Completo",
+        "priceUyu": "2.390 UYU",
+        "priceUsd": "59 USD",
+        "bullets": [
+          "Rutinas de fuerza estructuradas y progresivas",
+          "Guía nutricional alineada a tu objetivo",
+          "Acceso a materiales, plantillas y actualizaciones",
+          "Soporte dentro de la plataforma del programa"
+        ],
+        "ctaLabel": "Comprar ahora",
+        "ctaHref": "#"
+      },
+      "transformations": [
+        { "src": "https://picsum.photos/seed/bertr1/480/480", "alt": "Transformación 1" },
+        { "src": "https://picsum.photos/seed/bertr2/480/480", "alt": "Transformación 2" },
+        { "src": "https://picsum.photos/seed/bertr3/480/480", "alt": "Transformación 3" },
+        { "src": "https://picsum.photos/seed/bertr4/480/480", "alt": "Transformación 4" },
+        { "src": "https://picsum.photos/seed/bertr5/480/480", "alt": "Transformación 5" },
+        { "src": "https://picsum.photos/seed/bertr6/480/480", "alt": "Transformación 6" }
+      ],
+      "faq": [
+        {
+          "question": "¿Cómo recibo el programa?",
+          "answer": "Tras la compra recibís acceso inmediato por correo con los pasos para ingresar a la plataforma y descargar tus materiales."
+        },
+        {
+          "question": "¿Sirve si entreno en casa o en el gimnasio?",
+          "answer": "Sí. Las rutinas se adaptan al equipamiento que tengas disponible y lo dejamos claro según tu contexto."
+        },
+        {
+          "question": "¿Cuánto dura el acceso?",
+          "answer": "El acceso al contenido del programa es según lo indicado en la página de compra."
+        },
+        {
+          "question": "¿Tengo soporte si me trabo?",
+          "answer": "Sí: el programa incluye soporte dentro de la plataforma. Escribinos desde ahí o por los canales que te indiquen al comprar."
+        }
+      ]
+    },
+    {
+      "id": "cierre_usd_mujer_meta_4",
+      "type": "berich_close",
+      "currency": "usd",
+      "videoIntroUrl": "https://youtu.be/RkNTT8vdOZk",
+      "videoInsideUrl": "https://youtu.be/RkNTT8vdOZk",
+      "highlightImage": {
+        "src": "/campaign-assets/mujer-meta-camino-3-cierre.png",
+        "alt": "Metodo Berich mujer para perder grasa sin pasar hambre"
       },
       "basicPlan": {
         "name": "Programa Berich Completo",
