@@ -5,6 +5,7 @@ import { useAuth } from '../auth/useAuth'
 import { supabase } from '../auth/supabaseClient'
 import { BerichProgramView } from '../program/BerichProgramView'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
+import { AffiliateSection } from './AffiliateSection'
 import { isStudentUiDevPreview } from './studentDevPreview'
 import './student.css'
 
@@ -135,6 +136,7 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       </header>
       <main className="student-program__main">
         <BerichProgramView key={user.id} variant="student" progressNamespace={user.id} />
+        <AffiliateSection />
       </main>
     </div>
   )

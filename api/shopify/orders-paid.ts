@@ -69,6 +69,9 @@ export default async function handler(request: Request): Promise<Response> {
     return json({ error: 'db entitlements' }, 500)
   }
 
+  // Auto-create affiliate record for the buyer (ignored if already exists)
+  await admin.from('affiliates').upsert({ email }, { onConflict: 'email', ignoreDuplicates: true })
+
   const token = randomTokenHex(32)
   const tokenHash = sha256Hex(token)
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()

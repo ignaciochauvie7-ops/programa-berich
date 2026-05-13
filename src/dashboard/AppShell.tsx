@@ -1,6 +1,7 @@
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { NeonDots } from '../funnel/NeonDots'
 import { Sidebar } from './Sidebar'
+import { AffiliadosPage } from './pages/AffiliadosPage'
 import { AlumnosPage } from './pages/AlumnosPage'
 import { FunnelBuilderPage } from './pages/FunnelBuilderPage'
 import { FunnelEditorPage } from './pages/FunnelEditorPage'
@@ -34,6 +35,7 @@ export function DashboardRoutes() {
         <Route path="/funnels/:slug/editor" element={<FunnelEditorPage />} />
         <Route path="/programas" element={<ProgramasPage />} />
         <Route path="/alumnos" element={<AlumnosPage />} />
+        <Route path="/afiliados" element={<AffiliadosPage />} />
         <Route
           path="/pagos"
           element={<PlaceholderPage title="Pagos" description="Proximamente: historial de cobros, estados y conciliacion." />}

@@ -4,6 +4,7 @@ const links = [
   { to: '/control/funnels', label: 'Funnels' },
   { to: '/control/programas', label: 'Programas' },
   { to: '/control/alumnos', label: 'Alumnos' },
+  { to: '/control/afiliados', label: 'Afiliados' },
   { to: '/control/pagos', label: 'Pagos' },
   { to: '/control/ajustes', label: 'Ajustes' },
 ]
