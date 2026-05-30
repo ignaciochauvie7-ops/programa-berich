@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { NeonDots } from '../funnel/NeonDots'
+import { NeonDots } from '../components/NeonDots'
 import { useAuth } from '../auth/useAuth'
 import { supabase } from '../auth/supabaseClient'
 import { BerichProgramView } from '../program/BerichProgramView'

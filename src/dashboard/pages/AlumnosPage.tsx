@@ -1,5 +1,3 @@
-import { students } from '../mockData'
-
 export function AlumnosPage() {
   return (
     <section className="admin-page">
@@ -22,18 +20,11 @@ export function AlumnosPage() {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
-              <tr key={student.id}>
-                <td>{student.firstName}</td>
-                <td>{student.lastName}</td>
-                <td>{student.email}</td>
-                <td>{student.joinedAt}</td>
-                <td>{student.paid}</td>
-                <td>
-                  <span className="admin-pill">{student.status}</span>
-                </td>
-              </tr>
-            ))}
+            <tr>
+              <td colSpan={6} style={{ textAlign: 'center', opacity: 0.5 }}>
+                Sin alumnos todavía
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

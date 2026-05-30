@@ -11,6 +11,11 @@ body,
   min-height: 100%;
 }
 
+body {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
 #root {
   display: block;
 }
