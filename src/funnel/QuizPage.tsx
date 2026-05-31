@@ -308,11 +308,31 @@ export function QuizPage() {
 
       {!started ? (
         <section className={`${screenClass} quiz-screen--intro`}>
-          <h1>Ayudanos a encontrar el mejor plan personalizado para vos</h1>
-          <p>No te llevará ni 1 minuto</p>
-          <button className="quiz-primary-btn" type="button" onClick={() => transitionScreen(() => setStarted(true))}>
-            Empezar
+          <div className="quiz-intro-badge">⭐ +50 personas ya transformaron su cuerpo con este método</div>
+          <h1>Encontremos el plan perfecto para vos</h1>
+          <p>Respondé unas preguntas y te mostramos exactamente qué necesitás para lograr tu objetivo</p>
+          <div className="quiz-intro-features" aria-label="Beneficios del quiz">
+            <div className="quiz-intro-feature">
+              <span>🎯</span>
+              <strong>Personalizado</strong>
+            </div>
+            <div className="quiz-intro-feature">
+              <span>⚡</span>
+              <strong>Menos de 1 minuto</strong>
+            </div>
+            <div className="quiz-intro-feature">
+              <span>🔒</span>
+              <strong>Sin compromiso</strong>
+            </div>
+          </div>
+          <button
+            className="quiz-primary-btn quiz-intro-btn"
+            type="button"
+            onClick={() => transitionScreen(() => setStarted(true))}
+          >
+            Empezar ahora →
           </button>
+          <small className="quiz-intro-note">Sin tarjeta de crédito requerida</small>
         </section>
       ) : question === 1 ? (
         <section className={screenClass}>
