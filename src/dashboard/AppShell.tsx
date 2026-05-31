@@ -30,6 +30,7 @@ export function DashboardRoutes() {
         <Route path="/funnels" element={<FunnelsPage />} />
         <Route path="/programas" element={<ProgramasPage />} />
         <Route path="/alumnos" element={<AlumnosPage />} />
+        <Route path="/alumnosr" element={<Navigate to="/control/alumnos" replace />} />
         <Route path="/afiliados" element={<AffiliadosPage />} />
         <Route
           path="/pagos"

@@ -6,30 +6,11 @@ import { supabase } from '../auth/supabaseClient'
 import { BerichProgramView } from '../program/BerichProgramView'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
 import { AffiliateSection } from './AffiliateSection'
-import { isStudentUiDevPreview } from './studentDevPreview'
 import './student.css'
-
-const PREVIEW_PROGRESS_KEY = 'preview-local'
-
-function StudentProgramDevPreview() {
-  return (
-    <div className="student-program">
-      <NeonDots />
-      <p className="student-program__dev-banner" role="status">
-        <strong>Solo en tu entorno de desarrollo:</strong> esto es la vista alumno sin login ni Shopify. En producción
-        acá solo entra quien compró y creó cuenta. Tu edición interna sigue en{' '}
-        <Link to="/control/programas">Centro de control → Programas</Link>.
-      </p>
-      <main className="student-program__main">
-        <BerichProgramView variant="student" progressNamespace={PREVIEW_PROGRESS_KEY} />
-      </main>
-    </div>
-  )
-}
 
 function StudentProgramAuthenticated({ slug }: { slug: string }) {
   const { configured, loading, user, signOut } = useAuth()
-  const [entitled, setEntitled] = useState<boolean | null>(null)
+  const [activeAlumno, setActiveAlumno] = useState<boolean | null>(null)
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
@@ -38,7 +19,7 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
     void (async () => {
       if (!configured || !supabase || !user) {
         if (!cancelled) {
-          setEntitled(null)
+          setActiveAlumno(null)
           setChecking(false)
         }
         return
@@ -46,17 +27,17 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
 
       if (!cancelled) setChecking(true)
 
-      const { data, error } = await supabase.from('entitlements').select('id').eq('product_slug', slug).limit(1)
+      const { data, error } = await supabase.from('alumnos').select('id, activo').eq('user_id', user.id).limit(1)
 
       if (cancelled) return
 
       if (error) {
-        setEntitled(false)
+        setActiveAlumno(false)
         setChecking(false)
         return
       }
 
-      setEntitled((data?.length ?? 0) > 0)
+      setActiveAlumno(Boolean(data?.some((row) => row.activo)))
       setChecking(false)
     })()
 
@@ -89,10 +70,10 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
   }
 
   if (!user) {
-    return <Navigate to="/ingresar" replace state={{ from: `/programa/${slug}` }} />
+    return <Navigate to="/login" replace state={{ from: `/programa/${slug}` }} />
   }
 
-  if (checking || entitled === null) {
+  if (checking || activeAlumno === null) {
     return (
       <div className="student-program">
         <NeonDots />
@@ -103,18 +84,18 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
     )
   }
 
-  if (!entitled) {
+  if (!activeAlumno) {
     return (
       <div className="student-program">
         <NeonDots />
         <div className="student-program__gate">
           <h2>Sin acceso a este programa</h2>
           <p>
-            Tu cuenta no tiene habilitado este contenido. Si acabás de pagar, puede tardar unos minutos; si pagaste en
-            efectivo, el acceso se habilita cuando se confirma el pago.
+            Tu cuenta no está activa para este contenido. Revisá el link de invitación o pedile al administrador que
+            confirme tu acceso.
           </p>
           <p>
-            <Link to="/ingresar">Volver al inicio de sesión</Link>
+            <Link to="/login">Volver al inicio de sesión</Link>
           </p>
         </div>
       </div>
@@ -147,10 +128,6 @@ export function StudentProgramRoute() {
 
   if (slug !== BERICH_PROGRAM_SLUG) {
     return <Navigate to={`/programa/${BERICH_PROGRAM_SLUG}`} replace />
-  }
-
-  if (isStudentUiDevPreview) {
-    return <StudentProgramDevPreview />
   }
 
   return <StudentProgramAuthenticated slug={slug} />

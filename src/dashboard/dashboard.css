@@ -89,6 +89,13 @@
   gap: 0.75rem;
 }
 
+.admin-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
 .admin-page__header h1 {
   margin: 0;
   font-size: clamp(1.25rem, 2.6vw, 1.7rem);
@@ -165,6 +172,12 @@
   color: rgba(244, 246, 251, 0.86);
 }
 
+.admin-pill--active {
+  border-color: rgba(0, 230, 118, 0.5);
+  background: rgba(0, 230, 118, 0.13);
+  color: #d8ffe8;
+}
+
 .admin-btn {
   border-radius: 12px;
   padding: 0.6rem 0.85rem;
@@ -183,6 +196,100 @@
   border-color: rgba(255, 255, 255, 0.16);
   color: #f4f6fb;
   text-decoration: none;
+}
+
+.admin-btn--cyan {
+  background: #00e5ff;
+  color: #071012;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.28);
+}
+
+.admin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.admin-form {
+  max-width: 860px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.admin-form__field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-form__field label {
+  color: rgba(244, 246, 251, 0.75);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.admin-form__field input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 0.68rem 0.75rem;
+  background: rgba(0, 0, 0, 0.28);
+  color: #f4f6fb;
+  font: inherit;
+}
+
+.admin-form__field input:focus {
+  outline: 2px solid rgba(0, 230, 118, 0.42);
+  outline-offset: 2px;
+}
+
+.admin-form__actions {
+  display: flex;
+}
+
+.admin-form__message,
+.admin-form__error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.admin-form__message {
+  color: #9cffc7;
+}
+
+.admin-form__error {
+  color: #ff9e9e;
+}
+
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.admin-modal__card {
+  width: min(100%, 440px);
+  display: grid;
+  gap: 0.95rem;
+}
+
+.admin-modal__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.admin-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: flex-end;
 }
 
 .admin-table-wrap {
@@ -1103,6 +1210,10 @@
   }
 
   .admin-program-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form {
     grid-template-columns: 1fr;
   }
 }

@@ -22,11 +22,23 @@ create table if not exists public.invite_tokens (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.alumnos (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  email text not null unique,
+  nombre text,
+  created_at timestamptz not null default now(),
+  activo boolean not null default false
+);
+
 create index if not exists entitlements_email_lower on public.entitlements (lower(trim(email)));
 create index if not exists invite_tokens_hash on public.invite_tokens (token_hash);
+create index if not exists alumnos_user_id on public.alumnos (user_id);
+create index if not exists alumnos_email_lower on public.alumnos (lower(trim(email)));
 
 alter table public.entitlements enable row level security;
 alter table public.invite_tokens enable row level security;
+alter table public.alumnos enable row level security;
 
 -- Alumnos: solo leen filas donde el mail coincide con el JWT de Supabase Auth.
 create policy "entitlements_select_own_email"
@@ -38,6 +50,15 @@ create policy "entitlements_select_own_email"
   );
 
 -- Nadie desde el cliente toca invitaciones (solo service role en Vercel).
+
+create policy "alumnos_select_own"
+  on public.alumnos
+  for select
+  to authenticated
+  using (
+    user_id = auth.uid()
+    or lower(trim(email)) = lower(trim(coalesce((auth.jwt() ->> 'email')::text, '')))
+  );
 
 -- ─── Programa de Afiliados ───────────────────────────────────────────────────
 

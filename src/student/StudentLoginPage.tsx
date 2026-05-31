@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
+import loginLogo from '../../supabase/IMG_3353.jpg'
 import './student.css'
 
 export function StudentLoginPage() {
@@ -45,8 +46,9 @@ export function StudentLoginPage() {
   return (
     <div className="student-auth">
       <form className="student-auth__card" onSubmit={onSubmit}>
-        <h1>Ingresar</h1>
-        <p>Usá el mismo mail con el que compraste y la clave que definiste al crear tu cuenta.</p>
+        <img className="student-auth__logo" src={loginLogo} alt="Berich" />
+        <h1>Accedé al programa</h1>
+        <p>Ingresá con tu mail y contraseña</p>
         {error ? <div className="student-auth__error">{error}</div> : null}
         <div className="student-auth__field">
           <label htmlFor="student-email">Mail</label>
@@ -73,14 +75,11 @@ export function StudentLoginPage() {
           />
         </div>
         <div className="student-auth__actions">
-          <button type="submit" className="admin-btn admin-btn--primary" disabled={busy || loading}>
+          <button type="submit" className="student-auth__button" disabled={busy || loading}>
             {busy ? 'Ingresando…' : 'Ingresar'}
           </button>
         </div>
-        <p className="student-auth__hint">
-          ¿Compraste y todavía no tenés cuenta? Revisá el mail de invitación o{' '}
-          <Link to="/crear-cuenta">creala con el link</Link>.
-        </p>
+        <p className="student-auth__hint">Si no recibiste tu invitación, contactate con el administrador</p>
       </form>
     </div>
   )
