@@ -732,7 +732,7 @@ export function QuizPage() {
           <div className="quiz-video-wrap">
             <iframe
               className="quiz-video"
-              src="https://www.youtube.com/embed/63EEKng90gc"
+              src="https://player.vimeo.com/video/1197374012?title=0&byline=0&portrait=0&dnt=1"
               title="Que vas a encontrar"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
