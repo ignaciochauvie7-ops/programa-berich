@@ -84,7 +84,7 @@ export function AffiliadosPage() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+      <div className="admin-affiliate-periods" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
         {PERIODS.map(p => (
           <button
             key={p.id}
@@ -99,7 +99,7 @@ export function AffiliadosPage() {
       </div>
 
       {stats && (
-        <div className="admin-cards" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(175px, 1fr))' }}>
+        <div className="admin-cards admin-cards--stats" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(175px, 1fr))' }}>
           {[
             { label: 'Ventas', value: String(stats.totals.salesCount) },
             { label: 'Facturado', value: usd(stats.totals.totalUsd) },

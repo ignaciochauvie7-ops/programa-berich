@@ -220,6 +220,270 @@
     max-width: 100%;
     box-sizing: border-box;
   }
+
+  /* —— Panel admin /control (solo dentro .admin-app) —— */
+  .admin-app {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  .admin-app__content {
+    grid-template-columns: 1fr;
+    min-height: 100dvh;
+  }
+
+  .admin-app .admin-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 12;
+    padding:
+      max(0.55rem, env(safe-area-inset-top, 0px))
+      max(0.75rem, env(safe-area-inset-right, 0px))
+      0.55rem
+      max(0.75rem, env(safe-area-inset-left, 0px));
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .admin-app .admin-sidebar__brand {
+    margin-bottom: 0.65rem;
+    font-size: 0.92rem;
+  }
+
+  .admin-app .admin-sidebar__nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.15rem;
+  }
+
+  .admin-app .admin-sidebar__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-app .admin-sidebar__link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.82rem;
+  }
+
+  .admin-app .admin-main {
+    padding:
+      0.85rem
+      max(0.75rem, env(safe-area-inset-right, 0px))
+      max(1.25rem, env(safe-area-inset-bottom, 0px))
+      max(0.75rem, env(safe-area-inset-left, 0px));
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-app .admin-page {
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .admin-app .admin-page__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .admin-app .admin-page__header h1 {
+    font-size: 1.2rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-app .admin-page__subtitle {
+    font-size: 0.86rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-app .admin-page__actions {
+    justify-content: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .admin-app .admin-page__actions .admin-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-app .admin-affiliate-periods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .admin-app .admin-affiliate-periods .admin-btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
+    justify-content: center;
+    padding: 0.55rem 0.5rem !important;
+    font-size: 0.82rem;
+  }
+
+  .admin-app .admin-cards,
+  .admin-app .admin-cards--stats {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.65rem;
+  }
+
+  .admin-app .admin-cards--lessons {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .admin-app .admin-program-grid,
+  .admin-app .admin-program-grid--branches {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  .admin-app .admin-card {
+    min-width: 0;
+  }
+
+  .admin-app .admin-card__top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-app .admin-card__actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .admin-app .admin-card__actions .admin-btn {
+    flex: 1 1 auto;
+    min-height: 44px;
+  }
+
+  .admin-app .admin-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-app .admin-table {
+    min-width: 640px;
+  }
+
+  .admin-app .admin-table th,
+  .admin-app .admin-table td {
+    padding: 0.55rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .admin-app .admin-btn {
+    min-height: 44px;
+  }
+
+  .admin-app .admin-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-app .admin-form__field input,
+  .admin-app .admin-form__field select,
+  .admin-app .admin-form__field textarea {
+    font-size: 16px;
+    max-width: 100%;
+  }
+
+  .admin-app .admin-modal {
+    padding:
+      max(0.75rem, env(safe-area-inset-top, 0px))
+      max(0.75rem, env(safe-area-inset-right, 0px))
+      max(0.75rem, env(safe-area-inset-bottom, 0px))
+      max(0.75rem, env(safe-area-inset-left, 0px));
+    align-items: flex-end;
+  }
+
+  .admin-app .admin-modal__card {
+    width: 100%;
+    max-width: 100%;
+    max-height: min(92dvh, 720px);
+    overflow-y: auto;
+  }
+
+  .admin-app .admin-modal__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .admin-app .admin-modal__actions .admin-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-app .admin-program-hero__top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-app .admin-program-card h3,
+  .admin-app .admin-program-card h3 span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .admin-app .admin-lesson-title {
+    font-size: 1.1rem;
+  }
+
+  .admin-app .admin-video-embed--large iframe {
+    min-height: 0;
+  }
+
+  .admin-app .admin-editor {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  .admin-app .admin-editor__steps {
+    max-height: 40dvh;
+  }
+
+  .admin-app .admin-editor-pro {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  .admin-app .admin-editor-pro__left,
+  .admin-app .admin-editor-pro__center,
+  .admin-app .admin-editor-pro__right {
+    min-height: 0;
+  }
+
+  .admin-app .admin-editor-pro--builder,
+  .admin-app .admin-editor-pro--builder .admin-flow {
+    min-height: 0;
+    height: auto;
+  }
+
+  .admin-app .admin-editor-pro--fullscreen {
+    padding:
+      max(0.65rem, env(safe-area-inset-top, 0px))
+      max(0.65rem, env(safe-area-inset-right, 0px))
+      max(0.65rem, env(safe-area-inset-bottom, 0px))
+      max(0.65rem, env(safe-area-inset-left, 0px));
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-app .admin-editor-pro--fullscreen .admin-flow {
+    min-height: 50dvh;
+    height: auto;
+  }
+
+  .admin-app .admin-editor__option-row--3 {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* iPhone SE y pantallas muy angostas */
@@ -234,5 +498,14 @@
 
   .student-affiliate__stats {
     grid-template-columns: 1fr !important;
+  }
+
+  .admin-app .admin-cards,
+  .admin-app .admin-cards--stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-app .admin-affiliate-periods .admin-btn {
+    flex: 1 1 100%;
   }
 }
