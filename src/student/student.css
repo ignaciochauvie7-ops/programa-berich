@@ -77,18 +77,6 @@
     0 0 18px rgba(0, 229, 255, 0.14);
 }
 
-.student-auth__session-note {
-  margin: 0 0 1.1rem;
-  padding: 0.65rem 0.75rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(200, 200, 200, 0.92);
-  font-size: 0.82rem;
-  line-height: 1.45;
-  text-align: left;
-}
-
 .student-auth__remember {
   display: flex;
   align-items: flex-start;

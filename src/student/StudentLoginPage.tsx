@@ -88,11 +88,6 @@ export function StudentLoginPage() {
         <img className="student-auth__logo" src={loginLogo} alt="Berich" />
         <h1>Accedé al programa</h1>
         <p>Ingresá con tu mail y contraseña</p>
-        <p className="student-auth__session-note">
-          En este dispositivo podés quedar con la sesión iniciada: al volver a entrar no hace falta iniciar sesión de
-          nuevo, salvo que uses «Salir» o borres los datos del sitio. La contraseña no se guarda en la app; tu navegador
-          puede ofrecerte guardarla de forma segura.
-        </p>
         {checkoutSuccess ? (
           <p className="student-auth__success">
             Pago recibido. Revisá tu mail para el link de activación; después ingresá acá con la contraseña que elijas.
@@ -137,7 +132,6 @@ export function StudentLoginPage() {
             {busy ? 'Ingresando…' : 'Ingresar'}
           </button>
         </div>
-        <p className="student-auth__hint">Si no recibiste tu invitación, contactate con el administrador</p>
       </form>
     </div>
   )
