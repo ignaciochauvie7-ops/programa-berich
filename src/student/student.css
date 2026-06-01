@@ -78,28 +78,50 @@
 }
 
 .student-auth__password-wrap input {
-  padding-right: 2.85rem;
+  padding-right: 3rem;
+}
+
+.student-auth__password-wrap input:-webkit-autofill,
+.student-auth__password-wrap input:-webkit-autofill:hover,
+.student-auth__password-wrap input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+  caret-color: #ffffff;
+  transition: background-color 99999s ease-out;
+  box-shadow: 0 0 0 1000px rgba(8, 12, 16, 0.92) inset;
 }
 
 .student-auth__password-toggle {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 2.75rem;
+  top: 50%;
+  right: 0.45rem;
+  z-index: 2;
+  width: 2.35rem;
+  height: 2.35rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 0;
-  border-radius: 0 14px 14px 0;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  border-radius: 10px;
+  background: rgba(6, 10, 14, 0.92);
+  color: #00e5ff;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transform: translateY(-50%);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.22);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .student-auth__password-toggle:hover {
-  color: #00e5ff;
+  color: #ffffff;
+  border-color: rgba(0, 229, 255, 0.75);
+  background: rgba(0, 229, 255, 0.14);
+}
+
+.student-auth__password-toggle[aria-pressed='true'] {
+  color: #ffffff;
+  background: rgba(0, 229, 255, 0.22);
 }
 
 .student-auth__password-toggle:disabled {

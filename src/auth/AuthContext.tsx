@@ -44,6 +44,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
       if (!error) return { error: null }
+      if (/invalid login credentials/i.test(error.message)) {
+        return {
+          error:
+            'Mail o contraseña incorrectos. Probá «¿Olvidaste tu contraseña?» o escribí la clave a mano (sin autocompletar).',
+        }
+      }
       return { error: error.message }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
