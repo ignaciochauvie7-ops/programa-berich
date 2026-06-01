@@ -60,8 +60,7 @@ const fatRecompImpedimentOptions: FatRecompImpediment[] = [
   'Me cuesta ser constante',
   'No sé por dónde empezar',
 ]
-const finalVimeoEmbedParams =
-  '?autoplay=1&muted=1&playsinline=1&badge=0&autopause=0&player_id=0&app_id=58479&title=0&byline=0&portrait=0'
+const finalVimeoEmbedParams = '?badge=0&autopause=0&player_id=0&app_id=58479&title=0&byline=0&portrait=0'
 
 const finalVariants: Record<ResultDestination, FinalVariant> = {
   'H-A': {
@@ -756,18 +755,14 @@ export function QuizPage() {
         </section>
       ) : finalVariant ? (
         <section className="quiz-final screen-enter">
-          <div className="quiz-video-block">
-            <div className="quiz-video-wrap">
-              <iframe
-                key={resultDestination}
-                className="quiz-video"
-                src={finalVariant.videoUrl}
-                title={`Resultado ${resultDestination}`}
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-            <p className="quiz-video-sound-hint">Tocá el video para activar el sonido</p>
+          <div className="quiz-video-wrap">
+            <iframe
+              className="quiz-video"
+              src={finalVariant.videoUrl}
+              title={`Resultado ${resultDestination}`}
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+            />
           </div>
 
           <h1>¿QUÉ VAS A ENCONTRAR?</h1>
