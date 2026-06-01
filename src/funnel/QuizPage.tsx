@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useState } from 'react'
+﻿import { type CSSProperties, useEffect, useState } from 'react'
 import './quiz.css'
 import hombreAImage from '../../supabase/quiz hombre nuevo/1.png'
 import hombreBImage from '../../supabase/quiz hombre nuevo/2.png'
@@ -42,7 +42,7 @@ type FinalVariant = {
   imageUrl: string
 }
 
-const totalQuestions = 6
+const totalQuestions = 7
 const ageOptions: AgeRange[] = ['Menos de 20', '20-30', '30-45', '45-60', 'Más de 60']
 const goalOptions: Goal[] = ['Ganar músculo', 'Perder grasa', 'Recomposición corporal']
 const muscleImpedimentOptions: MuscleImpediment[] = [
@@ -92,6 +92,31 @@ const finalLoadingCopy: Record<FinalLoadingStage, { title: string; checks: strin
     ],
   },
 }
+const faqItems = [
+  {
+    question: '¿Necesito experiencia previa para hacer el programa?',
+    answer:
+      'No. El programa está diseñado para cualquier nivel, desde cero hasta avanzado. Hay rutinas y contenido adaptado a cada situación.',
+  },
+  {
+    question: '¿En cuánto tiempo voy a ver resultados?',
+    answer:
+      'Depende de tu punto de partida y tu constancia, pero la mayoría nota cambios visibles en las primeras 4 a 8 semanas siguiendo el plan correctamente.',
+  },
+  {
+    question: '¿Cuánto tiempo por día necesito dedicarle?',
+    answer:
+      'Depende de cuántos días entrenés por semana. Las rutinas están diseñadas para adaptarse a tu tiempo disponible, desde 2 días hasta 6.',
+  },
+  {
+    question: '¿Tengo acceso de por vida al contenido?',
+    answer: 'Sí. Una vez que comprás, el acceso al contenido es permanente.',
+  },
+  {
+    question: '¿Qué pasa si tengo dudas durante el programa?',
+    answer: 'El Plan Guiado incluye acceso directo por WhatsApp para resolver cualquier duda durante 6 meses.',
+  },
+]
 
 function getYoutubeEmbedUrl(url: string) {
   const videoId = url.split('/').pop()
@@ -117,6 +142,8 @@ export function QuizPage() {
   const [weightUnit, setWeightUnit] = useState<WeightUnit>('kg')
   const [weight, setWeight] = useState(75)
   const [weightConfirmed, setWeightConfirmed] = useState(false)
+  const [pesoIdeal, setPesoIdeal] = useState(75)
+  const [pesoIdealConfirmed, setPesoIdealConfirmed] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [goal, setGoal] = useState<Goal | null>(null)
   const [impedimentPath, setImpedimentPath] = useState<ImpedimentPath | null>(null)
@@ -125,9 +152,12 @@ export function QuizPage() {
   const [resultDestination, setResultDestination] = useState<ResultDestination | null>(null)
   const [finalLoadingStage, setFinalLoadingStage] = useState<FinalLoadingStage>(1)
   const [finalLoadingProgress, setFinalLoadingProgress] = useState(0)
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
 
   const accentColor = sex === 'mujer' ? '#ff4dc4' : '#00e5ff'
-  const answeredQuestions = [sex, age, heightConfirmed, weightConfirmed, goal, resultGroup].filter(Boolean).length
+  const answeredQuestions = [sex, age, heightConfirmed, weightConfirmed, goal, pesoIdealConfirmed, resultGroup].filter(
+    Boolean,
+  ).length
   const progress = started ? Math.round((answeredQuestions / totalQuestions) * 100) : 0
   const visibleChecks = loadingProgress >= 34 ? (loadingProgress >= 72 ? (loadingProgress >= 96 ? 3 : 2) : 1) : 0
   const finalVisibleChecks =
@@ -173,7 +203,7 @@ export function QuizPage() {
   }, [question])
 
   useEffect(() => {
-    if (question !== 8 && question !== 9) return
+    if (question !== 9 && question !== 10) return
 
     setFinalLoadingProgress(0)
 
@@ -189,15 +219,15 @@ export function QuizPage() {
 
     const timers = steps.map((step) => window.setTimeout(() => setFinalLoadingProgress(step.value), step.delay))
     const nextTimer = window.setTimeout(() => {
-      if (question === 8) {
+      if (question === 9) {
         transitionScreen(() => {
           setFinalLoadingStage(2)
-          setQuestion(9)
+          setQuestion(10)
         })
         return
       }
 
-      transitionScreen(() => setQuestion(10))
+      transitionScreen(() => setQuestion(11))
     }, 3420)
 
     return () => {
@@ -237,8 +267,10 @@ export function QuizPage() {
 
     if (unit === 'lb') {
       setWeight(clamp(Math.round(weight * 2.20462), 88, 350))
+      setPesoIdeal(clamp(Math.round(pesoIdeal * 2.20462), 88, 350))
     } else {
       setWeight(clamp(Math.round(weight / 2.20462), 40, 160))
+      setPesoIdeal(clamp(Math.round(pesoIdeal / 2.20462), 40, 160))
     }
 
     setWeightUnit(unit)
@@ -247,6 +279,7 @@ export function QuizPage() {
   const continueFromWeight = () => {
     transitionScreen(() => {
       setWeightConfirmed(true)
+      setPesoIdeal(weight)
       setQuestion(5)
     })
   }
@@ -258,6 +291,13 @@ export function QuizPage() {
       setGoal(value)
       setImpedimentPath(nextPath)
       setQuestion(7)
+    })
+  }
+
+  const continueFromPesoIdeal = () => {
+    transitionScreen(() => {
+      setPesoIdealConfirmed(true)
+      setQuestion(8)
     })
   }
 
@@ -292,7 +332,7 @@ export function QuizPage() {
       setResultGroup(group)
       setResultDestination(destination)
       setFinalLoadingStage(1)
-      setQuestion(8)
+      setQuestion(9)
     })
   }
 
@@ -300,7 +340,7 @@ export function QuizPage() {
     <main className="quiz-page" style={{ '--quiz-accent': accentColor } as CSSProperties}>
       <img className="quiz-logo" src={quizLogo} alt="Berich" />
 
-      {question !== 10 && (
+      {question !== 11 && (
         <div className="quiz-progress" aria-label={`Progreso del quiz: ${progress}%`}>
           <div className="quiz-progress__bar" style={{ width: `${progress}%` }} />
         </div>
@@ -485,6 +525,55 @@ export function QuizPage() {
         </section>
       ) : question === 7 ? (
         <section className={screenClass}>
+          <h1>¿Cuál es tu peso ideal?</h1>
+          <div className="quiz-slider-block">
+            <div className="quiz-value-row">
+              <div className="quiz-value">
+                {pesoIdeal} {weightUnit}
+              </div>
+              {pesoIdeal !== weight && (
+                <span
+                  className={
+                    pesoIdeal > weight ? 'quiz-weight-diff quiz-weight-diff--up' : 'quiz-weight-diff quiz-weight-diff--down'
+                  }
+                >
+                  {pesoIdeal > weight ? '+' : ''}
+                  {pesoIdeal - weight}
+                  {weightUnit}
+                </span>
+              )}
+            </div>
+            <div className="quiz-toggle" aria-label="Unidad de peso ideal">
+              <button
+                className={weightUnit === 'kg' ? 'quiz-toggle__btn quiz-toggle__btn--active' : 'quiz-toggle__btn'}
+                type="button"
+                onClick={() => changeWeightUnit('kg')}
+              >
+                kg
+              </button>
+              <button
+                className={weightUnit === 'lb' ? 'quiz-toggle__btn quiz-toggle__btn--active' : 'quiz-toggle__btn'}
+                type="button"
+                onClick={() => changeWeightUnit('lb')}
+              >
+                lb
+              </button>
+            </div>
+            <input
+              className="quiz-range"
+              type="range"
+              min={weightUnit === 'kg' ? 40 : 88}
+              max={weightUnit === 'kg' ? 160 : 350}
+              value={pesoIdeal}
+              onChange={(event) => setPesoIdeal(Number(event.target.value))}
+            />
+          </div>
+          <button className="quiz-primary-btn" type="button" onClick={continueFromPesoIdeal}>
+            Continuar
+          </button>
+        </section>
+      ) : question === 8 ? (
+        <section className={screenClass}>
           <h1>¿Qué te ha impedido lograr tus objetivos?</h1>
           <div className="quiz-options quiz-options--stack">
             {(impedimentPath === 'musculo' ? muscleImpedimentOptions : fatRecompImpedimentOptions).map((option) => (
@@ -501,7 +590,7 @@ export function QuizPage() {
             ))}
           </div>
         </section>
-      ) : question === 8 || question === 9 ? (
+      ) : question === 9 || question === 10 ? (
         <section className={screenClass}>
           <h1>{currentFinalLoadingCopy.title}</h1>
           <div className="quiz-loading">
@@ -543,8 +632,41 @@ export function QuizPage() {
           <img className="quiz-final__image" src={finalVariant.imageUrl} alt={`Plan personalizado ${resultDestination}`} />
 
           <section className="quiz-plan">
-            <h2>Plan personalizado</h2>
-            <p>49 USD</p>
+            <p className="quiz-plan__eyebrow">Tu plan personalizado está listo</p>
+            <h2>Programa Berich Completo</h2>
+            <p className="quiz-plan__price">49 USD</p>
+            <a className="quiz-plan__button" href="#">
+              Quiero empezar ahora
+            </a>
+            <p className="quiz-plan__note">Pago único. Acceso de por vida.</p>
+          </section>
+
+          <section className="quiz-faq">
+            <h2>Preguntas frecuentes</h2>
+            <div className="quiz-faq__list">
+              {faqItems.map((item, index) => {
+                const isOpen = openFaqIndex === index
+
+                return (
+                  <article className={'quiz-faq__item' + (isOpen ? ' quiz-faq__item--open' : '')} key={item.question}>
+                    <button
+                      className="quiz-faq__question"
+                      type="button"
+                      onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+                      aria-expanded={isOpen}
+                    >
+                      <span>{item.question}</span>
+                      <span className="quiz-faq__icon" aria-hidden="true">
+                        +
+                      </span>
+                    </button>
+                    <div className="quiz-faq__answer" aria-hidden={!isOpen}>
+                      <p>{item.answer}</p>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
           </section>
         </section>
       ) : null}
