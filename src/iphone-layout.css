@@ -223,67 +223,104 @@
 
   /* —— Panel admin /control (solo dentro .admin-app) —— */
   .admin-app {
-    overflow-x: hidden;
+    width: 100%;
     max-width: 100%;
+    overflow-x: clip;
   }
 
   .admin-app__content {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: 100dvh;
+    overflow-x: hidden;
   }
 
   .admin-app .admin-sidebar {
     position: sticky;
     top: 0;
     z-index: 12;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    overflow: hidden;
     padding:
       max(0.55rem, env(safe-area-inset-top, 0px))
-      max(0.75rem, env(safe-area-inset-right, 0px))
+      max(0.65rem, env(safe-area-inset-right, 0px))
       0.55rem
-      max(0.75rem, env(safe-area-inset-left, 0px));
+      max(0.65rem, env(safe-area-inset-left, 0px));
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.09);
   }
 
   .admin-app .admin-sidebar__brand {
-    margin-bottom: 0.65rem;
-    font-size: 0.92rem;
+    margin-bottom: 0.55rem;
+    font-size: 0.88rem;
   }
 
+  /* Grilla 2×3: todo el menú cabe en pantalla (sin fila que se sale) */
   .admin-app .admin-sidebar__nav {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 0.35rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 0.15rem;
-  }
-
-  .admin-app .admin-sidebar__nav::-webkit-scrollbar {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: visible;
   }
 
   .admin-app .admin-sidebar__link {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    padding: 0.55rem 0.7rem;
-    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.45rem 0.35rem;
+    font-size: 0.76rem;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .admin-app .admin-main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
     padding:
       0.85rem
-      max(0.75rem, env(safe-area-inset-right, 0px))
+      max(0.65rem, env(safe-area-inset-right, 0px))
       max(1.25rem, env(safe-area-inset-bottom, 0px))
-      max(0.75rem, env(safe-area-inset-left, 0px));
-    min-width: 0;
-    max-width: 100%;
+      max(0.65rem, env(safe-area-inset-left, 0px));
   }
 
   .admin-app .admin-page {
     gap: 0.85rem;
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .admin-app .admin-page > .admin-page__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-app .admin-page > .admin-page__header .admin-card__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .admin-app .admin-page > .admin-page__header .admin-card__actions .admin-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .admin-app .admin-page__header {
@@ -366,13 +403,23 @@
   }
 
   .admin-app .admin-table-wrap {
+    width: 100%;
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
+  .admin-app .admin-table-wrap::before {
+    content: 'Deslizá la tabla horizontalmente →';
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.72rem;
+    color: rgba(244, 246, 251, 0.5);
+    text-align: center;
+  }
+
   .admin-app .admin-table {
-    min-width: 640px;
+    min-width: 520px;
   }
 
   .admin-app .admin-table th,
@@ -422,9 +469,30 @@
     justify-content: center;
   }
 
+  .admin-app .admin-program-hero {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
   .admin-app .admin-program-hero__top {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .admin-app .admin-program-hero p,
+  .admin-app .admin-program-hero code {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    font-size: 0.84rem;
+  }
+
+  .admin-app .admin-program-hero__meta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-app .admin-program-hero__meta span {
+    text-align: center;
   }
 
   .admin-app .admin-program-card h3,
@@ -507,5 +575,9 @@
 
   .admin-app .admin-affiliate-periods .admin-btn {
     flex: 1 1 100%;
+  }
+
+  .admin-app .admin-sidebar__nav {
+    grid-template-columns: 1fr;
   }
 }
