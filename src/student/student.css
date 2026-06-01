@@ -77,6 +77,39 @@
     0 0 18px rgba(0, 229, 255, 0.14);
 }
 
+.student-auth__session-note {
+  margin: 0 0 1.1rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(200, 200, 200, 0.92);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.student-auth__remember {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0 0 1rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: rgba(220, 220, 220, 0.9);
+  text-align: left;
+}
+
+.student-auth__remember input {
+  margin-top: 0.2rem;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  accent-color: #00e5ff;
+  cursor: pointer;
+}
+
 .student-auth__error {
   margin: 0 0 1rem;
   padding: 0.65rem 0.75rem;

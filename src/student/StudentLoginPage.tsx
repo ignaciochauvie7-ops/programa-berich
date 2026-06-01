@@ -2,6 +2,11 @@ import { useState, type FormEvent } from 'react'
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { isAdminUser } from '../auth/access'
 import { useAuth } from '../auth/useAuth'
+import {
+  clearRememberedLoginEmail,
+  loadRememberedLoginEmail,
+  saveRememberedLoginEmail,
+} from '../auth/rememberedLoginEmail'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
 import loginLogo from '../../supabase/IMG_3353.jpg'
 import './student.css'
@@ -17,8 +22,10 @@ export function StudentLoginPage() {
     requestedFrom ??
     (user ? (isAdminUser(user) ? '/control/funnels' : defaultStudentPath) : defaultStudentPath)
 
-  const [email, setEmail] = useState('')
+  const rememberedOnLoad = loadRememberedLoginEmail()
+  const [email, setEmail] = useState(() => rememberedOnLoad ?? '')
   const [password, setPassword] = useState('')
+  const [rememberEmail, setRememberEmail] = useState(() => Boolean(rememberedOnLoad))
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -37,7 +44,19 @@ export function StudentLoginPage() {
     )
   }
 
-  if (!loading && user) {
+  if (loading) {
+    return (
+      <div className="student-auth">
+        <div className="student-auth__card">
+          <img className="student-auth__logo" src={loginLogo} alt="Berich" />
+          <h1>Accedé al programa</h1>
+          <p>Cargando tu sesión…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (user) {
     if (isAdminUser(user)) {
       const dest = from.startsWith('/control') ? from : '/control/funnels'
       return <Navigate to={dest} replace />
@@ -55,15 +74,25 @@ export function StudentLoginPage() {
       setError(err)
       return
     }
+    if (rememberEmail) {
+      saveRememberedLoginEmail(email)
+    } else {
+      clearRememberedLoginEmail()
+    }
     // La redirección la hace el bloque de arriba cuando `user` se actualiza.
   }
 
   return (
     <div className="student-auth">
-      <form className="student-auth__card" onSubmit={onSubmit}>
+      <form className="student-auth__card" onSubmit={onSubmit} autoComplete="on">
         <img className="student-auth__logo" src={loginLogo} alt="Berich" />
         <h1>Accedé al programa</h1>
         <p>Ingresá con tu mail y contraseña</p>
+        <p className="student-auth__session-note">
+          En este dispositivo podés quedar con la sesión iniciada: al volver a entrar no hace falta iniciar sesión de
+          nuevo, salvo que uses «Salir» o borres los datos del sitio. La contraseña no se guarda en la app; tu navegador
+          puede ofrecerte guardarla de forma segura.
+        </p>
         {checkoutSuccess ? (
           <p className="student-auth__success">
             Pago recibido. Revisá tu mail para el link de activación; después ingresá acá con la contraseña que elijas.
@@ -76,7 +105,8 @@ export function StudentLoginPage() {
             id="student-email"
             name="email"
             type="email"
-            autoComplete="email"
+            inputMode="email"
+            autoComplete="username email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -94,6 +124,14 @@ export function StudentLoginPage() {
             required
           />
         </div>
+        <label className="student-auth__remember">
+          <input
+            type="checkbox"
+            checked={rememberEmail}
+            onChange={(e) => setRememberEmail(e.target.checked)}
+          />
+          <span>Recordar mi correo en este dispositivo</span>
+        </label>
         <div className="student-auth__actions">
           <button type="submit" className="student-auth__button" disabled={busy || loading}>
             {busy ? 'Ingresando…' : 'Ingresar'}

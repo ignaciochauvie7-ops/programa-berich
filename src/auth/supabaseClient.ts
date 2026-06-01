@@ -8,6 +8,12 @@ export const supabaseConfigured = Boolean(url && anonKey)
 export const supabase: SupabaseClient | null =
   url && anonKey
     ? createClient(url, anonKey, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+          storageKey: 'berich-supabase-auth',
+        },
       })
     : null
