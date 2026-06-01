@@ -6,9 +6,9 @@ export function FunnelHomePage() {
       <div className="funnel-video-wrap">
         <iframe
           className="funnel-video"
-          src="https://www.youtube.com/embed/3vhnogHLr1I"
-          title="Metodo Berich"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          src="https://player.vimeo.com/video/1197374050?title=0&byline=0&portrait=0&dnt=1"
+          title="Recurso gratuito — Método Berich"
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
           allowFullScreen
         />
       </div>
