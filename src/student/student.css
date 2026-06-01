@@ -73,12 +73,14 @@
 
 .student-auth__password-wrap {
   position: relative;
-  display: flex;
-  align-items: stretch;
+  display: block;
+  overflow: visible;
 }
 
 .student-auth__password-wrap input {
-  padding-right: 3rem;
+  display: block;
+  width: 100%;
+  padding-right: 2.85rem;
 }
 
 .student-auth__password-wrap input:-webkit-autofill,
@@ -92,41 +94,42 @@
 
 .student-auth__password-toggle {
   position: absolute;
-  top: 50%;
-  right: 0.45rem;
-  z-index: 2;
-  width: 2.35rem;
-  height: 2.35rem;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2.75rem;
+  margin: 0;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 229, 255, 0.45);
-  border-radius: 10px;
-  background: rgba(6, 10, 14, 0.92);
-  color: #00e5ff;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.88);
   cursor: pointer;
-  transform: translateY(-50%);
-  box-shadow: 0 0 12px rgba(0, 229, 255, 0.22);
-  transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s ease, opacity 0.15s ease;
 }
 
 .student-auth__password-toggle:hover {
   color: #ffffff;
-  border-color: rgba(0, 229, 255, 0.75);
-  background: rgba(0, 229, 255, 0.14);
+  background: transparent;
 }
 
 .student-auth__password-toggle[aria-pressed='true'] {
   color: #ffffff;
-  background: rgba(0, 229, 255, 0.22);
 }
 
 .student-auth__password-toggle:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+.student-auth__password-toggle svg {
+  display: block;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.85));
 }
 
 .student-auth__forgot-wrap {
