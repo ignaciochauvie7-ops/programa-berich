@@ -1,4 +1,4 @@
-﻿import { type CSSProperties, useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import './quiz.css'
 import hombreAImage from '../../supabase/quiz hombre nuevo/1.png'
 import hombreBImage from '../../supabase/quiz hombre nuevo/2.png'
@@ -153,6 +153,8 @@ export function QuizPage() {
   const [finalLoadingStage, setFinalLoadingStage] = useState<FinalLoadingStage>(1)
   const [finalLoadingProgress, setFinalLoadingProgress] = useState(0)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
+  const [checkoutBusy, setCheckoutBusy] = useState(false)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
   const accentColor = sex === 'mujer' ? '#ff4dc4' : '#00e5ff'
   const answeredQuestions = [sex, age, heightConfirmed, weightConfirmed, goal, pesoIdealConfirmed, resultGroup].filter(
@@ -319,6 +321,32 @@ export function QuizPage() {
     if (value === 'Falta de tiempo') return 'E'
 
     return 'F'
+  }
+
+  async function startCheckout() {
+    if (!resultDestination || checkoutBusy) return
+
+    setCheckoutError(null)
+    setCheckoutBusy(true)
+
+    try {
+      const res = await fetch('/api/dodo/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variant: resultDestination }),
+      })
+
+      const body = (await res.json()) as { checkout_url?: string; error?: string }
+      if (!res.ok || !body.checkout_url) {
+        throw new Error(body.error ?? 'No se pudo iniciar el pago')
+      }
+
+      window.location.href = body.checkout_url
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'No se pudo iniciar el pago'
+      setCheckoutError(message)
+      setCheckoutBusy(false)
+    }
   }
 
   const chooseImpediment = (value: Impediment) => {
@@ -635,9 +663,15 @@ export function QuizPage() {
             <p className="quiz-plan__eyebrow">Tu plan personalizado está listo</p>
             <h2>Programa Berich Completo</h2>
             <p className="quiz-plan__price">49 USD</p>
-            <a className="quiz-plan__button" href="#">
-              Quiero empezar ahora
-            </a>
+            {checkoutError ? <div className="quiz-plan__error">{checkoutError}</div> : null}
+            <button
+              type="button"
+              className="quiz-plan__button"
+              onClick={() => void startCheckout()}
+              disabled={checkoutBusy}
+            >
+              {checkoutBusy ? 'Redirigiendo al pago…' : 'Quiero empezar ahora'}
+            </button>
             <p className="quiz-plan__note">Pago único. Acceso de por vida.</p>
           </section>
 

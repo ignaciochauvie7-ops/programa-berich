@@ -1,4 +1,4 @@
-﻿.quiz-page {
+.quiz-page {
   --quiz-accent: #00e5ff;
   min-height: 100dvh;
   box-sizing: border-box;
@@ -655,7 +655,23 @@
   outline-offset: 4px;
 }
 
+.quiz-plan__button:disabled {
+  opacity: 0.72;
+  cursor: wait;
+  transform: none;
+}
 
+.quiz-plan__error {
+  width: min(100%, 420px);
+  margin: 0 auto;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 80, 80, 0.12);
+  border: 1px solid rgba(255, 120, 120, 0.35);
+  color: #ffb4b4;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
 
 .quiz-plan__note {
   color: rgba(255, 255, 255, 0.56);

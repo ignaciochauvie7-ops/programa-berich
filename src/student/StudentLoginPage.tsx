@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
+import { isAdminUser } from '../auth/access'
 import { useAuth } from '../auth/useAuth'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
 import loginLogo from '../../supabase/IMG_3353.jpg'
@@ -8,7 +9,11 @@ import './student.css'
 export function StudentLoginPage() {
   const { configured, loading, user, signIn } = useAuth()
   const location = useLocation()
-  const from = (location.state as { from?: string } | null)?.from ?? `/programa/${BERICH_PROGRAM_SLUG}`
+  const [searchParams] = useSearchParams()
+  const checkoutSuccess = searchParams.get('checkout') === 'success'
+  const requestedFrom = (location.state as { from?: string } | null)?.from
+  const from =
+    requestedFrom ?? (user ? (isAdminUser(user) ? '/control/funnels' : `/programa/${BERICH_PROGRAM_SLUG}`) : '/control/funnels')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -49,6 +54,11 @@ export function StudentLoginPage() {
         <img className="student-auth__logo" src={loginLogo} alt="Berich" />
         <h1>Accedé al programa</h1>
         <p>Ingresá con tu mail y contraseña</p>
+        {checkoutSuccess ? (
+          <p className="student-auth__success">
+            Pago recibido. Revisá tu mail para el link de activación; después ingresá acá con la contraseña que elijas.
+          </p>
+        ) : null}
         {error ? <div className="student-auth__error">{error}</div> : null}
         <div className="student-auth__field">
           <label htmlFor="student-email">Mail</label>

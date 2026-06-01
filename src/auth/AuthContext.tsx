@@ -38,8 +38,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(async (email: string, password: string) => {
     if (!supabase) return { error: 'Supabase no está configurado.' }
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-    return { error: error?.message ?? null }
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      if (!error) return { error: null }
+      return { error: error.message }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      if (/failed to fetch|networkerror|load failed/i.test(message)) {
+        return {
+          error:
+            'No se pudo conectar con Supabase. Revisá VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en .env.local (no uses los valores de ejemplo) y reiniciá npm run dev.',
+        }
+      }
+      return { error: message }
+    }
   }, [])
 
   const signOut = useCallback(async () => {

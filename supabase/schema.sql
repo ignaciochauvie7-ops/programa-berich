@@ -7,7 +7,7 @@ create table if not exists public.entitlements (
   id uuid primary key default gen_random_uuid(),
   email text not null,
   product_slug text not null,
-  source text default 'shopify',
+  source text default 'dodo',
   created_at timestamptz not null default now(),
   unique (email, product_slug)
 );

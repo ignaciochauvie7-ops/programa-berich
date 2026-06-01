@@ -8,11 +8,41 @@ export function randomTokenHex(bytes = 32): string {
   return randomBytes(bytes).toString('hex')
 }
 
-export function verifyShopifyWebhookHmac(rawBody: string, hmacHeader: string | null, secret: string): boolean {
-  if (!hmacHeader || !secret) return false
-  const digest = createHmac('sha256', secret).update(rawBody, 'utf8').digest('base64')
-  const a = Buffer.from(digest, 'utf8')
-  const b = Buffer.from(hmacHeader, 'utf8')
-  if (a.length !== b.length) return false
-  return timingSafeEqual(a, b)
+/** Standard Webhooks (Dodo Payments) signature verification. */
+export function verifyStandardWebhook(
+  rawBody: string,
+  headers: { id: string; timestamp: string; signature: string },
+  secret: string,
+  toleranceSec = 300,
+): boolean {
+  if (!headers.id || !headers.timestamp || !headers.signature || !secret) return false
+
+  const timestamp = Number.parseInt(headers.timestamp, 10)
+  if (!Number.isFinite(timestamp)) return false
+  if (Math.abs(Date.now() / 1000 - timestamp) > toleranceSec) return false
+
+  const secretPart = secret.startsWith('whsec_') ? secret.slice('whsec_'.length) : secret
+  let key: Buffer
+  try {
+    key = Buffer.from(secretPart, 'base64')
+  } catch {
+    return false
+  }
+
+  const signed = `${headers.id}.${headers.timestamp}.${rawBody}`
+
+  for (const part of headers.signature.split(' ')) {
+    const comma = part.indexOf(',')
+    if (comma === -1) continue
+    const version = part.slice(0, comma)
+    const sig = part.slice(comma + 1)
+    if (version !== 'v1' || !sig) continue
+
+    const expected = createHmac('sha256', key).update(signed, 'utf8').digest('base64')
+    const a = Buffer.from(expected, 'utf8')
+    const b = Buffer.from(sig, 'utf8')
+    if (a.length === b.length && timingSafeEqual(a, b)) return true
+  }
+
+  return false
 }

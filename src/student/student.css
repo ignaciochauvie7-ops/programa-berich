@@ -87,6 +87,17 @@
   font-size: 0.9rem;
 }
 
+.student-auth__success {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  color: #b8f4ff;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .student-auth__actions {
   display: flex;
   flex-direction: column;
