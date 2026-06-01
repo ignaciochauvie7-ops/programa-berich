@@ -3,6 +3,7 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../auth/supabaseClient'
 import { useAuth } from '../auth/useAuth'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
+import { PasswordField } from './PasswordField'
 import './student.css'
 
 type PreviewState =
@@ -141,32 +142,28 @@ export function StudentInviteSignupPage() {
               programa.
             </p>
             {error ? <div className="student-auth__error">{error}</div> : null}
-            <div className="student-auth__field">
-              <label htmlFor="invite-pw">Contraseña</label>
-              <input
-                id="invite-pw"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-              />
-            </div>
-            <div className="student-auth__field">
-              <label htmlFor="invite-pw2">Repetir contraseña</label>
-              <input
-                id="invite-pw2"
-                name="password2"
-                type="password"
-                autoComplete="new-password"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-                required
-                minLength={8}
-              />
-            </div>
+            <PasswordField
+              id="invite-pw"
+              name="password"
+              label="Contraseña"
+              value={password}
+              onChange={setPassword}
+              autoComplete="new-password"
+              required
+              minLength={8}
+              disabled={busy}
+            />
+            <PasswordField
+              id="invite-pw2"
+              name="password2"
+              label="Repetir contraseña"
+              value={password2}
+              onChange={setPassword2}
+              autoComplete="new-password"
+              required
+              minLength={8}
+              disabled={busy}
+            />
             <div className="student-auth__actions">
               <button type="submit" className="admin-btn admin-btn--primary" disabled={busy || authLoading}>
                 {busy ? 'Creando…' : 'Crear cuenta e ingresar'}

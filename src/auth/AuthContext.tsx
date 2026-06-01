@@ -2,6 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { Session, User } from '@supabase/supabase-js'
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { activarCuentaRedirectUrl } from './authPublicOrigin'
 import { supabase, supabaseConfigured } from './supabaseClient'
 
 export type AuthState = {
@@ -10,6 +11,7 @@ export type AuthState = {
   session: Session | null
   user: User | null
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
+  resetPassword: (email: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
 }
 
@@ -55,6 +57,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const resetPassword = useCallback(async (email: string) => {
+    if (!supabase) return { error: 'Supabase no está configurado.' }
+    const trimmed = email.trim()
+    if (!trimmed.includes('@')) {
+      return { error: 'Ingresá un mail válido.' }
+    }
+
+    try {
+      const redirectTo = activarCuentaRedirectUrl()
+      const { error } = await supabase.auth.resetPasswordForEmail(trimmed, { redirectTo })
+      if (!error) return { error: null }
+      return { error: error.message }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return { error: message }
+    }
+  }, [])
+
   const signOut = useCallback(async () => {
     if (!supabase) return
     await supabase.auth.signOut()
@@ -67,9 +87,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       user: session?.user ?? null,
       signIn,
+      resetPassword,
       signOut,
     }),
-    [loading, session, signIn, signOut],
+    [loading, session, signIn, resetPassword, signOut],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

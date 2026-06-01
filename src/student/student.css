@@ -67,6 +67,70 @@
   color: #ffffff;
   padding: 0.78rem 0.9rem;
   font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.student-auth__password-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.student-auth__password-wrap input {
+  padding-right: 2.85rem;
+}
+
+.student-auth__password-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0 14px 14px 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.student-auth__password-toggle:hover {
+  color: #00e5ff;
+}
+
+.student-auth__password-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.student-auth__forgot-wrap {
+  margin: -0.35rem 0 0.85rem;
+  text-align: right;
+}
+
+.student-auth__link-button {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: #00e5ff;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.student-auth__link-button:hover {
+  color: #7ef6ff;
+}
+
+.student-auth__link-button--inline {
+  font-size: inherit;
 }
 
 .student-auth__field input:focus {

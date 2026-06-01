@@ -26,8 +26,9 @@ Configurá esto en el panel de Supabase (no en SQL Editor):
 | **Site URL** | `https://programa-berich.vercel.app` |
 | **Redirect URLs** (añadir todas) | `https://programa-berich.vercel.app/activar-cuenta` |
 | | `https://programa-berich.vercel.app/**` |
+| | `http://localhost:5173/activar-cuenta` (solo desarrollo local) |
 
-Sin estas URLs, el link del mail puede fallar o abrir una pantalla en negro.
+Sin estas URLs, el link del mail puede fallar o abrir una pantalla en negro. El mismo `/activar-cuenta` sirve para **invitación post-compra** y para **recuperar contraseña** (“¿Olvidaste tu contraseña?” en `/login`).
 
 ## Dodo dashboard
 

@@ -1,12 +1,21 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { supabase } from '../auth/supabaseClient'
 import { useAuth } from '../auth/useAuth'
 import activationLogo from '../../supabase/IMG_3353.jpg'
+import { PasswordField } from './PasswordField'
 import './student.css'
+
+function readPasswordRecoveryFromUrl(): boolean {
+  if (typeof window === 'undefined') return false
+  const raw = window.location.hash.replace(/^#/, '')
+  if (!raw) return false
+  return new URLSearchParams(raw).get('type') === 'recovery'
+}
 
 export function AccountActivationPage() {
   const { configured, loading, session, user } = useAuth()
+  const [isRecovery, setIsRecovery] = useState(readPasswordRecoveryFromUrl)
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -26,8 +35,9 @@ export function AccountActivationPage() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) setCheckingInvite(false)
+      if (event === 'PASSWORD_RECOVERY') setIsRecovery(true)
     })
 
     const timer = window.setTimeout(() => setCheckingInvite(false), 4000)
@@ -79,7 +89,11 @@ export function AccountActivationPage() {
     setError(null)
 
     if (!supabase || !session || !user) {
-      setError('Abrí esta página desde el link de invitación que llegó por mail.')
+      setError(
+        isRecovery
+          ? 'Abrí esta página desde el link de recuperación que llegó por mail.'
+          : 'Abrí esta página desde el link de invitación que llegó por mail.',
+      )
       return
     }
 
@@ -99,6 +113,12 @@ export function AccountActivationPage() {
     if (updateError) {
       setError(updateError.message)
       setBusy(false)
+      return
+    }
+
+    if (isRecovery) {
+      setBusy(false)
+      setDone(true)
       return
     }
 
@@ -152,49 +172,68 @@ export function AccountActivationPage() {
   }
 
   const waitingForInvite = loading || checkingInvite
+  const title = isRecovery ? 'Nueva contraseña' : 'Activá tu cuenta'
+  const intro = isRecovery
+    ? 'Elegí una nueva contraseña para tu cuenta'
+    : 'Creá tu contraseña para acceder al Programa Berich'
+  const submitLabel = isRecovery ? 'Guardar contraseña' : 'Activar cuenta'
+  const busyLabel = isRecovery ? 'Guardando…' : 'Activando…'
 
   return (
     <div className="student-auth">
       <form className="student-auth__card" onSubmit={onSubmit}>
         <img className="student-auth__logo" src={activationLogo} alt="Berich" />
-        <h1>Activá tu cuenta</h1>
+        <h1>{title}</h1>
         {waitingForInvite ? (
-          <p>Validando invitación…</p>
+          <p>Validando enlace…</p>
         ) : !user ? (
-          <p>Para crear tu contraseña, abrí esta página desde el link de invitación que llegó por mail.</p>
+          <>
+            <p>
+              {isRecovery
+                ? 'Para restablecer tu contraseña, abrí el link que te enviamos por mail.'
+                : 'Para crear tu contraseña, abrí esta página desde el link de invitación que llegó por mail.'}
+            </p>
+            <p className="student-auth__hint">
+              <Link to="/login">Ir a ingresar</Link>
+              {isRecovery ? (
+                <>
+                  {' · '}
+                  <Link to="/login" state={{ forgot: true }}>
+                    Pedir otro link de recuperación
+                  </Link>
+                </>
+              ) : null}
+            </p>
+          </>
         ) : (
           <>
-            <p>Creá tu contraseña para acceder al Programa Berich</p>
+            <p>{intro}</p>
             {error ? <div className="student-auth__error">{error}</div> : null}
-            <div className="student-auth__field">
-              <label htmlFor="activate-password">Contraseña</label>
-              <input
-                id="activate-password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-              />
-            </div>
-            <div className="student-auth__field">
-              <label htmlFor="activate-password-confirm">Confirmar contraseña</label>
-              <input
-                id="activate-password-confirm"
-                name="password2"
-                type="password"
-                autoComplete="new-password"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-                required
-                minLength={8}
-              />
-            </div>
+            <PasswordField
+              id="activate-password"
+              name="password"
+              label="Contraseña"
+              value={password}
+              onChange={setPassword}
+              autoComplete="new-password"
+              required
+              minLength={8}
+              disabled={busy}
+            />
+            <PasswordField
+              id="activate-password-confirm"
+              name="password2"
+              label="Confirmar contraseña"
+              value={password2}
+              onChange={setPassword2}
+              autoComplete="new-password"
+              required
+              minLength={8}
+              disabled={busy}
+            />
             <div className="student-auth__actions">
               <button type="submit" className="student-auth__button" disabled={busy}>
-                {busy ? 'Activando…' : 'Activar cuenta'}
+                {busy ? busyLabel : submitLabel}
               </button>
             </div>
           </>
