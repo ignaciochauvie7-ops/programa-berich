@@ -27,16 +27,37 @@ export async function provisionAlumnoInvite(
     data: nombre ? { nombre } : undefined,
   })
 
+  let invitedUserId = inviteData.user?.id ?? null
+
   if (inviteError) {
-    console.error('[provisionAlumnoInvite]', inviteError)
-    return { ok: false, error: inviteError.message ?? 'no se pudo enviar la invitación' }
+    const msg = inviteError.message?.toLowerCase() ?? ''
+    const alreadyRegistered =
+      msg.includes('already') || msg.includes('registered') || msg.includes('exists')
+
+    if (!alreadyRegistered) {
+      console.error('[provisionAlumnoInvite]', inviteError)
+      return { ok: false, error: inviteError.message ?? 'no se pudo enviar la invitación' }
+    }
+
+    console.info('[provisionAlumnoInvite] usuario ya existe, reenviando link de invitación', email)
+    const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
+      type: 'invite',
+      email,
+      options: { redirectTo },
+    })
+
+    if (linkError) {
+      console.error('[provisionAlumnoInvite] generateLink', linkError)
+    } else {
+      invitedUserId = linkData.user?.id ?? invitedUserId
+    }
   }
 
   const { data: alumno, error: upsertError } = await admin
     .from('alumnos')
     .upsert(
       {
-        user_id: inviteData.user?.id ?? null,
+        user_id: invitedUserId,
         email,
         nombre,
         activo: false,

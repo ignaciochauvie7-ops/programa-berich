@@ -12,8 +12,10 @@ export function StudentLoginPage() {
   const [searchParams] = useSearchParams()
   const checkoutSuccess = searchParams.get('checkout') === 'success'
   const requestedFrom = (location.state as { from?: string } | null)?.from
+  const defaultStudentPath = `/programa/${BERICH_PROGRAM_SLUG}`
   const from =
-    requestedFrom ?? (user ? (isAdminUser(user) ? '/control/funnels' : `/programa/${BERICH_PROGRAM_SLUG}`) : '/control/funnels')
+    requestedFrom ??
+    (user ? (isAdminUser(user) ? '/control/funnels' : defaultStudentPath) : defaultStudentPath)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

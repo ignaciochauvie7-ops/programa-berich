@@ -132,7 +132,10 @@ export function AccountActivationPage() {
         .maybeSingle()
 
       if (directError || !data) {
-        setError(activateError ?? 'No se pudo activar la cuenta.')
+        setError(
+          activateError ??
+            'No se pudo activar la cuenta. Si ya pagaste, revisá que el mail del link coincida con tu usuario.',
+        )
         setBusy(false)
         return
       }

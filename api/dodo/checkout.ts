@@ -1,6 +1,7 @@
 import { webHandler } from '../_lib/webHandler.js'
 import { json } from '../_lib/json.js'
 import { appPublicOrigin } from '../_lib/appOrigin.js'
+import { dodoCheckoutUserMessage } from '../_lib/dodoCheckoutErrors.js'
 import { dodoApiBaseUrl, dodoApiKey, dodoProductId } from '../_lib/dodoConfig.js'
 
 type Body = { variant?: string }
@@ -62,7 +63,9 @@ async function handler(request: Request): Promise<Response> {
 
   if (!res.ok) {
     console.error('[dodo checkout]', res.status, data)
-    return json({ error: data.message ?? data.error ?? 'No se pudo crear el checkout' }, res.status >= 500 ? 502 : 400)
+    const apiError = data.message ?? data.error ?? 'No se pudo crear el checkout'
+    const message = dodoCheckoutUserMessage(res.status, apiError)
+    return json({ error: message }, res.status >= 500 ? 502 : 400)
   }
 
   const checkoutUrl = data.checkout_url

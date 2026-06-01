@@ -9,27 +9,60 @@ type DodoWebhookEvent = {
   data?: Record<string, unknown>
 }
 
+function readEmailValue(value: unknown): string | null {
+  if (typeof value !== 'string') return null
+  const email = value.trim()
+  return email.includes('@') ? email : null
+}
+
 function readPaymentEmail(data: Record<string, unknown>): string | null {
+  const direct = readEmailValue(data.email)
+  if (direct) return direct
+
   const customer = data.customer
-  if (customer && typeof customer === 'object' && customer !== null && 'email' in customer) {
-    const email = (customer as { email?: unknown }).email
-    if (typeof email === 'string' && email.includes('@')) return email
+  if (customer && typeof customer === 'object' && customer !== null) {
+    const fromCustomer = readEmailValue((customer as { email?: unknown }).email)
+    if (fromCustomer) return fromCustomer
   }
 
   const billing = data.billing
-  if (billing && typeof billing === 'object' && billing !== null && 'email' in billing) {
-    const email = (billing as { email?: unknown }).email
-    if (typeof email === 'string' && email.includes('@')) return email
+  if (billing && typeof billing === 'object' && billing !== null) {
+    const fromBilling = readEmailValue((billing as { email?: unknown }).email)
+    if (fromBilling) return fromBilling
   }
 
-  const direct = data.email
-  if (typeof direct === 'string' && direct.includes('@')) return direct
+  const buyer = data.buyer
+  if (buyer && typeof buyer === 'object' && buyer !== null) {
+    const fromBuyer = readEmailValue((buyer as { email?: unknown }).email)
+    if (fromBuyer) return fromBuyer
+  }
+
+  const payment = data.payment
+  if (payment && typeof payment === 'object' && payment !== null) {
+    return readPaymentEmail(payment as Record<string, unknown>)
+  }
 
   return null
 }
 
 function readQuizVariant(data: Record<string, unknown>): string | null {
-  const metadata = data.metadata
+  const fromRoot = readMetadataVariant(data.metadata)
+  if (fromRoot) return fromRoot
+
+  const checkout = data.checkout
+  if (checkout && typeof checkout === 'object' && checkout !== null) {
+    return readMetadataVariant((checkout as { metadata?: unknown }).metadata)
+  }
+
+  const session = data.checkout_session
+  if (session && typeof session === 'object' && session !== null) {
+    return readMetadataVariant((session as { metadata?: unknown }).metadata)
+  }
+
+  return null
+}
+
+function readMetadataVariant(metadata: unknown): string | null {
   if (!metadata || typeof metadata !== 'object' || metadata === null) return null
   const variant = (metadata as { quiz_variant?: unknown }).quiz_variant
   return typeof variant === 'string' && variant ? variant : null
@@ -75,17 +108,23 @@ async function handler(request: Request): Promise<Response> {
     return json({ error: 'payment without email' }, 400)
   }
 
+  const quizVariant = readQuizVariant(data)
+  if (!quizVariant) {
+    console.warn('[dodo webhook] payment.succeeded sin quiz_variant en metadata')
+  }
+
   const result = await grantProgramAccess({
     email: emailRaw,
     source: 'dodo',
-    quizVariant: readQuizVariant(data),
+    quizVariant,
   })
 
   if (!result.ok) {
+    console.error('[dodo webhook] grantProgramAccess', result.error)
     return json({ error: result.error }, result.status)
   }
 
-  return json({ ok: true })
+  return json({ ok: true, quiz_variant: quizVariant ?? null })
 }
 
 export default webHandler(handler)

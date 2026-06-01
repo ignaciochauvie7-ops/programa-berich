@@ -420,7 +420,7 @@ export function QuizPage() {
 
       const body = (await res.json()) as { checkout_url?: string; error?: string }
       if (!res.ok || !body.checkout_url) {
-        throw new Error(body.error ?? 'No se pudo iniciar el pago')
+        throw new Error(body.error ?? 'No se pudo iniciar el pago. Intentá de nuevo.')
       }
 
       window.location.href = body.checkout_url

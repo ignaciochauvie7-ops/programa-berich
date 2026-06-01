@@ -1,8 +1,9 @@
 import { webHandler } from './_lib/webHandler.js'
 import { json } from './_lib/json.js'
 import { getRequestUrl } from './_lib/requestUrl.js'
+import { PROGRAM_USD_PRICE } from './_lib/programPrice.js'
 
-const USD_PRICE = 49
+const USD_PRICE = PROGRAM_USD_PRICE
 
 interface CurrencyInfo {
   code: string

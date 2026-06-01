@@ -36,10 +36,22 @@ export function getPublicOrigin(request: Request): string {
   return url.origin
 }
 
-/** URL pública para links de invitación por mail (siempre producción si está definida). */
+/** URL pública para links de invitación por mail (prioriza producción, nunca localhost en Vercel). */
 export function getActivationOrigin(): string {
   const activation = process.env.ACTIVATION_PUBLIC_URL?.trim()
   if (activation) return activation.replace(/\/$/, '')
+
+  const appPublic = process.env.APP_PUBLIC_URL?.trim()
+  if (appPublic) return appPublic.replace(/\/$/, '')
+
+  const vercelUrl = process.env.VERCEL_URL?.trim()
+  if (vercelUrl) return `https://${vercelUrl.replace(/\/$/, '')}`
+
+  if (process.env.VERCEL) {
+    console.warn(
+      '[auth] ACTIVATION_PUBLIC_URL no definida en Vercel; los mails de invitación pueden usar una URL incorrecta.',
+    )
+  }
 
   return getPublicOrigin(new Request('http://localhost'))
 }

@@ -11,6 +11,7 @@ import './student.css'
 function StudentProgramAuthenticated({ slug }: { slug: string }) {
   const { configured, loading, user, signOut } = useAuth()
   const [activeAlumno, setActiveAlumno] = useState<boolean | null>(null)
+  const [pendingActivation, setPendingActivation] = useState(false)
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
@@ -20,6 +21,7 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       if (!configured || !supabase || !user) {
         if (!cancelled) {
           setActiveAlumno(null)
+          setPendingActivation(false)
           setChecking(false)
         }
         return
@@ -43,11 +45,14 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
 
       if (byUser.error && !rows.length) {
         setActiveAlumno(false)
+        setPendingActivation(false)
         setChecking(false)
         return
       }
 
-      setActiveAlumno(Boolean(rows.some((row) => row.activo)))
+      const isActive = Boolean(rows.some((row) => row.activo))
+      setActiveAlumno(isActive)
+      setPendingActivation(!isActive && rows.length > 0)
       setChecking(false)
     })()
 
@@ -99,13 +104,18 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       <div className="student-program">
         <NeonDots />
         <div className="student-program__gate">
-          <h2>Sin acceso a este programa</h2>
+          <h2>{pendingActivation ? 'Activá tu cuenta' : 'Sin acceso a este programa'}</h2>
           <p>
-            Tu cuenta no está activa para este contenido. Revisá el link de invitación o pedile al administrador que
-            confirme tu acceso.
+            {pendingActivation
+              ? 'Tu compra está registrada. Creá tu contraseña desde el link del mail o desde activar cuenta para ver el programa.'
+              : 'Tu cuenta no está activa para este contenido. Revisá el link de invitación o pedile al administrador que confirme tu acceso.'}
           </p>
           <p>
-            <Link to="/login">Volver al inicio de sesión</Link>
+            {pendingActivation ? (
+              <Link to="/activar-cuenta">Ir a activar cuenta</Link>
+            ) : (
+              <Link to="/login">Volver al inicio de sesión</Link>
+            )}
           </p>
         </div>
       </div>
