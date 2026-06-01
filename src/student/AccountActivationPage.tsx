@@ -20,15 +20,17 @@ export function AccountActivationPage() {
       return
     }
 
-    void supabase.auth.getSession()
+    void (async () => {
+      await supabase.auth.getSession()
+    })()
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
-      setCheckingInvite(false)
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) setCheckingInvite(false)
     })
 
-    const timer = window.setTimeout(() => setCheckingInvite(false), 2500)
+    const timer = window.setTimeout(() => setCheckingInvite(false), 4000)
 
     return () => {
       subscription.unsubscribe()

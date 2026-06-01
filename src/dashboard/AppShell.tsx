@@ -40,6 +40,7 @@ export function DashboardRoutes() {
           path="/ajustes"
           element={<PlaceholderPage title="Ajustes" description="Proximamente: configuraciones generales de la plataforma." />}
         />
+        <Route path="*" element={<PlaceholderPage title="Sección no encontrada" description="Volvé al menú lateral del panel." />} />
       </Route>
     </Routes>
   )

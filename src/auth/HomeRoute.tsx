@@ -5,13 +5,29 @@ import { isAdminUser } from './access'
 import { supabase } from './supabaseClient'
 import '../student/student.css'
 
+function hasPendingAuthHash(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.location.hash.includes('access_token')
+}
+
 export function HomeRoute() {
   const { configured, loading, user } = useAuth()
   const [target, setTarget] = useState<string | null>(null)
+  const [waitingHash, setWaitingHash] = useState(hasPendingAuthHash)
+
+  useEffect(() => {
+    if (!waitingHash) return
+    const timer = window.setTimeout(() => setWaitingHash(false), 4000)
+    return () => window.clearTimeout(timer)
+  }, [waitingHash])
+
+  useEffect(() => {
+    if (waitingHash && user) setWaitingHash(false)
+  }, [waitingHash, user])
 
   useEffect(() => {
     if (!configured) return
-    if (loading) return
+    if (loading || waitingHash) return
 
     if (!user) {
       setTarget('/login')
@@ -63,7 +79,7 @@ export function HomeRoute() {
     return () => {
       cancelled = true
     }
-  }, [configured, loading, user])
+  }, [configured, loading, user, waitingHash])
 
   if (!configured) {
     return (
@@ -76,12 +92,12 @@ export function HomeRoute() {
     )
   }
 
-  if (loading || !target) {
+  if (loading || !target || waitingHash) {
     return (
       <div className="student-auth">
         <div className="student-auth__card">
           <h1>Cargando…</h1>
-          <p>Preparando tu acceso.</p>
+          <p>{waitingHash ? 'Validando invitación…' : 'Preparando tu acceso.'}</p>
         </div>
       </div>
     )

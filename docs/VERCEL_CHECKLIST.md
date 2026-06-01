@@ -17,12 +17,36 @@
 | `DODO_PAYMENTS_ENVIRONMENT` | `test` o `live` |
 | `PRODUCT_SLUG` | `berich-completo` |
 
+## Supabase — Authentication → URL Configuration
+
+Configurá esto en el panel de Supabase (no en SQL Editor):
+
+| Campo | Valor |
+|-------|--------|
+| **Site URL** | `https://programa-berich.vercel.app` |
+| **Redirect URLs** (añadir todas) | `https://programa-berich.vercel.app/activar-cuenta` |
+| | `https://programa-berich.vercel.app/**` |
+
+Sin estas URLs, el link del mail puede fallar o abrir una pantalla en negro.
+
 ## Dodo dashboard
 
 1. Producto del `DODO_PRODUCT_ID` → precio **49 USD** (alineado con `PROGRAM_USD_PRICE`).
 2. Webhook URL: `https://programa-berich.vercel.app/api/dodo/webhook`
 3. Evento: `payment.succeeded`
 4. Adaptive Currency: según tu preferencia (checkout puede diferir levemente del quiz).
+
+## URLs que funcionan en el sitio
+
+| URL | Para qué |
+|-----|----------|
+| `/quiz` | Funnel / compra |
+| `/login` | Entrar alumnos y admin |
+| `/activar-cuenta` | Crear contraseña (link del mail) |
+| `/programa` | Videos del programa |
+| `/control/funnels` | Panel admin (solo tu mail) |
+
+Cualquier otra ruta muestra “Página no encontrada” (ya no pantalla negra vacía).
 
 ## Pruebas rápidas
 
