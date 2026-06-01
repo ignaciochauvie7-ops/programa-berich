@@ -1,10 +1,11 @@
-import { json } from '../_lib/json'
-import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin.js'
 
 const COMMISSION_RATE = 0.30
 const DEFAULT_SALE_USD = 49
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 })
 
   const admin = getSupabaseAdmin()
@@ -46,3 +47,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ ok: true, commissionUsd })
 }
+
+export default webHandler(handler)

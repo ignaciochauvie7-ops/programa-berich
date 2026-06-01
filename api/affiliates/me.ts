@@ -1,9 +1,10 @@
-import { json } from '../_lib/json'
-import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin.js'
 
 const COMMISSION_RATE = 0.30
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'GET' && request.method !== 'PATCH') {
     return new Response('Method not allowed', { status: 405 })
   }
@@ -88,3 +89,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ ...updated, link, commissionRate: COMMISSION_RATE })
 }
+
+export default webHandler(handler)

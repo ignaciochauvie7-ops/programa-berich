@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { HomeRoute } from './auth/HomeRoute'
 import { ProtectedRoute } from './auth/ProtectedRoute'
 import { DashboardRoutes } from './dashboard/AppShell'
 import { FunnelHomePage } from './funnel/FunnelHomePage'
@@ -11,7 +12,7 @@ import { StudentProgramRoute } from './student/StudentProgramRoute'
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/control/funnels" replace />} />
+      <Route path="/" element={<HomeRoute />} />
       <Route path="/funnel/metodo-berich" element={<FunnelHomePage />} />
       <Route path="/quiz" element={<QuizPage />} />
       <Route element={<ProtectedRoute requireAdmin />}>

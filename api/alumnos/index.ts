@@ -1,13 +1,15 @@
-import { json } from '../_lib/json'
-import { getRequestUser, isAdminUser } from '../_lib/auth'
-import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { getRequestUser, isAdminUser } from '../_lib/auth.js'
+import { provisionAlumnoInvite } from '../_lib/provisionAlumno.js'
+import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin.js'
 
 type InviteBody = {
   email?: string
   nombre?: string
 }
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   const { user, error: authError } = await getRequestUser(request)
   if (authError === 'server misconfigured') return json({ error: authError }, 500)
   if (!user) return json({ error: 'unauthorized' }, 401)
@@ -44,39 +46,14 @@ export default async function handler(request: Request): Promise<Response> {
   const email = normalizeEmail(String(body.email ?? ''))
   const nombre = String(body.nombre ?? '').trim()
 
-  if (!email || !email.includes('@')) {
-    return json({ error: 'email inválido' }, 400)
-  }
-
-  const redirectTo = 'https://programa-berich.vercel.app/activar-cuenta'
-  const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo,
-    data: { nombre },
+  const result = await provisionAlumnoInvite(admin, email, {
+    nombre: nombre || undefined,
+    source: 'admin',
   })
 
-  if (inviteError) {
-    console.error('[alumnos invite]', inviteError)
-    return json({ error: inviteError.message ?? 'no se pudo enviar la invitación' }, 500)
-  }
+  if (!result.ok) return json({ error: result.error }, 500)
 
-  const { data: alumno, error: upsertError } = await admin
-    .from('alumnos')
-    .upsert(
-      {
-        user_id: inviteData.user?.id ?? null,
-        email,
-        nombre: nombre || null,
-        activo: false,
-      },
-      { onConflict: 'email' },
-    )
-    .select('id, user_id, email, nombre, created_at, activo')
-    .single()
-
-  if (upsertError) {
-    console.error('[alumnos upsert]', upsertError)
-    return json({ error: 'invitación enviada, pero no se pudo guardar el alumno' }, 500)
-  }
-
-  return json({ alumno })
+  return json({ alumno: result.alumno })
 }
+
+export default webHandler(handler)

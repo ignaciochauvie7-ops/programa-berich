@@ -36,6 +36,10 @@ export function StudentLoginPage() {
   }
 
   if (!loading && user) {
+    if (isAdminUser(user)) {
+      const dest = from.startsWith('/control') ? from : '/control/funnels'
+      return <Navigate to={dest} replace />
+    }
     return <Navigate to={from} replace />
   }
 
@@ -45,7 +49,11 @@ export function StudentLoginPage() {
     setBusy(true)
     const { error: err } = await signIn(email, password)
     setBusy(false)
-    if (err) setError(err)
+    if (err) {
+      setError(err)
+      return
+    }
+    // La redirección la hace el bloque de arriba cuando `user` se actualiza.
   }
 
   return (

@@ -1,7 +1,8 @@
-import { verifyStandardWebhook } from '../_lib/crypto'
-import { dodoWebhookSecret } from '../_lib/dodoConfig'
-import { grantProgramAccess } from '../_lib/grantProgramAccess'
-import { json } from '../_lib/json'
+import { webHandler } from '../_lib/webHandler.js'
+import { verifyStandardWebhook } from '../_lib/crypto.js'
+import { dodoWebhookSecret } from '../_lib/dodoConfig.js'
+import { grantProgramAccess } from '../_lib/grantProgramAccess.js'
+import { json } from '../_lib/json.js'
 
 type DodoWebhookEvent = {
   type?: string
@@ -34,7 +35,7 @@ function readQuizVariant(data: Record<string, unknown>): string | null {
   return typeof variant === 'string' && variant ? variant : null
 }
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 })
   }
@@ -86,3 +87,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ ok: true })
 }
+
+export default webHandler(handler)

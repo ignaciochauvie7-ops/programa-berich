@@ -1,5 +1,7 @@
-import { json } from '../_lib/json'
-import { getSupabaseAdmin } from '../_lib/supabaseAdmin'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
+import { getRequestUrl } from '../_lib/requestUrl.js'
 
 type Period = 'today' | 'week' | 'month' | 'all'
 
@@ -22,13 +24,13 @@ function periodStart(period: Period): string | null {
   return null
 }
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'GET') return new Response('Method not allowed', { status: 405 })
 
   const admin = getSupabaseAdmin()
   if (!admin) return json({ error: 'server misconfigured' }, 500)
 
-  const url = new URL(request.url)
+  const url = getRequestUrl(request)
   const period = (url.searchParams.get('period') ?? 'all') as Period
   const since = periodStart(period)
 
@@ -82,3 +84,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ rows, totals, period })
 }
+
+export default webHandler(handler)

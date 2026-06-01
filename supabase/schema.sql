@@ -60,6 +60,21 @@ create policy "alumnos_select_own"
     or lower(trim(email)) = lower(trim(coalesce((auth.jwt() ->> 'email')::text, '')))
   );
 
+drop policy if exists "alumnos_update_own_activate" on public.alumnos;
+
+create policy "alumnos_update_own_activate"
+  on public.alumnos
+  for update
+  to authenticated
+  using (
+    lower(trim(email)) = lower(trim(coalesce((auth.jwt() ->> 'email')::text, '')))
+  )
+  with check (
+    lower(trim(email)) = lower(trim(coalesce((auth.jwt() ->> 'email')::text, '')))
+    and user_id = auth.uid()
+    and activo = true
+  );
+
 -- ─── Programa de Afiliados ───────────────────────────────────────────────────
 
 create table if not exists public.affiliates (

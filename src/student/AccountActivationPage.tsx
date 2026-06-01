@@ -12,11 +12,50 @@ export function AccountActivationPage() {
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [checkingInvite, setCheckingInvite] = useState(true)
 
   useEffect(() => {
-    if (!supabase) return
+    if (!supabase) {
+      setCheckingInvite(false)
+      return
+    }
+
     void supabase.auth.getSession()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      setCheckingInvite(false)
+    })
+
+    const timer = window.setTimeout(() => setCheckingInvite(false), 2500)
+
+    return () => {
+      subscription.unsubscribe()
+      window.clearTimeout(timer)
+    }
   }, [])
+
+  useEffect(() => {
+    if (!supabase || !user || loading) return
+
+    void (async () => {
+      const byUser = await supabase.from('alumnos').select('activo').eq('user_id', user.id).maybeSingle()
+      if (byUser.data?.activo) {
+        setDone(true)
+        return
+      }
+
+      if (user.email) {
+        const byEmail = await supabase
+          .from('alumnos')
+          .select('activo')
+          .ilike('email', user.email.trim())
+          .maybeSingle()
+        if (byEmail.data?.activo) setDone(true)
+      }
+    })()
+  }, [loading, user])
 
   if (!configured) {
     return (
@@ -37,7 +76,7 @@ export function AccountActivationPage() {
     e.preventDefault()
     setError(null)
 
-    if (!supabase || !session) {
+    if (!supabase || !session || !user) {
       setError('Abrí esta página desde el link de invitación que llegó por mail.')
       return
     }
@@ -61,16 +100,44 @@ export function AccountActivationPage() {
       return
     }
 
-    const res = await fetch('/api/alumnos/activate', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${session.access_token}`,
-      },
-    })
+    const {
+      data: { session: freshSession },
+    } = await supabase.auth.getSession()
 
-    const body = (await res.json()) as { error?: string }
-    if (!res.ok) {
-      setError(body.error ?? 'No se pudo activar la cuenta.')
+    const token = freshSession?.access_token ?? session.access_token
+
+    let activateError: string | null = null
+
+    try {
+      const res = await fetch('/api/alumnos/activate', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (!res.ok) {
+        const body = (await res.json()) as { error?: string }
+        activateError = body.error ?? 'activate api failed'
+      }
+    } catch {
+      activateError = 'activate api unreachable'
+    }
+
+    if (activateError && supabase && user?.email) {
+      const { data, error: directError } = await supabase
+        .from('alumnos')
+        .update({ user_id: user.id, activo: true })
+        .ilike('email', user.email.trim())
+        .select('id')
+        .maybeSingle()
+
+      if (directError || !data) {
+        setError(activateError ?? 'No se pudo activar la cuenta.')
+        setBusy(false)
+        return
+      }
+    } else if (activateError) {
+      setError(activateError)
       setBusy(false)
       return
     }
@@ -79,12 +146,14 @@ export function AccountActivationPage() {
     setDone(true)
   }
 
+  const waitingForInvite = loading || checkingInvite
+
   return (
     <div className="student-auth">
       <form className="student-auth__card" onSubmit={onSubmit}>
         <img className="student-auth__logo" src={activationLogo} alt="Berich" />
         <h1>Activá tu cuenta</h1>
-        {loading ? (
+        {waitingForInvite ? (
           <p>Validando invitación…</p>
         ) : !user ? (
           <p>Para crear tu contraseña, abrí esta página desde el link de invitación que llegó por mail.</p>

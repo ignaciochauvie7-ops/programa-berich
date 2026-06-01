@@ -27,17 +27,27 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
 
       if (!cancelled) setChecking(true)
 
-      const { data, error } = await supabase.from('alumnos').select('id, activo').eq('user_id', user.id).limit(1)
+      const byUser = await supabase.from('alumnos').select('id, activo').eq('user_id', user.id).limit(1)
+      let rows = byUser.data ?? []
+
+      if (!rows.length && user.email) {
+        const byEmail = await supabase
+          .from('alumnos')
+          .select('id, activo')
+          .ilike('email', user.email.trim())
+          .limit(1)
+        if (!byEmail.error) rows = byEmail.data ?? []
+      }
 
       if (cancelled) return
 
-      if (error) {
+      if (byUser.error && !rows.length) {
         setActiveAlumno(false)
         setChecking(false)
         return
       }
 
-      setActiveAlumno(Boolean(data?.some((row) => row.activo)))
+      setActiveAlumno(Boolean(rows.some((row) => row.activo)))
       setChecking(false)
     })()
 

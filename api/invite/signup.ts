@@ -1,10 +1,12 @@
-import { json } from '../_lib/json'
-import { sha256Hex } from '../_lib/crypto'
-import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { sha256Hex } from '../_lib/crypto.js'
+import { activateAlumnoRecord } from '../_lib/provisionAlumno.js'
+import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin.js'
 
 type Body = { token?: string; password?: string }
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 })
   }
@@ -47,21 +49,32 @@ export default async function handler(request: Request): Promise<Response> {
   }
 
   const email = normalizeEmail(invite.email)
+  const productSlug = (process.env.PRODUCT_SLUG ?? 'berich-completo').trim()
 
-  const { error: createErr } = await admin.auth.admin.createUser({
+  const { data: created, error: createErr } = await admin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
   })
 
-  if (createErr) {
-    const msg = createErr.message?.toLowerCase() ?? ''
+  if (createErr || !created.user) {
+    const msg = createErr?.message?.toLowerCase() ?? ''
     if (msg.includes('already') || msg.includes('registered')) {
       return json({ error: 'Ya existe una cuenta con este mail. Ingresá desde "Ingresar".' }, 409)
     }
     console.error('[invite signup]', createErr)
     return json({ error: 'no se pudo crear el usuario' }, 500)
   }
+
+  const activated = await activateAlumnoRecord(admin, created.user.id, email)
+  if (!activated.ok) {
+    console.error('[invite signup] activate alumno', activated.error)
+  }
+
+  await admin.from('entitlements').upsert(
+    { email, product_slug: productSlug, source: 'purchase' },
+    { onConflict: 'email,product_slug' },
+  )
 
   const { error: markErr } = await admin.from('invite_tokens').update({ used_at: now }).eq('id', invite.id)
   if (markErr) {
@@ -70,3 +83,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ email })
 }
+
+export default webHandler(handler)

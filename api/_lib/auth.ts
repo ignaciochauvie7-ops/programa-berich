@@ -1,5 +1,6 @@
 import type { User } from '@supabase/supabase-js'
-import { getSupabaseAdmin } from './supabaseAdmin'
+import { getSupabaseAdmin } from './supabaseAdmin.js'
+import { getRequestUrl } from './requestUrl.js'
 
 function splitEmails(value: string | undefined): string[] {
   return (value ?? '')
@@ -31,8 +32,16 @@ export function getPublicOrigin(request: Request): string {
   const vercelUrl = process.env.VERCEL_URL?.trim()
   if (vercelUrl) return `https://${vercelUrl.replace(/\/$/, '')}`
 
-  const url = new URL(request.url)
+  const url = getRequestUrl(request)
   return url.origin
+}
+
+/** URL pública para links de invitación por mail (siempre producción si está definida). */
+export function getActivationOrigin(): string {
+  const activation = process.env.ACTIVATION_PUBLIC_URL?.trim()
+  if (activation) return activation.replace(/\/$/, '')
+
+  return getPublicOrigin(new Request('http://localhost'))
 }
 
 export function isAdminUser(user: User | null): boolean {

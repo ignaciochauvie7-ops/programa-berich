@@ -1,7 +1,8 @@
-import { json } from '../_lib/json'
-import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin.js'
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 })
 
   const admin = getSupabaseAdmin()
@@ -29,3 +30,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ ok: true })
 }
+
+export default webHandler(handler)

@@ -92,6 +92,35 @@ const finalLoadingCopy: Record<FinalLoadingStage, { title: string; checks: strin
     ],
   },
 }
+type LocalizedPrice = {
+  usdPrice: number
+  localPrice: number
+  currency: string
+  symbol: string
+  formatted: string
+  countryCode: string
+  rate: number
+  rateSource: 'live' | 'fallback'
+}
+
+const PRICE_COUNTRY_OPTIONS = [
+  { code: '', label: 'Automático (tu ubicación)' },
+  { code: 'AR', label: 'Argentina' },
+  { code: 'MX', label: 'México' },
+  { code: 'UY', label: 'Uruguay' },
+  { code: 'CL', label: 'Chile' },
+  { code: 'CO', label: 'Colombia' },
+  { code: 'BR', label: 'Brasil' },
+  { code: 'US', label: 'Estados Unidos' },
+] as const
+
+function initialPriceCountryFromUrl(): string {
+  if (typeof window === 'undefined') return ''
+  const param = new URLSearchParams(window.location.search).get('country')?.toUpperCase()
+  if (!param) return ''
+  return PRICE_COUNTRY_OPTIONS.some((o) => o.code === param) ? param : ''
+}
+
 const faqItems = [
   {
     question: '¿Necesito experiencia previa para hacer el programa?',
@@ -155,6 +184,10 @@ export function QuizPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  const [priceCountry, setPriceCountry] = useState(initialPriceCountryFromUrl)
+  const [priceLoading, setPriceLoading] = useState(false)
+  const [priceData, setPriceData] = useState<LocalizedPrice | null>(null)
+  const [priceFetchFailed, setPriceFetchFailed] = useState(false)
 
   const accentColor = sex === 'mujer' ? '#ff4dc4' : '#00e5ff'
   const answeredQuestions = [sex, age, heightConfirmed, weightConfirmed, goal, pesoIdealConfirmed, resultGroup].filter(
@@ -237,6 +270,44 @@ export function QuizPage() {
       window.clearTimeout(nextTimer)
     }
   }, [question])
+
+  useEffect(() => {
+    if (question !== 11) return
+
+    let cancelled = false
+
+    void (async () => {
+      setPriceLoading(true)
+      setPriceFetchFailed(false)
+
+      try {
+        const query = priceCountry ? `?country=${encodeURIComponent(priceCountry)}` : ''
+        const res = await fetch(`/api/price${query}`)
+        const body = (await res.json()) as LocalizedPrice
+
+        if (cancelled) return
+
+        if (!res.ok || typeof body.formatted !== 'string') {
+          setPriceData(null)
+          setPriceFetchFailed(true)
+          return
+        }
+
+        setPriceData(body)
+      } catch {
+        if (!cancelled) {
+          setPriceData(null)
+          setPriceFetchFailed(true)
+        }
+      } finally {
+        if (!cancelled) setPriceLoading(false)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [question, priceCountry])
 
   const chooseSex = (value: Sex) => {
     transitionScreen(() => {
@@ -322,6 +393,17 @@ export function QuizPage() {
 
     return 'F'
   }
+
+  const priceMainLabel = priceFetchFailed
+    ? '49 USD'
+    : priceLoading
+      ? 'Calculando precio…'
+      : priceData
+        ? `${priceData.symbol}${priceData.formatted}`
+        : 'Calculando precio…'
+
+  const showUsdReference =
+    !priceFetchFailed && !priceLoading && priceData != null && priceData.currency !== 'USD'
 
   async function startCheckout() {
     if (!resultDestination || checkoutBusy) return
@@ -662,7 +744,32 @@ export function QuizPage() {
           <section className="quiz-plan">
             <p className="quiz-plan__eyebrow">Tu plan personalizado está listo</p>
             <h2>Programa Berich Completo</h2>
-            <p className="quiz-plan__price">49 USD</p>
+            <div className="quiz-plan__price-block">
+              <p
+                className={
+                  'quiz-plan__price' + (priceLoading ? ' quiz-plan__price--loading' : '')
+                }
+                aria-live="polite"
+              >
+                {priceMainLabel}
+              </p>
+              {showUsdReference ? <p className="quiz-plan__price-sub">≈ USD 49</p> : null}
+            </div>
+            <label className="quiz-plan__country">
+              <span>Ver precio en otro país</span>
+              <select
+                className="quiz-plan__country-select"
+                value={priceCountry}
+                onChange={(e) => setPriceCountry(e.target.value)}
+                disabled={priceLoading || checkoutBusy}
+              >
+                {PRICE_COUNTRY_OPTIONS.map((option) => (
+                  <option key={option.code || 'auto'} value={option.code}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             {checkoutError ? <div className="quiz-plan__error">{checkoutError}</div> : null}
             <button
               type="button"

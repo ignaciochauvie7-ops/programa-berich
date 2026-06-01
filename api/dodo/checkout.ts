@@ -1,6 +1,7 @@
-import { json } from '../_lib/json'
-import { appPublicOrigin } from '../_lib/appOrigin'
-import { dodoApiBaseUrl, dodoApiKey, dodoProductId } from '../_lib/dodoConfig'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { appPublicOrigin } from '../_lib/appOrigin.js'
+import { dodoApiBaseUrl, dodoApiKey, dodoProductId } from '../_lib/dodoConfig.js'
 
 type Body = { variant?: string }
 
@@ -11,7 +12,7 @@ type DodoCheckoutResponse = {
   message?: string
 }
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 })
   }
@@ -71,3 +72,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ checkout_url: checkoutUrl, session_id: data.session_id ?? null })
 }
+
+export default webHandler(handler)

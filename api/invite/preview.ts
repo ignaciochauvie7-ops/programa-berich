@@ -1,13 +1,15 @@
-import { json } from '../_lib/json'
-import { sha256Hex } from '../_lib/crypto'
-import { getSupabaseAdmin } from '../_lib/supabaseAdmin'
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { sha256Hex } from '../_lib/crypto.js'
+import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
+import { getRequestUrl } from '../_lib/requestUrl.js'
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'GET') {
     return new Response('Method not allowed', { status: 405 })
   }
 
-  const url = new URL(request.url)
+  const url = getRequestUrl(request)
   const token = url.searchParams.get('token')
   if (!token) return json({ error: 'missing token' }, 400)
 
@@ -37,3 +39,5 @@ export default async function handler(request: Request): Promise<Response> {
 
   return json({ email: data.email })
 }
+
+export default webHandler(handler)

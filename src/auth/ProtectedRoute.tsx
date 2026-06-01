@@ -34,14 +34,7 @@ export function ProtectedRoute({ requireAdmin = false }: { requireAdmin?: boolea
   }
 
   if (requireAdmin && !isAdminUser(user)) {
-    return (
-      <div className="student-auth">
-        <div className="student-auth__card">
-          <h1>Acceso restringido</h1>
-          <p>Esta sección es solo para administradores.</p>
-        </div>
-      </div>
-    )
+    return <Navigate to="/programa" replace />
   }
 
   return <Outlet />

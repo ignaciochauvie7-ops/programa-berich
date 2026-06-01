@@ -1,4 +1,6 @@
-import { json } from './_lib/json'
+import { webHandler } from './_lib/webHandler.js'
+import { json } from './_lib/json.js'
+import { getRequestUrl } from './_lib/requestUrl.js'
 
 const USD_PRICE = 49
 
@@ -63,13 +65,13 @@ async function getUsdRates(): Promise<Record<string, number>> {
   return data.rates
 }
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   if (request.method !== 'GET') {
     return new Response('Method not allowed', { status: 405 })
   }
 
   // ?country=AR override for local testing / preview
-  const url = new URL(request.url)
+  const url = getRequestUrl(request)
   const countryOverride = url.searchParams.get('country')?.toUpperCase()
   const countryCode = (countryOverride ?? request.headers.get('x-vercel-ip-country') ?? 'US').toUpperCase()
 
@@ -108,3 +110,5 @@ export default async function handler(request: Request): Promise<Response> {
     rateSource,
   })
 }
+
+export default webHandler(handler)
