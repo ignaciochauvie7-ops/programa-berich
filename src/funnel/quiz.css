@@ -591,6 +591,20 @@
   letter-spacing: 0;
 }
 
+.quiz-video-block {
+  display: grid;
+  gap: 8px;
+}
+
+.quiz-video-sound-hint {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+}
+
 .quiz-video-wrap {
   width: 100%;
   aspect-ratio: 16 / 9;
