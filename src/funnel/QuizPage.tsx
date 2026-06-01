@@ -60,19 +60,57 @@ const fatRecompImpedimentOptions: FatRecompImpediment[] = [
   'Me cuesta ser constante',
   'No sé por dónde empezar',
 ]
+const finalVimeoEmbedParams = '?badge=0&autopause=0&player_id=0&app_id=58479&title=0&byline=0&portrait=0'
+
 const finalVariants: Record<ResultDestination, FinalVariant> = {
-  'H-A': { videoUrl: 'https://youtu.be/O_daS_g7tI4', imageUrl: hombreAImage },
-  'H-B': { videoUrl: 'https://youtu.be/t9tAW28gY7Q', imageUrl: hombreBImage },
-  'H-C': { videoUrl: 'https://youtu.be/0iEEchNgSRk', imageUrl: hombreCImage },
-  'H-D': { videoUrl: 'https://youtu.be/RkNTT8vdOZk', imageUrl: hombreDImage },
-  'H-E': { videoUrl: 'https://youtu.be/5BPEfV9E59Y', imageUrl: hombreEImage },
-  'H-F': { videoUrl: 'https://youtu.be/Ym9X02ubKHc', imageUrl: hombreFImage },
-  'M-A': { videoUrl: 'https://youtu.be/O_daS_g7tI4', imageUrl: mujerAImage },
-  'M-B': { videoUrl: 'https://youtu.be/t9tAW28gY7Q', imageUrl: mujerBImage },
-  'M-C': { videoUrl: 'https://youtu.be/0iEEchNgSRk', imageUrl: mujerCImage },
-  'M-D': { videoUrl: 'https://youtu.be/RkNTT8vdOZk', imageUrl: mujerDImage },
-  'M-E': { videoUrl: 'https://youtu.be/5BPEfV9E59Y', imageUrl: mujerEImage },
-  'M-F': { videoUrl: 'https://youtu.be/Ym9X02ubKHc', imageUrl: mujerFImage },
+  'H-A': {
+    videoUrl: `https://player.vimeo.com/video/1197374009${finalVimeoEmbedParams}`,
+    imageUrl: hombreAImage,
+  },
+  'H-B': {
+    videoUrl: `https://player.vimeo.com/video/1197374011${finalVimeoEmbedParams}`,
+    imageUrl: hombreBImage,
+  },
+  'H-C': {
+    videoUrl: `https://player.vimeo.com/video/1197374010${finalVimeoEmbedParams}`,
+    imageUrl: hombreCImage,
+  },
+  'H-D': {
+    videoUrl: `https://player.vimeo.com/video/1197374041${finalVimeoEmbedParams}`,
+    imageUrl: hombreDImage,
+  },
+  'H-E': {
+    videoUrl: `https://player.vimeo.com/video/1197374040${finalVimeoEmbedParams}`,
+    imageUrl: hombreEImage,
+  },
+  'H-F': {
+    videoUrl: `https://player.vimeo.com/video/1197374043${finalVimeoEmbedParams}`,
+    imageUrl: hombreFImage,
+  },
+  'M-A': {
+    videoUrl: `https://player.vimeo.com/video/1197374009${finalVimeoEmbedParams}`,
+    imageUrl: mujerAImage,
+  },
+  'M-B': {
+    videoUrl: `https://player.vimeo.com/video/1197374011${finalVimeoEmbedParams}`,
+    imageUrl: mujerBImage,
+  },
+  'M-C': {
+    videoUrl: `https://player.vimeo.com/video/1197374010${finalVimeoEmbedParams}`,
+    imageUrl: mujerCImage,
+  },
+  'M-D': {
+    videoUrl: `https://player.vimeo.com/video/1197374041${finalVimeoEmbedParams}`,
+    imageUrl: mujerDImage,
+  },
+  'M-E': {
+    videoUrl: `https://player.vimeo.com/video/1197374040${finalVimeoEmbedParams}`,
+    imageUrl: mujerEImage,
+  },
+  'M-F': {
+    videoUrl: `https://player.vimeo.com/video/1197374043${finalVimeoEmbedParams}`,
+    imageUrl: mujerFImage,
+  },
 }
 const finalLoadingCopy: Record<FinalLoadingStage, { title: string; checks: string[] }> = {
   1: {
@@ -146,11 +184,6 @@ const faqItems = [
     answer: 'El Plan Guiado incluye acceso directo por WhatsApp para resolver cualquier duda durante 6 meses.',
   },
 ]
-
-function getYoutubeEmbedUrl(url: string) {
-  const videoId = url.split('/').pop()
-  return `https://www.youtube.com/embed/${videoId}`
-}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
@@ -446,8 +479,92 @@ export function QuizPage() {
     })
   }
 
+  const canGoBack = started
+
+  const goBack = () => {
+    if (!started) return
+
+    transitionScreen(() => {
+      if (question === 11) {
+        setResultGroup(null)
+        setResultDestination(null)
+        setImpediment(null)
+        setFinalLoadingStage(1)
+        setFinalLoadingProgress(0)
+        setQuestion(8)
+        return
+      }
+
+      if (question === 10) {
+        setFinalLoadingStage(1)
+        setFinalLoadingProgress(0)
+        setQuestion(9)
+        return
+      }
+
+      if (question === 9) {
+        setResultGroup(null)
+        setResultDestination(null)
+        setImpediment(null)
+        setFinalLoadingStage(1)
+        setFinalLoadingProgress(0)
+        setQuestion(8)
+        return
+      }
+
+      if (question === 8) {
+        setPesoIdealConfirmed(false)
+        setQuestion(7)
+        return
+      }
+
+      if (question === 7) {
+        setQuestion(6)
+        return
+      }
+
+      if (question === 6) {
+        setGoal(null)
+        setImpedimentPath(null)
+        setQuestion(4)
+        return
+      }
+
+      if (question === 5) {
+        setQuestion(4)
+        return
+      }
+
+      if (question === 4) {
+        setWeightConfirmed(false)
+        setQuestion(3)
+        return
+      }
+
+      if (question === 3) {
+        setHeightConfirmed(false)
+        setQuestion(2)
+        return
+      }
+
+      if (question === 2) {
+        setAge(null)
+        setQuestion(1)
+        return
+      }
+
+      setSex(null)
+      setStarted(false)
+    })
+  }
+
   return (
     <main className="quiz-page" style={{ '--quiz-accent': accentColor } as CSSProperties}>
+      {canGoBack ? (
+        <button type="button" className="quiz-back" onClick={goBack} aria-label="Volver a la pantalla anterior">
+          ←
+        </button>
+      ) : null}
       <img className="quiz-logo" src={quizLogo} alt="Berich" />
 
       {question !== 11 && (
@@ -720,9 +837,9 @@ export function QuizPage() {
           <div className="quiz-video-wrap">
             <iframe
               className="quiz-video"
-              src={getYoutubeEmbedUrl(finalVariant.videoUrl)}
+              src={finalVariant.videoUrl}
               title={`Resultado ${resultDestination}`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
             />
           </div>

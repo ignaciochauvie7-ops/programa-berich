@@ -1,5 +1,6 @@
 .quiz-page {
   --quiz-accent: #00e5ff;
+  position: relative;
   min-height: 100dvh;
   box-sizing: border-box;
   background: #0a0a0a;
@@ -11,6 +12,44 @@
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+}
+
+.quiz-back {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top, 0px));
+  left: max(14px, env(safe-area-inset-left, 0px));
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: rgba(10, 10, 10, 0.82);
+  color: var(--quiz-accent, #00e5ff);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.quiz-back:hover {
+  border-color: color-mix(in srgb, var(--quiz-accent) 55%, rgba(255, 255, 255, 0.18));
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.quiz-back:active {
+  transform: scale(0.96);
+}
+
+.quiz-back:focus-visible {
+  outline: 2px solid var(--quiz-accent, #00e5ff);
+  outline-offset: 2px;
 }
 
 .quiz-logo {
