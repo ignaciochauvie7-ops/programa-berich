@@ -127,7 +127,7 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       <NeonDots />
       <header className="student-program__bar">
         <p>
-          <strong>Programa Berich</strong> — {user.email}
+          <strong>Programa Berich</strong>
         </p>
         <div className="student-program__bar-actions">
           <button type="button" className="admin-btn admin-btn--ghost" onClick={() => signOut()}>
