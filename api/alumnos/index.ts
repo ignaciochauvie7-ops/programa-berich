@@ -49,6 +49,7 @@ async function handler(request: Request): Promise<Response> {
   const result = await provisionAlumnoInvite(admin, email, {
     nombre: nombre || undefined,
     source: 'admin',
+    activo: true,
   })
 
   if (!result.ok) return json({ error: result.error }, 500)

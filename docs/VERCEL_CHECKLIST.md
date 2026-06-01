@@ -48,6 +48,14 @@ Sin estas URLs, el link del mail puede fallar o abrir una pantalla en negro.
 
 Cualquier otra ruta muestra “Página no encontrada” (ya no pantalla negra vacía).
 
+## Flujo alumno (post-pago o invitación admin)
+
+1. Dodo cobra → webhook crea alumno con **`activo = true`** + entitlement + mail Supabase (crear contraseña).
+2. Admin invita desde `/control/alumnos` → mismo: **activo = true** + mail.
+3. Alumno abre mail → `/activar-cuenta` → contraseña → `/programa` (ya tenía acceso; solo falta login).
+
+Si alguien pagó antes de este cambio y figura Pendiente, ejecutá `supabase/patch-alumnos-activo-pago.sql` en SQL Editor.
+
 ## Pruebas rápidas
 
 - `GET /api/price?country=UY` → entero en UYU + base 49 USD

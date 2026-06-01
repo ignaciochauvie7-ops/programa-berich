@@ -1,25 +1,54 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getActivationOrigin } from './auth.js'
+import { sendProgramInviteEmail } from './email.js'
 import { normalizeEmail } from './supabaseAdmin.js'
 
 type ProvisionResult =
   | { ok: true; alumno: { id: string; email: string; activo: boolean } }
   | { ok: false; error: string }
 
+type ProvisionOptions = {
+  nombre?: string
+  source?: string
+  productSlug?: string
+  /** Tras pago o invitación admin el alumno ya tiene acceso al programa. */
+  activo?: boolean
+}
+
+function readInviteActionLink(linkData: {
+  properties?: { action_link?: string | null }
+}): string | null {
+  const url = linkData.properties?.action_link
+  return typeof url === 'string' && url.startsWith('http') ? url : null
+}
+
+async function sendInviteLinkFallback(email: string, inviteUrl: string): Promise<void> {
+  const productLabel = process.env.PRODUCT_SLUG ?? 'Programa Berich'
+  const sent = await sendProgramInviteEmail({
+    to: email,
+    inviteUrl,
+    productLabel,
+  })
+  if (!sent.sent) {
+    console.warn('[provisionAlumnoInvite] mail fallback no enviado; link:', inviteUrl)
+  }
+}
+
 /**
- * Alta de alumno + mail de invitación Supabase (/activar-cuenta).
+ * Alta de alumno activo + mail para crear contraseña (/activar-cuenta).
  * Usado por panel admin, webhooks de pago, etc.
  */
 export async function provisionAlumnoInvite(
   admin: SupabaseClient,
   rawEmail: string,
-  options?: { nombre?: string; source?: string; productSlug?: string },
+  options?: ProvisionOptions,
 ): Promise<ProvisionResult> {
   const email = normalizeEmail(rawEmail)
   if (!email.includes('@')) return { ok: false, error: 'email inválido' }
 
   const nombre = options?.nombre?.trim() || null
   const productSlug = (options?.productSlug ?? process.env.PRODUCT_SLUG ?? 'berich-completo').trim()
+  const activo = options?.activo !== false
   const redirectTo = `${getActivationOrigin()}/activar-cuenta`
 
   const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
@@ -39,17 +68,22 @@ export async function provisionAlumnoInvite(
       return { ok: false, error: inviteError.message ?? 'no se pudo enviar la invitación' }
     }
 
-    console.info('[provisionAlumnoInvite] usuario ya existe, reenviando link de invitación', email)
+    console.info('[provisionAlumnoInvite] usuario ya existe, generando link de invitación', email)
     const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
       type: 'invite',
       email,
-      options: { redirectTo },
+      options: { redirectTo, data: nombre ? { nombre } : undefined },
     })
 
-    if (linkError) {
+    if (linkError || !linkData) {
       console.error('[provisionAlumnoInvite] generateLink', linkError)
-    } else {
-      invitedUserId = linkData.user?.id ?? invitedUserId
+      return { ok: false, error: 'no se pudo generar el link de invitación' }
+    }
+
+    invitedUserId = linkData.user?.id ?? invitedUserId
+    const actionLink = readInviteActionLink(linkData)
+    if (actionLink) {
+      await sendInviteLinkFallback(email, actionLink)
     }
   }
 
@@ -60,7 +94,7 @@ export async function provisionAlumnoInvite(
         user_id: invitedUserId,
         email,
         nombre,
-        activo: false,
+        activo,
       },
       { onConflict: 'email' },
     )
@@ -82,7 +116,7 @@ export async function provisionAlumnoInvite(
   return { ok: true, alumno }
 }
 
-/** Marca alumno activo y enlaza user_id tras crear contraseña. */
+/** Enlaza user_id tras crear contraseña (activo ya true tras pago/invite). */
 export async function activateAlumnoRecord(
   admin: SupabaseClient,
   userId: string,

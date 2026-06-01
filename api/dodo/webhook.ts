@@ -1,5 +1,6 @@
 import { webHandler } from '../_lib/webHandler.js'
 import { verifyStandardWebhook } from '../_lib/crypto.js'
+import { readPaymentCustomerName } from '../_lib/dodoCustomer.js'
 import { dodoWebhookSecret } from '../_lib/dodoConfig.js'
 import { grantProgramAccess } from '../_lib/grantProgramAccess.js'
 import { json } from '../_lib/json.js'
@@ -113,10 +114,13 @@ async function handler(request: Request): Promise<Response> {
     console.warn('[dodo webhook] payment.succeeded sin quiz_variant en metadata')
   }
 
+  const customerName = readPaymentCustomerName(data)
+
   const result = await grantProgramAccess({
     email: emailRaw,
     source: 'dodo',
     quizVariant,
+    nombre: customerName,
   })
 
   if (!result.ok) {
