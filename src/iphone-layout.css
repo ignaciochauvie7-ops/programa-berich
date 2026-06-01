@@ -1,0 +1,238 @@
+/**
+ * Solo iPhone / móvil (≤767px). No altera estilos base ni @media (min-width) de escritorio.
+ */
+@media (max-width: 767px) {
+  html,
+  body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  #root {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  /* —— Recurso gratuito —— */
+  .funnel-home {
+    min-height: 100dvh;
+    padding:
+      max(16px, env(safe-area-inset-top, 0px))
+      max(14px, env(safe-area-inset-right, 0px))
+      max(20px, env(safe-area-inset-bottom, 0px))
+      max(14px, env(safe-area-inset-left, 0px));
+    gap: 18px;
+  }
+
+  /* —— Quiz —— */
+  .quiz-page {
+    width: 100%;
+    max-width: 100%;
+    padding:
+      max(12px, env(safe-area-inset-top, 0px))
+      max(12px, env(safe-area-inset-right, 0px))
+      max(24px, env(safe-area-inset-bottom, 0px))
+      max(12px, env(safe-area-inset-left, 0px));
+  }
+
+  .quiz-screen {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 0 36px;
+    gap: 18px;
+  }
+
+  .quiz-screen--intro {
+    padding-top: 16px;
+    padding-bottom: 28px;
+  }
+
+  .quiz-screen h1 {
+    font-size: clamp(1.45rem, 7.5vw, 2rem);
+    overflow-wrap: anywhere;
+  }
+
+  .quiz-screen--intro h1 {
+    font-size: 1.25rem;
+  }
+
+  .quiz-final {
+    width: 100%;
+    max-width: 100%;
+    gap: 18px;
+    padding: 6px 0 20px;
+  }
+
+  .quiz-final h1 {
+    font-size: clamp(1.35rem, 6.5vw, 1.75rem);
+    padding: 0 4px;
+    overflow-wrap: anywhere;
+  }
+
+  .quiz-plan {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 14px;
+  }
+
+  .quiz-plan h2 {
+    font-size: clamp(1.15rem, 5.5vw, 1.45rem);
+    overflow-wrap: anywhere;
+  }
+
+  .quiz-plan__price {
+    font-size: clamp(2.35rem, 11vw, 3rem);
+  }
+
+  .quiz-plan__button {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .quiz-option {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 14px;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .quiz-primary-btn,
+  .quiz-intro-btn {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .quiz-slider-block,
+  .quiz-toggle {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .quiz-toggle {
+    min-width: 0;
+  }
+
+  .quiz-faq h2 {
+    font-size: clamp(1.25rem, 6vw, 1.55rem);
+  }
+
+  .quiz-faq__question {
+    padding: 14px 12px;
+    font-size: 0.92rem;
+    gap: 10px;
+    overflow-wrap: anywhere;
+  }
+
+  .quiz-faq__answer p {
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 0.9rem;
+  }
+
+  /* —— Login / activar cuenta —— */
+  .student-auth {
+    padding:
+      max(1.25rem, env(safe-area-inset-top, 0px))
+      max(1rem, env(safe-area-inset-right, 0px))
+      max(1.25rem, env(safe-area-inset-bottom, 0px))
+      max(1rem, env(safe-area-inset-left, 0px));
+  }
+
+  .student-auth__card {
+    max-width: 100%;
+    padding: 1.65rem 1.15rem;
+  }
+
+  .student-auth__password-wrap input {
+    font-size: 16px;
+  }
+
+  .student-auth__field input {
+    font-size: 16px;
+  }
+
+  /* —— Programa alumno (no panel /control) —— */
+  .student-program {
+    overflow-x: hidden;
+    max-width: 100%;
+    min-height: 100dvh;
+  }
+
+  .student-program__bar {
+    padding:
+      max(0.75rem, env(safe-area-inset-top, 0px))
+      max(1rem, env(safe-area-inset-right, 0px))
+      0.75rem
+      max(1rem, env(safe-area-inset-left, 0px));
+  }
+
+  .student-program__main {
+    padding:
+      1rem
+      max(0.85rem, env(safe-area-inset-right, 0px))
+      max(1.5rem, env(safe-area-inset-bottom, 0px))
+      max(0.85rem, env(safe-area-inset-left, 0px));
+  }
+
+  .student-program .admin-program-grid,
+  .student-program .admin-program-grid--branches {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .student-program .admin-program-card h3,
+  .student-program .admin-program-card h3 span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .student-program .admin-program-card__body {
+    padding: 0.75rem 0.7rem 0.65rem;
+  }
+
+  .student-program .admin-lesson-title {
+    font-size: clamp(1.05rem, 5.2vw, 1.25rem);
+    padding: 0 2px;
+  }
+
+  .student-program .admin-video-embed--large iframe {
+    min-height: 0;
+  }
+
+  .student-program .admin-card--lesson {
+    padding: 0.85rem 0.65rem 1rem;
+  }
+
+  .student-program__gate {
+    margin: 1.5rem auto;
+    padding: 1.35rem 1rem;
+    max-width: calc(100% - 1rem);
+  }
+
+  .student-affiliate__stats {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .student-affiliate input[type='text'] {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* iPhone SE y pantallas muy angostas */
+@media (max-width: 390px) {
+  .quiz-intro-features {
+    gap: 8px;
+  }
+
+  .quiz-intro-feature strong {
+    font-size: 10px;
+  }
+
+  .student-affiliate__stats {
+    grid-template-columns: 1fr !important;
+  }
+}

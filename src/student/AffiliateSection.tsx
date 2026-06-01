@@ -86,13 +86,13 @@ export function AffiliateSection() {
   )
 
   return (
-    <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+    <div className="student-affiliate" style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       <h2 style={{ margin: 0, fontSize: '1.15rem', color: '#d8fff0' }}>Programa de Afiliados</h2>
       <p style={{ margin: 0, fontSize: '0.88rem', color: 'rgba(216,255,240,0.55)', lineHeight: 1.5 }}>
         Compartí tu link y ganás un <strong style={{ color: '#00e676' }}>30%</strong> de comisión por cada venta que generes.
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(145px,1fr))', gap: '0.7rem' }}>
+      <div className="student-affiliate__stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(145px,1fr))', gap: '0.7rem' }}>
         {card('Ventas', String(data.stats.totalSales))}
         {card('Facturado', usd(data.stats.totalUsd))}
         {card('Comisión ganada', usd(data.stats.totalCommission))}
