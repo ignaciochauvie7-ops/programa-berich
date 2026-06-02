@@ -4,6 +4,7 @@ import { readPaymentCustomerName } from '../_lib/dodoCustomer.js'
 import { dodoWebhookSecret } from '../_lib/dodoConfig.js'
 import { grantProgramAccess } from '../_lib/grantProgramAccess.js'
 import { json } from '../_lib/json.js'
+import { sendMetaPurchaseEvent } from '../_lib/metaCapi.js'
 
 type DodoWebhookEvent = {
   type?: string
@@ -69,6 +70,52 @@ function readMetadataVariant(metadata: unknown): string | null {
   return typeof variant === 'string' && variant ? variant : null
 }
 
+function readPaymentId(data: Record<string, unknown>): string | null {
+  const id = data.payment_id ?? data.id
+  if (typeof id === 'string' && id.trim()) return id.trim()
+
+  const payment = data.payment
+  if (payment && typeof payment === 'object' && payment !== null) {
+    const paymentId = (payment as { id?: unknown; payment_id?: unknown }).id ?? (payment as { payment_id?: unknown }).payment_id
+    if (typeof paymentId === 'string' && paymentId.trim()) return paymentId.trim()
+  }
+
+  return null
+}
+
+function readCurrency(data: Record<string, unknown>): string {
+  const direct = data.currency
+  if (typeof direct === 'string' && direct.trim()) return direct.trim().toUpperCase()
+
+  const payment = data.payment
+  if (payment && typeof payment === 'object' && payment !== null) {
+    const fromPayment = (payment as { currency?: unknown }).currency
+    if (typeof fromPayment === 'string' && fromPayment.trim()) return fromPayment.trim().toUpperCase()
+  }
+
+  return 'USD'
+}
+
+function readAmountValue(data: Record<string, unknown>): number {
+  const amountKeys = ['amount', 'amount_total', 'total_amount', 'captured_amount', 'paid_amount'] as const
+
+  for (const key of amountKeys) {
+    const value = data[key]
+    if (typeof value === 'number' && Number.isFinite(value) && value > 0) return value
+    if (typeof value === 'string') {
+      const parsed = Number(value)
+      if (Number.isFinite(parsed) && parsed > 0) return parsed
+    }
+  }
+
+  const payment = data.payment
+  if (payment && typeof payment === 'object' && payment !== null) {
+    return readAmountValue(payment as Record<string, unknown>)
+  }
+
+  return 49
+}
+
 async function handler(request: Request): Promise<Response> {
   if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 })
@@ -126,6 +173,21 @@ async function handler(request: Request): Promise<Response> {
   if (!result.ok) {
     console.error('[dodo webhook] grantProgramAccess', result.error)
     return json({ error: result.error }, result.status)
+  }
+
+  const paymentId = readPaymentId(data) ?? `payment-${Date.now()}`
+  const amountValue = readAmountValue(data)
+  const amount = amountValue > 999 ? amountValue / 100 : amountValue
+  const currency = readCurrency(data)
+  const metaResult = await sendMetaPurchaseEvent({
+    email: emailRaw,
+    eventId: `dodo_${paymentId}`,
+    value: amount,
+    currency,
+    eventSourceUrl: process.env.APP_PUBLIC_URL?.trim(),
+  })
+  if (!metaResult.ok) {
+    console.error('[dodo webhook] meta purchase event', metaResult.error)
   }
 
   return json({ ok: true, quiz_variant: quizVariant ?? null })

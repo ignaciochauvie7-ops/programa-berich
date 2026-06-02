@@ -1,4 +1,5 @@
 import { type CSSProperties, useEffect, useState } from 'react'
+import { QuizTransformationMarquee } from './QuizTransformationMarquee'
 import './quiz.css'
 import hombreAImage from '../../supabase/quiz hombre nuevo/1.png'
 import hombreBImage from '../../supabase/quiz hombre nuevo/2.png'
@@ -653,6 +654,7 @@ export function QuizPage() {
               {visibleChecks >= 3 && <li>✓ Preparando tu plan</li>}
             </ul>
           </div>
+          {sex ? <QuizTransformationMarquee sex={sex} /> : null}
         </section>
       ) : question === 6 ? (
         <section className={screenClass}>

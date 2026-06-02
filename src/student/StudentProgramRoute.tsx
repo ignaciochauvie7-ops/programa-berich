@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
+import { isAdminUser } from '../auth/access'
 import { NeonDots } from '../components/NeonDots'
 import { useAuth } from '../auth/useAuth'
 import { supabase } from '../auth/supabaseClient'
 import { BerichProgramView } from '../program/BerichProgramView'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
+import '../dashboard/dashboard.css'
 import { AffiliateSection } from './AffiliateSection'
 import './student.css'
 
@@ -21,6 +23,15 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       if (!configured || !supabase || !user) {
         if (!cancelled) {
           setActiveAlumno(null)
+          setPendingActivation(false)
+          setChecking(false)
+        }
+        return
+      }
+
+      if (isAdminUser(user)) {
+        if (!cancelled) {
+          setActiveAlumno(true)
           setPendingActivation(false)
           setChecking(false)
         }

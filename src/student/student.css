@@ -5,6 +5,7 @@
   justify-content: center;
   padding: 2rem 1.25rem;
   color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
   background:
     radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0, 229, 255, 0.12), transparent 55%),
     #0a0a0a;
@@ -284,6 +285,13 @@
 .student-program {
   min-height: 100vh;
   color: #d8fff0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.student-program *,
+.student-program *::before,
+.student-program *::after {
+  font-family: inherit;
 }
 
 .student-program__bar {
