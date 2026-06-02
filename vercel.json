@@ -5,6 +5,12 @@
       "maxDuration": 15
     }
   },
+  "crons": [
+    {
+      "path": "/api/coach/cron",
+      "schedule": "*/15 * * * *"
+    }
+  ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]

@@ -17,6 +17,23 @@
 | `DODO_PAYMENTS_ENVIRONMENT` | `test` o `live` |
 | `PRODUCT_SLUG` | `berich-completo` |
 
+### Acompañamiento WhatsApp (opcional hasta configurar Meta)
+
+| Variable | Uso |
+|----------|-----|
+| `OPENAI_API_KEY` | Respuestas conversacionales |
+| `OPENAI_MODEL` | Opcional, default `gpt-4o-mini` |
+| `WHATSAPP_PHONE_NUMBER_ID` | Meta Cloud API |
+| `WHATSAPP_ACCESS_TOKEN` | Meta Cloud API |
+| `WHATSAPP_VERIFY_TOKEN` | Verificación webhook GET |
+| `WHATSAPP_APP_SECRET` | Firma webhook POST |
+| `COACH_CRON_SECRET` | Proteger `/api/coach/cron` (Vercel Cron: `Authorization: Bearer …`) |
+| `WHATSAPP_TEMPLATE_*` | Opcional: plantillas Meta para proactivos fuera de 24 h |
+
+**Supabase:** ejecutar `supabase/patch-coach-whatsapp.sql` una vez.
+
+**Meta:** webhook `https://programa-berich.vercel.app/api/whatsapp/webhook` (mensajes + suscripciones).
+
 ## Supabase — Authentication → URL Configuration
 
 Configurá esto en el panel de Supabase (no en SQL Editor):

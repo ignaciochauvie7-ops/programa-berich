@@ -1,0 +1,72 @@
+import { webHandler } from '../_lib/webHandler.js'
+import { json } from '../_lib/json.js'
+import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
+import {
+  jobsDueNow,
+  markScheduledSend,
+  sendProactiveMessage,
+  wasAlreadyScheduled,
+} from '../_lib/coach/proactive.js'
+
+function authorizeCron(request: Request): boolean {
+  const secret = process.env.COACH_CRON_SECRET?.trim()
+  if (!secret) return false
+
+  const auth = request.headers.get('authorization') ?? ''
+  if (auth === `Bearer ${secret}`) return true
+
+  const url = new URL(request.url)
+  return url.searchParams.get('secret') === secret
+}
+
+async function handler(request: Request): Promise<Response> {
+  if (request.method !== 'GET' && request.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 })
+  }
+
+  if (!authorizeCron(request)) {
+    return json({ error: 'unauthorized' }, 401)
+  }
+
+  const admin = getSupabaseAdmin()
+  if (!admin) return json({ error: 'server misconfigured' }, 500)
+
+  const { data: profiles, error } = await admin
+    .from('alumno_coach_profile')
+    .select('*, alumnos!inner(email, nombre, activo)')
+    .eq('coach_active', true)
+
+  if (error) {
+    console.error('[coach cron]', error)
+    return json({ error: 'query failed' }, 500)
+  }
+
+  let sent = 0
+  let skipped = 0
+
+  for (const row of profiles ?? []) {
+    const alumno = row.alumnos as { email: string; nombre: string | null; activo: boolean }
+    if (!alumno.activo) continue
+
+    const profile = row as typeof row & { alumno_id: string }
+    const dueJobs = jobsDueNow(profile)
+
+    for (const { job, scheduledFor } of dueJobs) {
+      const already = await wasAlreadyScheduled(admin, profile.alumno_id, job, scheduledFor)
+      if (already) {
+        skipped += 1
+        continue
+      }
+
+      const result = await sendProactiveMessage(admin, profile, alumno.nombre, alumno.email, job)
+      await markScheduledSend(admin, profile.alumno_id, job, scheduledFor, result.sent, result.reason)
+
+      if (result.sent) sent += 1
+      else skipped += 1
+    }
+  }
+
+  return json({ ok: true, sent, skipped, checked: profiles?.length ?? 0 })
+}
+
+export default webHandler(handler)

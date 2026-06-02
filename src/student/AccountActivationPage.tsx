@@ -81,7 +81,7 @@ export function AccountActivationPage() {
   }
 
   if (done) {
-    return <Navigate to="/programa" replace />
+    return <Navigate to={isRecovery ? '/programa' : '/configurar-perfil'} replace />
   }
 
   async function onSubmit(e: FormEvent) {

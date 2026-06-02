@@ -128,6 +128,54 @@
   opacity: 0.45;
 }
 
+.student-auth__card--wide {
+  max-width: 480px;
+}
+
+.coach-setup__label {
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.coach-setup__days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.coach-setup__chip {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.coach-setup__chip--on {
+  border-color: rgba(0, 229, 255, 0.65);
+  background: rgba(0, 229, 255, 0.14);
+}
+
+.coach-setup__opt-in {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0.5rem 0 1.25rem;
+  color: #cccccc;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.coach-setup__opt-in input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
 .student-auth__password-toggle svg {
   display: block;
   filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.85));

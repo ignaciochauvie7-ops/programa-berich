@@ -14,6 +14,7 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
   const { configured, loading, user, signOut } = useAuth()
   const [activeAlumno, setActiveAlumno] = useState<boolean | null>(null)
   const [pendingActivation, setPendingActivation] = useState(false)
+  const [coachProfileComplete, setCoachProfileComplete] = useState<boolean | null>(null)
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
@@ -33,6 +34,7 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
         if (!cancelled) {
           setActiveAlumno(true)
           setPendingActivation(false)
+          setCoachProfileComplete(true)
           setChecking(false)
         }
         return
@@ -64,6 +66,35 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       const isActive = Boolean(rows.some((row) => row.activo))
       setActiveAlumno(isActive)
       setPendingActivation(!isActive && rows.length > 0)
+
+      if (!isActive) {
+        setCoachProfileComplete(null)
+        setChecking(false)
+        return
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (session?.access_token) {
+        try {
+          const res = await fetch('/api/coach/profile', {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          })
+          if (res.ok) {
+            const body = (await res.json()) as { complete?: boolean }
+            if (!cancelled) setCoachProfileComplete(Boolean(body.complete))
+          } else if (!cancelled) {
+            setCoachProfileComplete(false)
+          }
+        } catch {
+          if (!cancelled) setCoachProfileComplete(false)
+        }
+      } else if (!cancelled) {
+        setCoachProfileComplete(false)
+      }
+
       setChecking(false)
     })()
 
@@ -128,6 +159,21 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
               <Link to="/login">Volver al inicio de sesión</Link>
             )}
           </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (coachProfileComplete === false) {
+    return <Navigate to="/configurar-perfil" replace />
+  }
+
+  if (coachProfileComplete === null) {
+    return (
+      <div className="student-program">
+        <NeonDots />
+        <div className="student-program__main">
+          <p>Verificando acceso…</p>
         </div>
       </div>
     )
