@@ -28,6 +28,7 @@ export function AlumnosPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -115,6 +116,42 @@ export function AlumnosPage() {
     setBusy(false)
   }
 
+  async function deleteAlumno(alumno: Alumno) {
+    const confirmed = window.confirm(`¿Eliminar a ${alumno.nombre || alumno.email}? Esta acción quita su acceso.`)
+    if (!confirmed) return
+
+    setError(null)
+    setMessage(null)
+    setDeletingId(alumno.id)
+
+    const token = await getAccessToken()
+    if (!token) {
+      setError('No se encontró una sesión activa.')
+      setDeletingId(null)
+      return
+    }
+
+    try {
+      const res = await fetch(`/api/alumnos?id=${encodeURIComponent(alumno.id)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const body = (await res.json()) as { error?: string }
+      if (!res.ok) {
+        setError(body.error ?? 'No se pudo eliminar el alumno.')
+        setDeletingId(null)
+        return
+      }
+
+      setAlumnos((current) => current.filter((item) => item.id !== alumno.id))
+      setMessage('Alumno eliminado correctamente.')
+    } catch {
+      setError('Error de red al eliminar alumno.')
+    }
+
+    setDeletingId(null)
+  }
+
   return (
     <section className="admin-page">
       <header className="admin-page__header">
@@ -198,18 +235,19 @@ export function AlumnosPage() {
               <th>Email</th>
               <th>Fecha creación</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={4} style={{ textAlign: 'center', opacity: 0.5 }}>
+                <td colSpan={5} style={{ textAlign: 'center', opacity: 0.5 }}>
                   Cargando alumnos…
                 </td>
               </tr>
             ) : alumnos.length === 0 ? (
               <tr>
-                <td colSpan={4} style={{ textAlign: 'center', opacity: 0.5 }}>
+                <td colSpan={5} style={{ textAlign: 'center', opacity: 0.5 }}>
                   Sin alumnos todavía
                 </td>
               </tr>
@@ -223,6 +261,16 @@ export function AlumnosPage() {
                     <span className={alumno.activo ? 'admin-pill admin-pill--active' : 'admin-pill'}>
                       {alumno.activo ? 'Activo' : 'Pendiente'}
                     </span>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="admin-btn admin-btn--danger"
+                      disabled={deletingId === alumno.id}
+                      onClick={() => void deleteAlumno(alumno)}
+                    >
+                      {deletingId === alumno.id ? 'Eliminando…' : 'Eliminar'}
+                    </button>
                   </td>
                 </tr>
               ))

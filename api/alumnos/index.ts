@@ -32,6 +32,42 @@ async function handler(request: Request): Promise<Response> {
     return json({ alumnos: data ?? [] })
   }
 
+  if (request.method === 'DELETE') {
+    const url = new URL(request.url)
+    const id = url.searchParams.get('id')?.trim()
+    if (!id) return json({ error: 'missing alumno id' }, 400)
+
+    const { data: alumno, error: fetchError } = await admin
+      .from('alumnos')
+      .select('id, user_id, email')
+      .eq('id', id)
+      .maybeSingle()
+
+    if (fetchError) {
+      console.error('[alumnos delete fetch]', fetchError)
+      return json({ error: 'no se pudo buscar el alumno' }, 500)
+    }
+
+    if (!alumno) return json({ error: 'alumno no encontrado' }, 404)
+
+    const { error: deleteError } = await admin.from('alumnos').delete().eq('id', id)
+    if (deleteError) {
+      console.error('[alumnos delete]', deleteError)
+      return json({ error: 'no se pudo eliminar el alumno' }, 500)
+    }
+
+    await admin.from('entitlements').delete().eq('email', alumno.email)
+
+    if (alumno.user_id) {
+      const { error: authDeleteError } = await admin.auth.admin.deleteUser(alumno.user_id)
+      if (authDeleteError) {
+        console.error('[alumnos delete auth user]', authDeleteError)
+      }
+    }
+
+    return json({ ok: true, id })
+  }
+
   if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 })
   }
