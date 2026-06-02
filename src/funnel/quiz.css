@@ -591,6 +591,10 @@
   will-change: transform;
 }
 
+.quiz-transform-marquee--slow .quiz-transform-marquee__track {
+  animation-duration: 60s;
+}
+
 .quiz-transform-marquee__group {
   display: flex;
   align-items: center;

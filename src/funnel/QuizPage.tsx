@@ -1,5 +1,5 @@
 import { type CSSProperties, useEffect, useState } from 'react'
-import { QuizTransformationMarquee } from './QuizTransformationMarquee'
+import { QuizGoalTransformationMarquee, QuizTransformationMarquee } from './QuizTransformationMarquee'
 import './quiz.css'
 import hombreAImage from '../../supabase/quiz hombre nuevo/1.png'
 import hombreBImage from '../../supabase/quiz hombre nuevo/2.png'
@@ -753,6 +753,7 @@ export function QuizPage() {
                 <li key={check}>{check}</li>
               ))}
             </ul>
+            {sex && goal ? <QuizGoalTransformationMarquee sex={sex} goal={goal} /> : null}
           </div>
         </section>
       ) : finalVariant ? (
