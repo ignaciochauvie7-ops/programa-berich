@@ -88,7 +88,7 @@ async function handler(request: Request): Promise<Response> {
     activo: true,
   })
 
-  if (!result.ok) return json({ error: result.error }, 500)
+  if (result.ok === false) return json({ error: result.error }, 500)
 
   return json({ alumno: result.alumno })
 }

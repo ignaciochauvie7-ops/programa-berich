@@ -30,13 +30,13 @@ export async function grantProgramAccess(params: {
     activo: true,
   })
 
-  if (!result.ok) {
+  if (result.ok === false) {
     return { ok: false, error: result.error, status: 500 }
   }
 
   if (params.quizSnapshot) {
     const saved = await saveQuizProfileForAlumno(admin, result.alumno.id, params.quizSnapshot)
-    if (!saved.ok) {
+    if (saved.ok === false) {
       console.error('[grantProgramAccess] quiz profile', saved.error, email)
     }
   } else if (params.quizVariant) {

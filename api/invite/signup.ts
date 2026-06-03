@@ -67,7 +67,7 @@ async function handler(request: Request): Promise<Response> {
   }
 
   const activated = await activateAlumnoRecord(admin, created.user.id, email)
-  if (!activated.ok) {
+  if (activated.ok === false) {
     console.error('[invite signup] activate alumno', activated.error)
   }
 

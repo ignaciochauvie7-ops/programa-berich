@@ -79,7 +79,7 @@ export async function sendProactiveMessage(
     }
   }
 
-  if (!result.ok) {
+  if (result.ok === false) {
     return { sent: false, reason: result.error ?? 'send failed' }
   }
 

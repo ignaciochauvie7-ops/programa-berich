@@ -176,7 +176,7 @@ async function handler(request: Request): Promise<Response> {
     nombre: customerName,
   })
 
-  if (!result.ok) {
+  if (result.ok === false) {
     console.error('[dodo webhook] grantProgramAccess', result.error)
     return json({ error: result.error }, result.status)
   }
@@ -192,7 +192,7 @@ async function handler(request: Request): Promise<Response> {
     currency,
     eventSourceUrl: process.env.APP_PUBLIC_URL?.trim(),
   })
-  if (!metaResult.ok) {
+  if (metaResult.ok === false) {
     console.error('[dodo webhook] meta purchase event', metaResult.error)
   }
 

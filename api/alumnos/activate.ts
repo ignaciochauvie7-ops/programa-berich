@@ -18,7 +18,7 @@ async function handler(request: Request): Promise<Response> {
 
   const result = await activateAlumnoRecord(admin, user.id, user.email)
 
-  if (!result.ok) {
+  if (result.ok === false) {
     return json({ error: result.error }, 500)
   }
 
