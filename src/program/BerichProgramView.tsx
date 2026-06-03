@@ -18,7 +18,6 @@ import {
 
 type LessonVideoSectionProps = {
   heading: string
-  subheading: string
   videos: LessonVideo[]
   moduleId: string
   section: '3a' | '3b' | null
@@ -33,7 +32,6 @@ type LessonVideoSectionProps = {
 
 function LessonVideoSection({
   heading,
-  subheading,
   videos,
   moduleId,
   section,
@@ -56,7 +54,6 @@ function LessonVideoSection({
       </div>
       <article className="admin-card">
         <h2>{heading}</h2>
-        <p className="admin-card__meta">{subheading}</p>
       </article>
       <div className="admin-cards admin-cards--lessons">
         {videos.map((video) => {
@@ -179,7 +176,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     showingIntroVideo ? (
       <LessonVideoSection
         heading="INTRODUCCIÓN"
-        subheading="Video de bienvenida del programa."
         videos={[{ id: INTRO_VIDEO_ID, title: 'Bienvenida al programa' }]}
         moduleId="m0"
         section={null}
@@ -193,7 +189,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     ) : showingModule1Videos ? (
       <LessonVideoSection
         heading="MODULO 1 - Mentalidad operativa y expectativas reales"
-        subheading="Lecciones en video del modulo."
         videos={module1Videos}
         moduleId="m1"
         section={null}
@@ -207,7 +202,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     ) : showingModule2Videos ? (
       <LessonVideoSection
         heading="MODULO 2 - Entender como funciona tu cuerpo (la logica detras de todo)"
-        subheading="Lecciones en video del modulo."
         videos={module2Videos}
         moduleId="m2"
         section={null}
@@ -221,7 +215,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     ) : showingModule4Videos ? (
       <LessonVideoSection
         heading="MODULO 4 - Alimentacion inteligente"
-        subheading="Lecciones en video del modulo."
         videos={module4Videos}
         moduleId="m4"
         section={null}
@@ -235,7 +228,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     ) : showingModule5Videos ? (
       <LessonVideoSection
         heading="MODULO 5 - Seguimiento, ajustes y contexto real"
-        subheading="Lecciones en video del modulo."
         videos={module5Videos}
         moduleId="m5"
         section={null}
@@ -249,7 +241,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     ) : showingModule6Videos ? (
       <LessonVideoSection
         heading="MODULO 6 - Errores / Mitos / Creencias que restan"
-        subheading="Lecciones en video del modulo."
         videos={module6Videos}
         moduleId="m6"
         section={null}
@@ -263,7 +254,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     ) : showingModule3Exercises ? (
       <LessonVideoSection
         heading="MODULO 3A - Ejercicios y construccion del entrenamiento"
-        subheading="Lecciones en video de ejercicios."
         videos={module3ExerciseVideos}
         moduleId="m3"
         section="3a"
@@ -282,7 +272,6 @@ export function BerichProgramView({ progressNamespace, variant }: BerichProgramV
     ) : showingModule3Routines ? (
       <LessonVideoSection
         heading="MODULO 3B - Rutinas en base a tus objetivos"
-        subheading="Lecciones en video de rutinas."
         videos={module3RoutineVideos}
         moduleId="m3"
         section="3b"

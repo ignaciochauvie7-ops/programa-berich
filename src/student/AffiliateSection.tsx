@@ -70,11 +70,7 @@ export function AffiliateSection() {
 
   if (loading) return <p style={{ color: 'rgba(216,255,240,0.55)', marginTop: '1.5rem' }}>Cargando…</p>
 
-  if (notFound) return (
-    <p style={{ marginTop: '1.5rem', color: 'rgba(216,255,240,0.5)', fontSize: '0.9rem' }}>
-      Tu acceso de afiliado estará disponible en breve.
-    </p>
-  )
+  if (notFound) return null
 
   if (!data) return null
 
