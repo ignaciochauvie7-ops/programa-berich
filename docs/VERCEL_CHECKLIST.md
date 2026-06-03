@@ -37,7 +37,7 @@ El repo define build/output en `vercel.json` y Node 20 en `.nvmrc`.
 | `WHATSAPP_ACCESS_TOKEN` | Meta Cloud API |
 | `WHATSAPP_VERIFY_TOKEN` | Verificación webhook GET |
 | `WHATSAPP_APP_SECRET` | Firma webhook POST |
-| `COACH_CRON_SECRET` | Proteger `/api/coach/cron` (Vercel Cron: `Authorization: Bearer …`) |
+| `COACH_CRON_SECRET` | Proteger `/api/coach/cron` si usás cron externo (plan Hobby no permite cron cada 15 min en Vercel) |
 | `WHATSAPP_TEMPLATE_*` | Opcional: plantillas Meta para proactivos fuera de 24 h |
 
 **Supabase:** ejecutar `supabase/patch-coach-whatsapp.sql` y luego `supabase/patch-coach-personalized.sql` una vez.
