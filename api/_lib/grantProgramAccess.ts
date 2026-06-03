@@ -1,4 +1,5 @@
 import { provisionAlumnoInvite } from './provisionAlumno.js'
+import { saveQuizProfileForAlumno, type QuizSnapshotInput } from './coach/quizProfile.js'
 import { getSupabaseAdmin, normalizeEmail } from './supabaseAdmin.js'
 
 export type PurchaseSource = 'dodo'
@@ -7,8 +8,9 @@ export async function grantProgramAccess(params: {
   email: string
   source: PurchaseSource
   quizVariant?: string | null
+  quizSnapshot?: QuizSnapshotInput | null
   nombre?: string | null
-}): Promise<{ ok: true } | { ok: false; error: string; status: number }> {
+}): Promise<{ ok: true; alumnoId: string } | { ok: false; error: string; status: number }> {
   const email = normalizeEmail(params.email)
   if (!email.includes('@')) {
     return { ok: false, error: 'invalid email', status: 400 }
@@ -32,9 +34,14 @@ export async function grantProgramAccess(params: {
     return { ok: false, error: result.error, status: 500 }
   }
 
-  if (params.quizVariant) {
-    console.info('[grantProgramAccess] quiz_variant', params.quizVariant, email)
+  if (params.quizSnapshot) {
+    const saved = await saveQuizProfileForAlumno(admin, result.alumno.id, params.quizSnapshot)
+    if (!saved.ok) {
+      console.error('[grantProgramAccess] quiz profile', saved.error, email)
+    }
+  } else if (params.quizVariant) {
+    console.info('[grantProgramAccess] quiz_variant sin snapshot completo', params.quizVariant, email)
   }
 
-  return { ok: true }
+  return { ok: true, alumnoId: result.alumno.id }
 }

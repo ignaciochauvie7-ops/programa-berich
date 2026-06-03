@@ -30,7 +30,7 @@
 | `COACH_CRON_SECRET` | Proteger `/api/coach/cron` (Vercel Cron: `Authorization: Bearer …`) |
 | `WHATSAPP_TEMPLATE_*` | Opcional: plantillas Meta para proactivos fuera de 24 h |
 
-**Supabase:** ejecutar `supabase/patch-coach-whatsapp.sql` una vez.
+**Supabase:** ejecutar `supabase/patch-coach-whatsapp.sql` y luego `supabase/patch-coach-personalized.sql` una vez.
 
 **Meta:** webhook `https://programa-berich.vercel.app/api/whatsapp/webhook` (mensajes + suscripciones).
 

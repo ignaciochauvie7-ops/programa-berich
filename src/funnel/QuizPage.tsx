@@ -361,16 +361,33 @@ export function QuizPage() {
   }
 
   async function startCheckout() {
-    if (!resultDestination || checkoutBusy) return
+    if (!resultDestination || checkoutBusy || !sex || !age || !goal || !impediment || !impedimentPath) return
 
     setCheckoutError(null)
     setCheckoutBusy(true)
+
+    const heightCm = heightUnit === 'cm' ? height : Math.round(height * 2.54)
+    const weightKg = weightUnit === 'kg' ? weight : Math.round(weight * 0.453592)
+    const pesoIdealKg = weightUnit === 'kg' ? pesoIdeal : Math.round(pesoIdeal * 0.453592)
 
     try {
       const res = await fetch('/api/dodo/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ variant: resultDestination }),
+        body: JSON.stringify({
+          variant: resultDestination,
+          quiz: {
+            variant: resultDestination,
+            sex,
+            age_range: age,
+            height_cm: heightCm,
+            weight_kg: weightKg,
+            peso_ideal_kg: pesoIdealKg,
+            goal,
+            impediment,
+            impediment_path: impedimentPath,
+          },
+        }),
       })
 
       const body = (await res.json()) as { checkout_url?: string; error?: string }

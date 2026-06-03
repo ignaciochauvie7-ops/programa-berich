@@ -176,6 +176,53 @@
   flex-shrink: 0;
 }
 
+.coach-setup__summary {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  background: rgba(0, 229, 255, 0.06);
+  text-align: left;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.coach-setup__summary p {
+  margin: 0 0 0.45rem;
+}
+
+.coach-setup__summary p:last-child {
+  margin-bottom: 0;
+}
+
+.coach-setup__impediment {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.84rem;
+}
+
+.coach-setup__activity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.coach-setup__radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.88rem;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.coach-setup__radio input {
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
 .student-auth__password-toggle svg {
   display: block;
   filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.85));

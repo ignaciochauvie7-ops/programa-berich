@@ -1,7 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { displayName, saveCoachMessage, touchProfileTimestamps } from './alumnoCoach.js'
+import { buildProactiveText } from './messageTemplates.js'
+import { getQuizProfile } from './quizProfile.js'
 import { buildSystemPrompt } from './systemPrompt.js'
-import type { CoachProfile, ProactiveJobType } from './types.js'
+import type { CoachProfile, ProactiveJobType, QuizProfile } from './types.js'
 import { generateCoachReply } from '../openai/client.js'
 import { isWhatsAppConfigured, sendWhatsAppTemplate, sendWhatsAppText } from '../whatsapp/client.js'
 
@@ -39,38 +41,27 @@ function templateForJob(job: ProactiveJobType): string | null {
   return process.env[key]?.trim() || null
 }
 
-export function buildProactiveText(
-  job: ProactiveJobType,
-  profile: CoachProfile,
-  nombre: string | null,
-  email: string,
-): string {
-  const name = displayName(nombre, email)
-
-  switch (job) {
-    case 'training_reminder':
-      return `Hola ${name}, hoy te toca entrenar. ¿Cómo venís de energía?`
-    case 'hydration':
-      return `${name}, recordá ir tomando agua a lo largo del día 💧`
-    case 'nutrition':
-      return `${name}, cuidá tus comidas hoy y mantené el ritmo con el plan.`
-    case 'weekly_check':
-      return `¿Cómo venís esta semana, ${name}? Contame cómo te sentís con el entrenamiento y la alimentación.`
-    case 'reengagement':
-      return `Hola ${name}, hace unos días que no charlamos. ¿Cómo venís con el plan?`
-    default:
-      return `Hola ${name}, ¿cómo venís con el programa?`
-  }
-}
-
 export async function sendProactiveMessage(
   admin: SupabaseClient,
   profile: CoachProfile,
   nombre: string | null,
   email: string,
   job: ProactiveJobType,
+  quiz: QuizProfile | null,
 ): Promise<{ sent: boolean; reason?: string }> {
-  const text = buildProactiveText(job, profile, nombre, email)
+  const tz = profile.timezone || 'America/Montevideo'
+  const now = new Date()
+  const local = localParts(now, tz)
+  const isTrainingDay = profile.training_days.includes(local.day)
+  const dayIndex = hashSeed(profile.alumno_id, localDateKey(now, tz))
+
+  const text = buildProactiveText(job, {
+    profile,
+    quiz,
+    nombre: displayName(nombre, email),
+    isTrainingDay,
+    dayIndex,
+  })
   const name = displayName(nombre, email)
 
   let result: { ok: boolean; messageId?: string | null; error?: string }
@@ -92,7 +83,7 @@ export async function sendProactiveMessage(
     return { sent: false, reason: result.error ?? 'send failed' }
   }
 
-  const now = new Date().toISOString()
+  const nowIso = new Date().toISOString()
   await saveCoachMessage(admin, {
     alumnoId: profile.alumno_id,
     direction: 'outbound',
@@ -101,7 +92,7 @@ export async function sendProactiveMessage(
     waMessageId: result.messageId ?? null,
     status: 'sent',
   })
-  await touchProfileTimestamps(admin, profile.alumno_id, { last_outbound_at: now })
+  await touchProfileTimestamps(admin, profile.alumno_id, { last_outbound_at: nowIso })
 
   return { sent: true }
 }
@@ -113,6 +104,7 @@ export async function handleInboundText(
   waMessageId: string | null,
 ): Promise<void> {
   const now = new Date().toISOString()
+  const quiz = await getQuizProfile(admin, profile.alumno_id)
 
   await saveCoachMessage(admin, {
     alumnoId: profile.alumno_id,
@@ -144,7 +136,7 @@ export async function handleInboundText(
         content: row.body as string,
       })) ?? []
 
-  const systemPrompt = buildSystemPrompt(profile, profile.nombre, profile.email)
+  const systemPrompt = buildSystemPrompt(profile, profile.nombre, profile.email, quiz)
   const reply = await generateCoachReply(systemPrompt, history, text)
 
   const replyText = reply.ok
@@ -191,13 +183,25 @@ function localParts(date: Date, timeZone: string) {
   return { day: dayMap[weekday.slice(0, 3)] ?? date.getUTCDay(), hour, minute }
 }
 
-/** Horario impredecible por día (8:00–20:00), estable para ese alumno y fecha. */
+/** Horario estable por alumno, job y día (ventana 15 min). */
 function dailySendSlot(alumnoId: string, job: ProactiveJobType, date: Date, timeZone: string): { hour: number; minute: number } {
   const dateKey = localDateKey(date, timeZone)
   const seed = hashSeed(alumnoId, job, dateKey)
+  const jobBias: Partial<Record<ProactiveJobType, number>> = {
+    nutrition_am: 2,
+    hydration: 6,
+    steps_reminder: 8,
+    nutrition_pm: 10,
+    training_reminder: 0,
+    impediment_support: 12,
+    weekend_boost: 3,
+    weekly_check: 4,
+    reengagement: 14,
+  }
+  const bias = jobBias[job] ?? 5
   const slotsPerHour = 4
   const totalSlots = (SEND_END_HOUR - SEND_START_HOUR) * slotsPerHour
-  const slot = seed % totalSlots
+  const slot = (seed + bias) % totalSlots
   return {
     hour: SEND_START_HOUR + Math.floor(slot / slotsPerHour),
     minute: (slot % slotsPerHour) * 15,
@@ -223,22 +227,41 @@ function slotKey(date: Date): string {
   return d.toISOString()
 }
 
-export function jobsDueNow(
-  profile: CoachProfile,
-  now = new Date(),
-): { job: ProactiveJobType; scheduledFor: string }[] {
+export function jobsDueNow(profile: CoachProfile, now = new Date()): { job: ProactiveJobType; scheduledFor: string }[] {
   const tz = profile.timezone || 'America/Montevideo'
   const local = localParts(now, tz)
   const due: { job: ProactiveJobType; scheduledFor: string }[] = []
 
   if (!isInSendWindow(local.hour)) return due
 
-  if (isDueNow(now, tz, profile.alumno_id, 'hydration')) {
-    due.push({ job: 'hydration', scheduledFor: slotKey(now) })
-  }
+  const personalized = profile.calorie_target != null
 
-  if (isDueNow(now, tz, profile.alumno_id, 'nutrition')) {
-    due.push({ job: 'nutrition', scheduledFor: slotKey(now) })
+  if (personalized) {
+    if (isDueNow(now, tz, profile.alumno_id, 'nutrition_am')) {
+      due.push({ job: 'nutrition_am', scheduledFor: slotKey(now) })
+    }
+    if (isDueNow(now, tz, profile.alumno_id, 'hydration')) {
+      due.push({ job: 'hydration', scheduledFor: slotKey(now) })
+    }
+    if (isDueNow(now, tz, profile.alumno_id, 'nutrition_pm')) {
+      due.push({ job: 'nutrition_pm', scheduledFor: slotKey(now) })
+    }
+    const altDay = hashSeed(profile.alumno_id, localDateKey(now, tz)) % 2 === 0
+    if (altDay && isDueNow(now, tz, profile.alumno_id, 'steps_reminder')) {
+      due.push({ job: 'steps_reminder', scheduledFor: slotKey(now) })
+    } else if (!altDay && isDueNow(now, tz, profile.alumno_id, 'impediment_support')) {
+      due.push({ job: 'impediment_support', scheduledFor: slotKey(now) })
+    }
+    if (local.day === 6 && isDueNow(now, tz, profile.alumno_id, 'weekend_boost')) {
+      due.push({ job: 'weekend_boost', scheduledFor: slotKey(now) })
+    }
+  } else {
+    if (isDueNow(now, tz, profile.alumno_id, 'hydration')) {
+      due.push({ job: 'hydration', scheduledFor: slotKey(now) })
+    }
+    if (isDueNow(now, tz, profile.alumno_id, 'nutrition')) {
+      due.push({ job: 'nutrition', scheduledFor: slotKey(now) })
+    }
   }
 
   if (profile.training_days.includes(local.day) && isDueNow(now, tz, profile.alumno_id, 'training_reminder')) {

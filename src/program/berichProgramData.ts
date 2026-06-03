@@ -10,12 +10,41 @@ export const module1Videos = [
 export const module2Videos = [
   { id: 'AVg9Yj4knWc', title: 'Supervivencia' },
   { id: 'DiOwTSVx9Xk', title: 'Peso / Composición / Progreso' },
-  { id: 'AyLv0nMhM5U', title: 'Calorías' },
+  {
+    id: 'AyLv0nMhM5U',
+    title: 'Calorías',
+    resources: [
+      {
+        label: 'Calculadora de Calorías',
+        url: 'https://docs.google.com/spreadsheets/d/1PUehuBc7s3jtkjxidfJR0qvlLlfB1jYhKtOvDkqfjDk/copy',
+      },
+    ],
+  },
 ]
 
 export const module3RoutineVideos = [
-  { id: 'mJIVO6FEjG8', title: 'Rutinas Hombres' },
-  { id: 'S6XnBwNxVLw', title: 'Rutinas Mujeres' },
+  {
+    id: 'mJIVO6FEjG8',
+    title: 'Rutinas Hombres',
+    resources: [
+      {
+        label: 'Rutinas',
+        url: 'https://docs.google.com/document/d/1ZY4-EseNqRojkmy8lrdgM_VwobUbmuRtezgY8HobByo/copy',
+        variant: 'blue',
+      },
+    ],
+  },
+  {
+    id: 'S6XnBwNxVLw',
+    title: 'Rutinas Mujeres',
+    resources: [
+      {
+        label: 'Rutinas',
+        url: 'https://docs.google.com/document/d/1ErKyeJoHBA9LzHj4cYUnR0KUQt5H_E1_FWU2Nvkz6X0/copy',
+        variant: 'pink',
+      },
+    ],
+  },
 ]
 
 export const module3ExerciseVideos = [
@@ -35,7 +64,16 @@ export const module4Videos = [
   { id: 'izCZ1Fgw9-g', title: 'Macros' },
   { id: '-TpFrPaWwZI', title: 'Manejo del Hambre y Distribución' },
   { id: 'XAjkHS4rxMQ', title: 'Flexibilidad' },
-  { id: 'mXLfiBtevg0', title: 'Plantillas y Guías' },
+  {
+    id: 'mXLfiBtevg0',
+    title: 'Plantillas y Guías',
+    resources: [
+      {
+        label: 'Plantillas y Guías',
+        url: 'https://docs.google.com/document/d/1uAkDAUc12jF_hNZ4VrCMSqhYfwNAtH8_j-rEgBBK4Kc/copy',
+      },
+    ],
+  },
 ]
 
 export const module5Videos = [
@@ -63,7 +101,11 @@ export const MODULE3_BRANCH_KEYS: Record<'3a' | '3b', readonly string[]> = {
   '3b': module3RoutineVideos.map((v) => `m3:3b:${v.id}`),
 }
 
-export type LessonVideo = { id: string; title: string }
+export type LessonVideo = {
+  id: string
+  title: string
+  resources?: { label: string; url: string; variant?: 'blue' | 'pink' }[]
+}
 
 export const berichModules = [
   {

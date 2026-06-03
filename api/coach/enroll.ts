@@ -4,15 +4,19 @@ import { getRequestUser } from '../_lib/auth.js'
 import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
 import { findAlumnoForUser } from '../_lib/coach/alumnoCoach.js'
 import { normalizePhoneE164 } from '../_lib/coach/phone.js'
+import { computeCoachTargets, formatKcal, formatLiters } from '../_lib/coach/nutrition.js'
+import { getQuizProfile } from '../_lib/coach/quizProfile.js'
+import type { ActivityLevel, CoachGoal } from '../_lib/coach/types.js'
 import { isWhatsAppConfigured, sendWhatsAppText } from '../_lib/whatsapp/client.js'
 import { displayName } from '../_lib/coach/alumnoCoach.js'
 
-const DEFAULT_GOAL = 'Recomposición corporal'
+const ACTIVITY_LEVELS: ActivityLevel[] = ['sedentary', 'light', 'moderate', 'active', 'very_active']
 
 type Body = {
   phone?: string
   training_days?: number[]
   timezone?: string
+  activity_level?: ActivityLevel
   opt_in?: boolean
 }
 
@@ -46,6 +50,11 @@ async function handler(request: Request): Promise<Response> {
     return json({ error: 'Elegí al menos un día de entrenamiento.' }, 400)
   }
 
+  const activityLevel = body.activity_level
+  if (!activityLevel || !ACTIVITY_LEVELS.includes(activityLevel)) {
+    return json({ error: 'Elegí cuántas veces por semana vas a entrenar (actividad física).' }, 400)
+  }
+
   const timezone = String(body.timezone ?? 'America/Montevideo').trim() || 'America/Montevideo'
 
   const admin = getSupabaseAdmin()
@@ -56,6 +65,11 @@ async function handler(request: Request): Promise<Response> {
     return json({ error: 'Tu cuenta no está activa todavía.' }, 403)
   }
 
+  const quiz = await getQuizProfile(admin, alumno.id)
+  const goal: CoachGoal = quiz?.goal ?? 'Recomposición corporal'
+  const weightKg = quiz?.weight_kg ?? 75
+
+  const targets = computeCoachTargets(weightKg, activityLevel, goal)
   const now = new Date().toISOString()
 
   const { error: upsertError } = await admin.from('alumno_coach_profile').upsert(
@@ -64,7 +78,14 @@ async function handler(request: Request): Promise<Response> {
       phone_e164: phone,
       timezone,
       training_days: [...new Set(trainingDays)].sort((a, b) => a - b),
-      goal: DEFAULT_GOAL,
+      goal,
+      activity_level: activityLevel,
+      maintenance_kcal: targets.maintenance_kcal,
+      calorie_target: targets.calorie_target,
+      calorie_cap: targets.calorie_cap,
+      water_ml_base: targets.water_ml_base,
+      water_ml_training_extra: targets.water_ml_training_extra,
+      steps_target: targets.steps_target,
       opt_in_at: now,
       setup_completed_at: now,
       coach_active: true,
@@ -83,7 +104,10 @@ async function handler(request: Request): Promise<Response> {
 
   if (isWhatsAppConfigured()) {
     const name = displayName(alumno.nombre, alumno.email)
-    const welcome = `Hola ${name}, soy tu acompañamiento del Programa Berich. Ya quedó todo listo: te escribo por acá para ayudarte con entrenamiento y alimentación. ¿En qué te puedo dar una mano hoy?`
+    const waterL = formatLiters(targets.water_ml_base)
+    const welcome = quiz
+      ? `Hola ${name}, soy tu acompañamiento del Programa Berich. Ya quedó todo listo según lo que marcaste en el quiz: objetivo ${goal.toLowerCase()}, referencia ~${formatKcal(targets.calorie_target)} kcal y ~${waterL}L de agua por día. Te escribo por acá para ayudarte. ¿En qué te puedo dar una mano hoy?`
+      : `Hola ${name}, soy tu acompañamiento del Programa Berich. Ya quedó todo listo: te escribo por acá para ayudarte con entrenamiento y alimentación. ¿En qué te puedo dar una mano hoy?`
     const send = await sendWhatsAppText(phone, welcome)
     if (send.ok) {
       await admin.from('coach_messages').insert({

@@ -79,6 +79,29 @@ function LessonVideoSection({
                   allowFullScreen
                 />
               </div>
+              {video.resources?.length ? (
+                <div className="admin-lesson-resources">
+                  {video.resources.map((resource) => {
+                    const variantClass =
+                      resource.variant === 'blue'
+                        ? ' admin-btn--lesson-resource--blue'
+                        : resource.variant === 'pink'
+                          ? ' admin-btn--lesson-resource--pink'
+                          : ' admin-btn--primary'
+                    return (
+                    <a
+                      key={resource.url}
+                      className={'admin-btn admin-btn--lesson-resource' + variantClass}
+                      href={resource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {resource.label}
+                    </a>
+                    )
+                  })}
+                </div>
+              ) : null}
               <div className="admin-lesson-actions">
                 <button
                   type="button"

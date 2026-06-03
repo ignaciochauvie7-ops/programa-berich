@@ -2,6 +2,7 @@ import { webHandler } from '../_lib/webHandler.js'
 import { verifyStandardWebhook } from '../_lib/crypto.js'
 import { readPaymentCustomerName } from '../_lib/dodoCustomer.js'
 import { dodoWebhookSecret } from '../_lib/dodoConfig.js'
+import { parseQuizSnapshotFromMetadata } from '../_lib/coach/quizProfile.js'
 import { grantProgramAccess } from '../_lib/grantProgramAccess.js'
 import { json } from '../_lib/json.js'
 import { sendMetaPurchaseEvent } from '../_lib/metaCapi.js'
@@ -47,21 +48,24 @@ function readPaymentEmail(data: Record<string, unknown>): string | null {
   return null
 }
 
-function readQuizVariant(data: Record<string, unknown>): string | null {
-  const fromRoot = readMetadataVariant(data.metadata)
-  if (fromRoot) return fromRoot
+function readPaymentMetadata(data: Record<string, unknown>): unknown {
+  if (data.metadata) return data.metadata
 
   const checkout = data.checkout
   if (checkout && typeof checkout === 'object' && checkout !== null) {
-    return readMetadataVariant((checkout as { metadata?: unknown }).metadata)
+    return (checkout as { metadata?: unknown }).metadata
   }
 
   const session = data.checkout_session
   if (session && typeof session === 'object' && session !== null) {
-    return readMetadataVariant((session as { metadata?: unknown }).metadata)
+    return (session as { metadata?: unknown }).metadata
   }
 
   return null
+}
+
+function readQuizVariant(data: Record<string, unknown>): string | null {
+  return readMetadataVariant(readPaymentMetadata(data))
 }
 
 function readMetadataVariant(metadata: unknown): string | null {
@@ -157,8 +161,9 @@ async function handler(request: Request): Promise<Response> {
   }
 
   const quizVariant = readQuizVariant(data)
-  if (!quizVariant) {
-    console.warn('[dodo webhook] payment.succeeded sin quiz_variant en metadata')
+  const quizSnapshot = parseQuizSnapshotFromMetadata(readPaymentMetadata(data))
+  if (!quizVariant && !quizSnapshot) {
+    console.warn('[dodo webhook] payment.succeeded sin quiz_variant ni quiz_json en metadata')
   }
 
   const customerName = readPaymentCustomerName(data)
@@ -166,7 +171,8 @@ async function handler(request: Request): Promise<Response> {
   const result = await grantProgramAccess({
     email: emailRaw,
     source: 'dodo',
-    quizVariant,
+    quizVariant: quizSnapshot?.variant ?? quizVariant,
+    quizSnapshot,
     nombre: customerName,
   })
 

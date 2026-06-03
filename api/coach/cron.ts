@@ -1,12 +1,14 @@
 import { webHandler } from '../_lib/webHandler.js'
 import { json } from '../_lib/json.js'
 import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
+import { getQuizProfile } from '../_lib/coach/quizProfile.js'
 import {
   jobsDueNow,
   markScheduledSend,
   sendProactiveMessage,
   wasAlreadyScheduled,
 } from '../_lib/coach/proactive.js'
+import type { CoachProfile } from '../_lib/coach/types.js'
 
 function authorizeCron(request: Request): boolean {
   const secret = process.env.COACH_CRON_SECRET?.trim()
@@ -48,7 +50,8 @@ async function handler(request: Request): Promise<Response> {
     const alumno = row.alumnos as { email: string; nombre: string | null; activo: boolean }
     if (!alumno.activo) continue
 
-    const profile = row as typeof row & { alumno_id: string }
+    const profile = row as CoachProfile
+    const quiz = await getQuizProfile(admin, profile.alumno_id)
     const dueJobs = jobsDueNow(profile)
 
     for (const { job, scheduledFor } of dueJobs) {
@@ -58,7 +61,7 @@ async function handler(request: Request): Promise<Response> {
         continue
       }
 
-      const result = await sendProactiveMessage(admin, profile, alumno.nombre, alumno.email, job)
+      const result = await sendProactiveMessage(admin, profile, alumno.nombre, alumno.email, job, quiz)
       await markScheduledSend(admin, profile.alumno_id, job, scheduledFor, result.sent, result.reason)
 
       if (result.sent) sent += 1

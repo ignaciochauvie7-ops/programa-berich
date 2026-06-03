@@ -1,16 +1,30 @@
 import { webHandler } from '../_lib/webHandler.js'
 import { json } from '../_lib/json.js'
 import { appPublicOrigin } from '../_lib/appOrigin.js'
+import { compactQuizJson, type QuizSnapshotInput } from '../_lib/coach/quizProfile.js'
+import type { CoachGoal } from '../_lib/coach/types.js'
 import { dodoCheckoutUserMessage } from '../_lib/dodoCheckoutErrors.js'
 import { dodoApiBaseUrl, dodoApiKey, dodoProductId } from '../_lib/dodoConfig.js'
 
-type Body = { variant?: string }
+type Body = {
+  variant?: string
+  quiz?: QuizSnapshotInput
+}
 
-type DodoCheckoutResponse = {
-  checkout_url?: string | null
-  session_id?: string
-  error?: string
-  message?: string
+const GOALS: CoachGoal[] = ['Ganar músculo', 'Perder grasa', 'Recomposición corporal']
+
+function isValidQuiz(quiz: QuizSnapshotInput | undefined): quiz is QuizSnapshotInput {
+  if (!quiz) return false
+  return (
+    typeof quiz.variant === 'string' &&
+    (quiz.sex === 'hombre' || quiz.sex === 'mujer') &&
+    typeof quiz.age_range === 'string' &&
+    Number.isFinite(quiz.height_cm) &&
+    Number.isFinite(quiz.weight_kg) &&
+    GOALS.includes(quiz.goal) &&
+    typeof quiz.impediment === 'string' &&
+    (quiz.impediment_path === 'musculo' || quiz.impediment_path === 'grasa-recomp')
+  )
 }
 
 async function handler(request: Request): Promise<Response> {
@@ -41,8 +55,15 @@ async function handler(request: Request): Promise<Response> {
   }
 
   if (returnUrl) payload.return_url = returnUrl
-  if (variant) {
-    payload.metadata = { quiz_variant: variant, source: 'quiz' }
+
+  const metadata: Record<string, string> = { source: 'quiz' }
+  if (variant) metadata.quiz_variant = variant
+  if (isValidQuiz(body.quiz)) {
+    metadata.quiz_json = compactQuizJson(body.quiz)
+    if (!metadata.quiz_variant) metadata.quiz_variant = body.quiz.variant
+  }
+  if (Object.keys(metadata).length > 0) {
+    payload.metadata = metadata
   }
 
   const res = await fetch(`${dodoApiBaseUrl()}/checkouts`, {
@@ -54,9 +75,9 @@ async function handler(request: Request): Promise<Response> {
     body: JSON.stringify(payload),
   })
 
-  let data: DodoCheckoutResponse
+  let data: { checkout_url?: string | null; session_id?: string; error?: string; message?: string }
   try {
-    data = (await res.json()) as DodoCheckoutResponse
+    data = (await res.json()) as typeof data
   } catch {
     return json({ error: 'respuesta inválida de Dodo Payments' }, 502)
   }
