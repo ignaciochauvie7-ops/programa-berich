@@ -1,3 +1,9 @@
+export type LessonVideo = {
+  id: string
+  title: string
+  resources?: { label: string; url: string; variant?: 'blue' | 'pink' }[]
+}
+
 export const INTRO_VIDEO_ID = 'cWNZMkgyzB0'
 
 export const module1Videos = [
@@ -7,7 +13,7 @@ export const module1Videos = [
   { id: 'oSwqkJWYjTU', title: 'Disciplina ≠ motivación' },
 ]
 
-export const module2Videos = [
+export const module2Videos: LessonVideo[] = [
   { id: 'AVg9Yj4knWc', title: 'Supervivencia' },
   { id: 'DiOwTSVx9Xk', title: 'Peso / Composición / Progreso' },
   {
@@ -22,7 +28,7 @@ export const module2Videos = [
   },
 ]
 
-export const module3RoutineVideos = [
+export const module3RoutineVideos: LessonVideo[] = [
   {
     id: 'mJIVO6FEjG8',
     title: 'Rutinas Hombres',
@@ -58,7 +64,7 @@ export const module3ExerciseVideos = [
   { id: 'uH8smkk_7qw', title: 'Ejercicios de Abdomen' },
 ]
 
-export const module4Videos = [
+export const module4Videos: LessonVideo[] = [
   { id: 'DXLUYSP-KAY', title: 'Comer según tus Objetivos' },
   { id: 'WaZ6Vc0VD4Q', title: 'Por qué Comer X y no Y' },
   { id: 'izCZ1Fgw9-g', title: 'Macros' },
@@ -99,12 +105,6 @@ export const MODULE_LESSON_KEYS: Record<string, readonly string[]> = {
 export const MODULE3_BRANCH_KEYS: Record<'3a' | '3b', readonly string[]> = {
   '3a': module3ExerciseVideos.map((v) => `m3:3a:${v.id}`),
   '3b': module3RoutineVideos.map((v) => `m3:3b:${v.id}`),
-}
-
-export type LessonVideo = {
-  id: string
-  title: string
-  resources?: { label: string; url: string; variant?: 'blue' | 'pink' }[]
 }
 
 export const berichModules = [

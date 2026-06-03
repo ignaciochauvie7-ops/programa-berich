@@ -1,4 +1,18 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+type VercelHeaders = Record<string, string | string[] | undefined>
+
+type VercelRequest = {
+  method?: string
+  url?: string
+  headers: VercelHeaders
+  body?: unknown
+}
+
+type VercelResponse = {
+  status: (code: number) => VercelResponse
+  setHeader: (name: string, value: string) => void
+  send: (body: Buffer) => void
+  json: (body: unknown) => void
+}
 
 function buildWebRequest(req: VercelRequest): Request {
   const host = String(req.headers.host ?? 'localhost')
