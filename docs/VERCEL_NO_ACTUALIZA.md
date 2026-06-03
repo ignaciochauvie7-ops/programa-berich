@@ -47,5 +47,6 @@ Si Git de Vercel no dispara builds:
 
 ## Commits que deben estar en Production
 
+- `16282c5` — `tsconfig.json` raíz con tipos Node (lo que Vercel usa en `api/`) + `npm run build` verifica API
 - `7df63d3` — arregla build TypeScript (botones + textos)
 - `b854392` — config explícita Vercel
