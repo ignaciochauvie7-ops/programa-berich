@@ -68,9 +68,7 @@ export function AffiliateSection() {
     })
   }
 
-  if (loading) return <p style={{ color: 'rgba(216,255,240,0.55)', marginTop: '1.5rem' }}>Cargando…</p>
-
-  if (notFound) return null
+  if (loading || notFound) return null
 
   if (!data) return null
 

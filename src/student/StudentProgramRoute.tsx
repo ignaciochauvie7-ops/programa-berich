@@ -194,7 +194,7 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       </header>
       <main className="student-program__main">
         <BerichProgramView key={user.id} variant="student" progressNamespace={user.id} />
-        <AffiliateSection />
+        {!isAdminUser(user) ? <AffiliateSection /> : null}
       </main>
     </div>
   )
