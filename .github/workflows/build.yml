@@ -20,3 +20,15 @@ jobs:
       - run: npm ci
 
       - run: npm run build
+
+      # Opcional: secret VERCEL_DEPLOY_HOOK (Vercel → Settings → Git → Deploy Hooks)
+      - name: Trigger Vercel production deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK no configurado; redeploy manual en Vercel si hace falta."
+            exit 0
+          fi
+          curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
