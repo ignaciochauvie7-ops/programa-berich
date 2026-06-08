@@ -15,23 +15,50 @@ type ProvisionOptions = {
   activo?: boolean
 }
 
+const PRODUCT_LABEL = 'Programa Berich Completo'
+
 function readInviteActionLink(linkData: {
-  properties?: { action_link?: string | null }
-}): string | null {
-  const url = linkData.properties?.action_link
+  properties?: { action_link?: string | null } | null
+  action_link?: string | null
+} | null | undefined): string | null {
+  if (!linkData) return null
+  const url = linkData.properties?.action_link ?? linkData.action_link
   return typeof url === 'string' && url.startsWith('http') ? url : null
 }
 
-async function sendInviteLinkFallback(email: string, inviteUrl: string): Promise<void> {
-  const productLabel = process.env.PRODUCT_SLUG ?? 'Programa Berich'
-  const sent = await sendProgramInviteEmail({
-    to: email,
-    inviteUrl,
-    productLabel,
+async function resolveInviteActionLink(
+  admin: SupabaseClient,
+  email: string,
+  redirectTo: string,
+  nombre: string | null,
+): Promise<{ userId: string | null; actionLink: string } | { error: string }> {
+  const inviteOptions = { redirectTo, data: nombre ? { nombre } : undefined }
+
+  const invite = await admin.auth.admin.generateLink({
+    type: 'invite',
+    email,
+    options: inviteOptions,
   })
-  if (!sent.sent) {
-    console.warn('[provisionAlumnoInvite] mail fallback no enviado; link:', inviteUrl)
+
+  const inviteLink = readInviteActionLink(invite.data)
+  if (inviteLink) {
+    return { userId: invite.data?.user?.id ?? null, actionLink: inviteLink }
   }
+
+  const recovery = await admin.auth.admin.generateLink({
+    type: 'recovery',
+    email,
+    options: { redirectTo },
+  })
+
+  const recoveryLink = readInviteActionLink(recovery.data)
+  if (recoveryLink) {
+    return { userId: recovery.data?.user?.id ?? null, actionLink: recoveryLink }
+  }
+
+  const errMsg =
+    invite.error?.message ?? recovery.error?.message ?? 'no se pudo generar el link de invitación'
+  return { error: errMsg }
 }
 
 /**
@@ -51,47 +78,31 @@ export async function provisionAlumnoInvite(
   const activo = options?.activo !== false
   const redirectTo = `${getActivationOrigin()}/activar-cuenta`
 
-  const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo,
-    data: nombre ? { nombre } : undefined,
+  const linkResult = await resolveInviteActionLink(admin, email, redirectTo, nombre)
+  if ('error' in linkResult) {
+    console.error('[provisionAlumnoInvite]', linkResult.error, email)
+    return { ok: false, error: linkResult.error }
+  }
+
+  const sent = await sendProgramInviteEmail({
+    to: email,
+    inviteUrl: linkResult.actionLink,
+    productLabel: PRODUCT_LABEL,
   })
 
-  let invitedUserId = inviteData.user?.id ?? null
-
-  if (inviteError) {
-    const msg = inviteError.message?.toLowerCase() ?? ''
-    const alreadyRegistered =
-      msg.includes('already') || msg.includes('registered') || msg.includes('exists')
-
-    if (!alreadyRegistered) {
-      console.error('[provisionAlumnoInvite]', inviteError)
-      return { ok: false, error: inviteError.message ?? 'no se pudo enviar la invitación' }
-    }
-
-    console.info('[provisionAlumnoInvite] usuario ya existe, generando link de invitación', email)
-    const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
-      type: 'invite',
-      email,
-      options: { redirectTo, data: nombre ? { nombre } : undefined },
-    })
-
-    if (linkError || !linkData) {
-      console.error('[provisionAlumnoInvite] generateLink', linkError)
-      return { ok: false, error: 'no se pudo generar el link de invitación' }
-    }
-
-    invitedUserId = linkData.user?.id ?? invitedUserId
-    const actionLink = readInviteActionLink(linkData)
-    if (actionLink) {
-      await sendInviteLinkFallback(email, actionLink)
-    }
+  if (!sent.sent) {
+    const detail = 'error' in sent ? sent.error : 'RESEND no configurado o dominio sin verificar'
+    console.error('[provisionAlumnoInvite] mail no enviado', detail, email, linkResult.actionLink)
+    return { ok: false, error: 'no se pudo enviar el mail de invitación' }
   }
+
+  console.info('[provisionAlumnoInvite] mail enviado', email)
 
   const { data: alumno, error: upsertError } = await admin
     .from('alumnos')
     .upsert(
       {
-        user_id: invitedUserId,
+        user_id: linkResult.userId,
         email,
         nombre,
         activo,
@@ -103,7 +114,7 @@ export async function provisionAlumnoInvite(
 
   if (upsertError || !alumno) {
     console.error('[provisionAlumnoInvite] alumnos', upsertError)
-    return { ok: false, error: 'invitación enviada, pero no se pudo guardar el alumno' }
+    return { ok: false, error: 'mail enviado, pero no se pudo guardar el alumno' }
   }
 
   if (productSlug) {

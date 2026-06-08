@@ -78,7 +78,13 @@ async function handler(request: Request): Promise<Response> {
     body: JSON.stringify(payload),
   })
 
-  let data: { url?: string | null; id?: string; detail?: unknown; error?: string }
+  let data: {
+    url?: string | null
+    id?: string
+    detail?: unknown
+    error?: string
+    error_description?: string
+  }
   try {
     data = (await res.json()) as typeof data
   } catch {
@@ -90,9 +96,13 @@ async function handler(request: Request): Promise<Response> {
     const detail =
       typeof data.detail === 'string'
         ? data.detail
-        : Array.isArray(data.detail)
-          ? data.detail.map((d) => (typeof d === 'object' && d && 'msg' in d ? String(d.msg) : '')).filter(Boolean).join('; ')
-          : data.error
+        : typeof (data as { error_description?: string }).error_description === 'string'
+          ? (data as { error_description: string }).error_description
+          : typeof (data as { error?: string }).error === 'string'
+            ? (data as { error: string }).error
+            : Array.isArray(data.detail)
+              ? data.detail.map((d) => (typeof d === 'object' && d && 'msg' in d ? String(d.msg) : '')).filter(Boolean).join('; ')
+              : undefined
     const message = polarCheckoutUserMessage(res.status, detail ?? 'No se pudo crear el checkout')
     return json({ error: message }, res.status >= 500 ? 502 : 400)
   }

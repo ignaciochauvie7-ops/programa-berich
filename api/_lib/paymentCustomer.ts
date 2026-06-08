@@ -21,6 +21,9 @@ export function readPaymentCustomerEmail(data: Record<string, unknown>): string 
   const direct = readString(data.email)
   if (direct?.includes('@')) return direct
 
+  const customerEmail = readString(data.customer_email)
+  if (customerEmail?.includes('@')) return customerEmail
+
   for (const key of ['customer', 'billing', 'buyer'] as const) {
     const block = data[key]
     if (block && typeof block === 'object' && block !== null) {

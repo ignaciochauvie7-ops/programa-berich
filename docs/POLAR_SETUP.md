@@ -19,10 +19,12 @@ Cada entorno tiene **tokens y productos distintos**. El token de sandbox **no** 
 
 **Settings → Developers → Organization Access Tokens** → Create.
 
-Permisos: `checkouts:write` (y lectura de orders si hace falta).
+Permisos: solo **`checkouts:write`**.
 
-- Token de **Production** → `POLAR_ACCESS_TOKEN` + `POLAR_ENVIRONMENT=production`
-- Token de **Sandbox** → mismo nombre de var + `POLAR_ENVIRONMENT=sandbox`
+- Token de **Sandbox** → `POLAR_ACCESS_TOKEN` + `POLAR_ENVIRONMENT=sandbox`
+- Token de **Production** → mismo nombre + `POLAR_ENVIRONMENT=production`
+
+Si ves *"token inválido o venció"* en el quiz: el token expiró (ej. 30 días), fue revocado, o está mal copiado. **Creá uno nuevo** en Polar y reemplazá `POLAR_ACCESS_TOKEN` en `.env.local` y Vercel → **Redeploy**.
 
 ## 3. Webhook
 
@@ -58,3 +60,5 @@ npm run dev
 ```
 
 Checkout usa Polar según `POLAR_ENVIRONMENT`. Webhook local: ngrok a `localhost:3001`.
+
+**Local "not found":** corré `npm run dev` (web + api). Si falla `EADDRINUSE` en 3001, cerrá terminales viejas o matá el proceso en ese puerto y volvé a correr.

@@ -23,9 +23,30 @@ export async function grantProgramAccess(params: {
 
   await admin.from('affiliates').upsert({ email }, { onConflict: 'email', ignoreDuplicates: true })
 
+  const productSlug = process.env.PRODUCT_SLUG ?? 'berich-completo'
+  const { data: existingEntitlement } = await admin
+    .from('entitlements')
+    .select('email')
+    .eq('email', email)
+    .eq('product_slug', productSlug)
+    .eq('source', params.source)
+    .maybeSingle()
+
+  if (existingEntitlement) {
+    const { data: existingAlumno } = await admin
+      .from('alumnos')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle()
+    console.info('[grantProgramAccess] ya provisionado', email, params.source)
+    if (existingAlumno?.id) {
+      return { ok: true, alumnoId: existingAlumno.id }
+    }
+  }
+
   const result = await provisionAlumnoInvite(admin, email, {
     source: params.source,
-    productSlug: process.env.PRODUCT_SLUG ?? 'berich-completo',
+    productSlug,
     nombre: params.nombre?.trim() || undefined,
     activo: true,
   })

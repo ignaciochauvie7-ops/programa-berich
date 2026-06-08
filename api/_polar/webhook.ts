@@ -24,8 +24,15 @@ function isPaidOrder(data: Record<string, unknown>): boolean {
   const status = data.status
   if (typeof status === 'string') {
     const normalized = status.toLowerCase()
-    if (normalized === 'paid' || normalized === 'succeeded' || normalized === 'completed') return true
+    if (['paid', 'succeeded', 'completed', 'confirmed'].includes(normalized)) return true
   }
+  return false
+}
+
+function isPaidWebhookEvent(eventType: string, data: Record<string, unknown>): boolean {
+  if (eventType === 'order.paid') return true
+  if (eventType === 'order.updated') return isPaidOrder(data)
+  if (eventType === 'checkout.updated') return isPaidOrder(data)
   return false
 }
 
@@ -54,9 +61,11 @@ async function handlePurchase(data: Record<string, unknown>, eventType: string):
   })
 
   if (result.ok === false) {
-    console.error('[polar webhook] grantProgramAccess', result.error)
+    console.error('[polar webhook] grantProgramAccess', result.error, emailRaw)
     return json({ error: result.error }, result.status)
   }
+
+  console.info('[polar webhook] acceso otorgado + mail invite', emailRaw, eventType)
 
   const paymentId = readPaymentId(data) ?? `order-${Date.now()}`
   const amountValue = readAmountValue(data)
@@ -108,11 +117,7 @@ async function handler(request: Request): Promise<Response> {
     return json({ error: 'missing event data' }, 400)
   }
 
-  if (eventType === 'order.paid') {
-    return handlePurchase(data, eventType)
-  }
-
-  if (eventType === 'checkout.updated' && isPaidOrder(data)) {
+  if (isPaidWebhookEvent(eventType, data)) {
     return handlePurchase(data, eventType)
   }
 

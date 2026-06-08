@@ -21,12 +21,16 @@ export function verifyStandardWebhook(
   if (!Number.isFinite(timestamp)) return false
   if (Math.abs(Date.now() / 1000 - timestamp) > toleranceSec) return false
 
-  const secretPart = secret.startsWith('whsec_') ? secret.slice('whsec_'.length) : secret
   let key: Buffer
-  try {
-    key = Buffer.from(secretPart, 'base64')
-  } catch {
-    return false
+  if (secret.startsWith('polar_whs_')) {
+    key = Buffer.from(secret.trim(), 'utf8')
+  } else {
+    const secretPart = secret.startsWith('whsec_') ? secret.slice('whsec_'.length) : secret
+    try {
+      key = Buffer.from(secretPart, 'base64')
+    } catch {
+      return false
+    }
   }
 
   const signed = `${headers.id}.${headers.timestamp}.${rawBody}`
