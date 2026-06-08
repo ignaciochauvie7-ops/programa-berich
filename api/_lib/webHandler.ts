@@ -1,3 +1,5 @@
+import { Buffer } from 'node:buffer'
+
 type VercelHeaders = Record<string, string | string[] | undefined>
 
 type VercelRequest = {

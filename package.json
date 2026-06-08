@@ -17,6 +17,7 @@
   "dependencies": {
     "@types/node": "^24.12.2",
     "@supabase/supabase-js": "^2.105.3",
+    "typescript": "~6.0.2",
     "framer-motion": "^12.38.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -35,7 +36,6 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "tsx": "^4.21.0",
-    "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10"
   }
