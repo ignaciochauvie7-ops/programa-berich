@@ -85,10 +85,17 @@ async function handler(request: Request): Promise<Response> {
   const result = await provisionAlumnoInvite(admin, email, {
     nombre: nombre || undefined,
     source: 'admin',
-    activo: true,
+    activo: false,
   })
 
   if (result.ok === false) return json({ error: result.error }, 500)
+
+  if (!result.mailSent) {
+    return json({
+      alumno: result.alumno,
+      warning: 'Alumno creado como Pendiente, pero no se pudo enviar el mail de invitación.',
+    })
+  }
 
   return json({ alumno: result.alumno })
 }

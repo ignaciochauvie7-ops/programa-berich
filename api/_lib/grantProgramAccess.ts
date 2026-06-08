@@ -48,11 +48,15 @@ export async function grantProgramAccess(params: {
     source: params.source,
     productSlug,
     nombre: params.nombre?.trim() || undefined,
-    activo: true,
+    activo: false,
   })
 
   if (result.ok === false) {
     return { ok: false, error: result.error, status: 500 }
+  }
+
+  if (!result.mailSent) {
+    console.warn('[grantProgramAccess] alumno creado pendiente; mail no enviado', email)
   }
 
   if (params.quizSnapshot) {

@@ -65,7 +65,7 @@ async function handlePurchase(data: Record<string, unknown>, eventType: string):
     return json({ error: result.error }, result.status)
   }
 
-  console.info('[polar webhook] acceso otorgado + mail invite', emailRaw, eventType)
+  console.info('[polar webhook] alumno provisionado', emailRaw, eventType)
 
   const paymentId = readPaymentId(data) ?? `order-${Date.now()}`
   const amountValue = readAmountValue(data)

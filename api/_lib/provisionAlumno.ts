@@ -4,14 +4,14 @@ import { sendProgramInviteEmail } from './email.js'
 import { normalizeEmail } from './supabaseAdmin.js'
 
 type ProvisionResult =
-  | { ok: true; alumno: { id: string; email: string; activo: boolean } }
+  | { ok: true; alumno: { id: string; email: string; activo: boolean }; mailSent: boolean }
   | { ok: false; error: string }
 
 type ProvisionOptions = {
   nombre?: string
   source?: string
   productSlug?: string
-  /** Tras pago o invitación admin el alumno ya tiene acceso al programa. */
+  /** false = Pendiente en panel hasta que crea contraseña; true = Activo de inmediato. */
   activo?: boolean
 }
 
@@ -62,8 +62,8 @@ async function resolveInviteActionLink(
 }
 
 /**
- * Alta de alumno activo + mail para crear contraseña (/activar-cuenta).
- * Usado por panel admin, webhooks de pago, etc.
+ * Alta de alumno + mail para crear contraseña (/activar-cuenta).
+ * El alumno se guarda siempre; el mail es best-effort (no bloquea el alta).
  */
 export async function provisionAlumnoInvite(
   admin: SupabaseClient,
@@ -75,13 +75,51 @@ export async function provisionAlumnoInvite(
 
   const nombre = options?.nombre?.trim() || null
   const productSlug = (options?.productSlug ?? process.env.PRODUCT_SLUG ?? 'berich-completo').trim()
-  const activo = options?.activo !== false
-  const redirectTo = `${getActivationOrigin()}/activar-cuenta`
+  const activo = options?.activo ?? false
 
+  const { data: existing } = await admin
+    .from('alumnos')
+    .select('id, user_id, activo')
+    .eq('email', email)
+    .maybeSingle()
+
+  const row: { email: string; nombre: string | null; activo: boolean; user_id?: string | null } = {
+    email,
+    nombre,
+    activo: existing?.activo === true ? true : activo,
+  }
+  if (existing?.user_id) row.user_id = existing.user_id
+
+  const { data: alumno, error: upsertError } = await admin
+    .from('alumnos')
+    .upsert(row, { onConflict: 'email' })
+    .select('id, email, activo')
+    .single()
+
+  if (upsertError || !alumno) {
+    console.error('[provisionAlumnoInvite] alumnos', upsertError)
+    return { ok: false, error: 'no se pudo guardar el alumno' }
+  }
+
+  if (productSlug) {
+    await admin.from('entitlements').upsert(
+      { email, product_slug: productSlug, source: options?.source ?? 'invite' },
+      { onConflict: 'email,product_slug' },
+    )
+  }
+
+  console.info('[provisionAlumnoInvite] alumno guardado', email, activo ? 'activo' : 'pendiente')
+
+  const redirectTo = `${getActivationOrigin()}/activar-cuenta`
   const linkResult = await resolveInviteActionLink(admin, email, redirectTo, nombre)
+
   if ('error' in linkResult) {
-    console.error('[provisionAlumnoInvite]', linkResult.error, email)
-    return { ok: false, error: linkResult.error }
+    console.warn('[provisionAlumnoInvite] sin link de invitación', linkResult.error, email)
+    return { ok: true, alumno, mailSent: false }
+  }
+
+  if (linkResult.userId) {
+    await admin.from('alumnos').update({ user_id: linkResult.userId }).eq('id', alumno.id)
   }
 
   const sent = await sendProgramInviteEmail({
@@ -92,47 +130,20 @@ export async function provisionAlumnoInvite(
 
   if (!sent.sent) {
     const detail = 'error' in sent ? sent.error : 'RESEND no configurado o dominio sin verificar'
-    console.error('[provisionAlumnoInvite] mail no enviado', detail, email, linkResult.actionLink)
-    return { ok: false, error: 'no se pudo enviar el mail de invitación' }
+    console.warn('[provisionAlumnoInvite] mail no enviado (alumno ya creado)', detail, email)
+    return { ok: true, alumno, mailSent: false }
   }
 
   console.info('[provisionAlumnoInvite] mail enviado', email)
-
-  const { data: alumno, error: upsertError } = await admin
-    .from('alumnos')
-    .upsert(
-      {
-        user_id: linkResult.userId,
-        email,
-        nombre,
-        activo,
-      },
-      { onConflict: 'email' },
-    )
-    .select('id, email, activo')
-    .single()
-
-  if (upsertError || !alumno) {
-    console.error('[provisionAlumnoInvite] alumnos', upsertError)
-    return { ok: false, error: 'mail enviado, pero no se pudo guardar el alumno' }
-  }
-
-  if (productSlug) {
-    await admin.from('entitlements').upsert(
-      { email, product_slug: productSlug, source: options?.source ?? 'invite' },
-      { onConflict: 'email,product_slug' },
-    )
-  }
-
-  return { ok: true, alumno }
+  return { ok: true, alumno, mailSent: true }
 }
 
-/** Enlaza user_id tras crear contraseña (activo ya true tras pago/invite). */
+/** Enlaza user_id y marca activo tras crear contraseña en /activar-cuenta. */
 export async function activateAlumnoRecord(
   admin: SupabaseClient,
   userId: string,
   rawEmail: string,
-): Promise<ProvisionResult> {
+): Promise<{ ok: true; alumno: { id: string; email: string; activo: boolean } } | { ok: false; error: string }> {
   const email = normalizeEmail(rawEmail)
 
   const { data: alumno, error } = await admin
