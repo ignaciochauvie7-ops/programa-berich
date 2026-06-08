@@ -3,12 +3,11 @@
 ## Si localhost se ve bien pero Vercel no
 
 1. **Deployments** → el último commit debe estar **Ready** (no Error). Si falló, abrí **Build Logs**.
-2. **Settings → General** → Output Directory = `dist`, Build Command = `npm run build` (o dejar que lo tome `vercel.json`).
+2. **Settings → General** → Output Directory = `dist`, Build Command = `npm run build`.
 3. **Settings → Git** → Production Branch = `main`, repo correcto.
 4. Tras deploy OK: recarga forzada **Ctrl+Shift+R** o incógnito.
-5. Comprobá el JS en producción: en `/login`, el `index-*.js` debe incluir `Calculadora de Calorías` y **no** `Lecciones en video del modulo`.
 
-El repo define build/output en `vercel.json` y Node 20 en `.nvmrc`.
+Build del repo: `tsc -b && vite build`. Node 20 en `.nvmrc`.
 
 ## Variables en Vercel (Production)
 

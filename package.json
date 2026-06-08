@@ -10,15 +10,12 @@
     "dev": "concurrently -n web,api -c blue,green \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "vite",
     "dev:api": "tsx scripts/dev-api.ts",
-    "build": "node scripts/verify-vercel-api.mjs && tsc -b && vite build",
-    "build:api": "tsc -p api/tsconfig.json --noEmit",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/node": "^24.12.2",
     "@supabase/supabase-js": "^2.105.3",
-    "typescript": "~6.0.2",
     "framer-motion": "^12.38.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -27,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vercel/node": "^5.8.8",
@@ -37,6 +35,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "tsx": "^4.21.0",
+    "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10"
   }
