@@ -47,5 +47,5 @@ Misma idea: build `dist`, regla SPA fallback a `index.html`, asegurate de que `/
 
 - Hoy los embudos viven en JSON estático (`public/funnels/<slug>.json`).
 - Para editar sin deploy: mover `loadFunnelBySlug` a un fetch contra API/CMS o tabla Supabase, manteniendo el mismo esquema validado por `parseFunnelDefinition`.
-- Pagos: Dodo Payments (`/api/dodo/checkout` + webhook `payment.succeeded` en `/api/dodo/webhook`).
+- Pagos: Polar (`/api/polar/checkout` + webhook `order.paid` en `/api/polar/webhook`). Ver `docs/POLAR_SETUP.md`.
 - En local, las APIs requieren `npx vercel dev` (o proxy en `vite.config.ts` hacia ese servidor).

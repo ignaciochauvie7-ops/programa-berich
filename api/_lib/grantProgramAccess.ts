@@ -2,7 +2,7 @@ import { provisionAlumnoInvite } from './provisionAlumno.js'
 import { saveQuizProfileForAlumno, type QuizSnapshotInput } from './coach/quizProfile.js'
 import { getSupabaseAdmin, normalizeEmail } from './supabaseAdmin.js'
 
-export type PurchaseSource = 'dodo'
+export type PurchaseSource = 'polar' | 'dodo'
 
 export async function grantProgramAccess(params: {
   email: string

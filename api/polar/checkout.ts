@@ -1,10 +1,11 @@
 import { webHandler } from '../_lib/webHandler.js'
 import { json } from '../_lib/json.js'
 import { appPublicOrigin } from '../_lib/appOrigin.js'
+import { readClientIp } from '../_lib/clientIp.js'
 import { compactQuizJson, type QuizSnapshotInput } from '../_lib/coach/quizProfile.js'
 import type { CoachGoal } from '../_lib/coach/types.js'
-import { dodoCheckoutUserMessage } from '../_lib/dodoCheckoutErrors.js'
-import { dodoApiBaseUrl, dodoApiKey, dodoProductId } from '../_lib/dodoConfig.js'
+import { polarCheckoutUserMessage } from '../_lib/polarCheckoutErrors.js'
+import { polarAccessToken, polarApiBaseUrl, polarEnvironment, polarProductId } from '../_lib/polarConfig.js'
 
 type Body = {
   variant?: string
@@ -32,10 +33,10 @@ async function handler(request: Request): Promise<Response> {
     return new Response('Method not allowed', { status: 405 })
   }
 
-  const apiKey = dodoApiKey()
-  const productId = dodoProductId()
-  if (!apiKey || !productId) {
-    return json({ error: 'Dodo Payments no configurado en el servidor' }, 500)
+  const accessToken = polarAccessToken()
+  const productId = polarProductId()
+  if (!accessToken || !productId) {
+    return json({ error: 'Polar no configurado en el servidor (POLAR_ACCESS_TOKEN / POLAR_PRODUCT_ID)' }, 500)
   }
 
   let body: Body = {}
@@ -48,13 +49,7 @@ async function handler(request: Request): Promise<Response> {
 
   const variant = typeof body.variant === 'string' ? body.variant.trim().slice(0, 32) : ''
   const origin = appPublicOrigin()
-  const returnUrl = origin ? `${origin}/login?checkout=success` : undefined
-
-  const payload: Record<string, unknown> = {
-    product_cart: [{ product_id: productId, quantity: 1 }],
-  }
-
-  if (returnUrl) payload.return_url = returnUrl
+  const successUrl = origin ? `${origin}/login?checkout=success` : undefined
 
   const metadata: Record<string, string> = { source: 'quiz' }
   if (variant) metadata.quiz_variant = variant
@@ -62,39 +57,52 @@ async function handler(request: Request): Promise<Response> {
     metadata.quiz_json = compactQuizJson(body.quiz)
     if (!metadata.quiz_variant) metadata.quiz_variant = body.quiz.variant
   }
-  if (Object.keys(metadata).length > 0) {
-    payload.metadata = metadata
+
+  const payload: Record<string, unknown> = {
+    products: [productId],
+    metadata,
   }
 
-  const res = await fetch(`${dodoApiBaseUrl()}/checkouts`, {
+  if (successUrl) payload.success_url = successUrl
+
+  const clientIp = readClientIp(request)
+  if (clientIp) payload.customer_ip_address = clientIp
+
+  const res = await fetch(`${polarApiBaseUrl()}/checkouts/`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify(payload),
   })
 
-  let data: { checkout_url?: string | null; session_id?: string; error?: string; message?: string }
+  let data: { url?: string | null; id?: string; detail?: unknown; error?: string }
   try {
     data = (await res.json()) as typeof data
   } catch {
-    return json({ error: 'respuesta inválida de Dodo Payments' }, 502)
+    return json({ error: 'respuesta inválida de Polar' }, 502)
   }
 
   if (!res.ok) {
-    console.error('[dodo checkout]', res.status, data)
-    const apiError = data.message ?? data.error ?? 'No se pudo crear el checkout'
-    const message = dodoCheckoutUserMessage(res.status, apiError)
+    console.error('[polar checkout]', polarEnvironment(), res.status, data)
+    const detail =
+      typeof data.detail === 'string'
+        ? data.detail
+        : Array.isArray(data.detail)
+          ? data.detail.map((d) => (typeof d === 'object' && d && 'msg' in d ? String(d.msg) : '')).filter(Boolean).join('; ')
+          : data.error
+    const message = polarCheckoutUserMessage(res.status, detail ?? 'No se pudo crear el checkout')
     return json({ error: message }, res.status >= 500 ? 502 : 400)
   }
 
-  const checkoutUrl = data.checkout_url
+  const checkoutUrl = data.url
   if (!checkoutUrl) {
-    return json({ error: 'Dodo no devolvió checkout_url' }, 502)
+    return json({ error: 'Polar no devolvió url de checkout' }, 502)
   }
 
-  return json({ checkout_url: checkoutUrl, session_id: data.session_id ?? null })
+  return json({ checkout_url: checkoutUrl, session_id: data.id ?? null })
 }
 
 export default webHandler(handler)

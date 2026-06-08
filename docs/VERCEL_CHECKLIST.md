@@ -1,4 +1,4 @@
-# Checklist Vercel + Dodo (post-deploy)
+# Checklist Vercel + Polar (post-deploy)
 
 ## Si localhost se ve bien pero Vercel no
 
@@ -20,10 +20,10 @@ Build del repo: `tsc -b && vite build`. Node 20 en `.nvmrc`.
 | `ADMIN_EMAILS` | Mismo mail que VITE_ADMIN_EMAILS |
 | `APP_PUBLIC_URL` | `https://programa-berich.vercel.app` |
 | `ACTIVATION_PUBLIC_URL` | `https://programa-berich.vercel.app` |
-| `DODO_PAYMENTS_API_KEY` | Checkout + API |
-| `DODO_PRODUCT_ID` | Producto a **49 USD** en dashboard |
-| `DODO_WEBHOOK_SECRET` | Webhook en Dodo |
-| `DODO_PAYMENTS_ENVIRONMENT` | `test` o `live` |
+| `POLAR_ACCESS_TOKEN` | Checkout + API Polar |
+| `POLAR_PRODUCT_ID` | Producto one-time **49 USD** (+ monedas en dashboard) |
+| `POLAR_WEBHOOK_SECRET` | Webhook Polar |
+| `POLAR_ENVIRONMENT` | `production` o `sandbox` |
 | `PRODUCT_SLUG` | `berich-completo` |
 
 ### Acompañamiento WhatsApp (opcional hasta configurar Meta)
@@ -56,12 +56,14 @@ Configurá esto en el panel de Supabase (no en SQL Editor):
 
 Sin estas URLs, el link del mail puede fallar o abrir una pantalla en negro. El mismo `/activar-cuenta` sirve para **invitación post-compra** y para **recuperar contraseña** (“¿Olvidaste tu contraseña?” en `/login`).
 
-## Dodo dashboard
+## Polar dashboard
 
-1. Producto del `DODO_PRODUCT_ID` → precio **49 USD** (alineado con `PROGRAM_USD_PRICE`).
-2. Webhook URL: `https://programa-berich.vercel.app/api/dodo/webhook`
-3. Evento: `payment.succeeded`
-4. Adaptive Currency: según tu preferencia (checkout puede diferir levemente del quiz).
+Ver guía completa: `docs/POLAR_SETUP.md`
+
+1. Producto `POLAR_PRODUCT_ID` → **49 USD** + monedas locales (UYU, ARS, MXN…).
+2. Webhook URL: `https://programa-berich.vercel.app/api/polar/webhook`
+3. Eventos: `order.paid`, `checkout.updated`
+4. `POLAR_ENVIRONMENT=production` + token de **Production** (selector arriba a la derecha en polar.sh/dashboard).
 
 ## URLs que funcionan en el sitio
 

@@ -8,7 +8,7 @@ export function randomTokenHex(bytes = 32): string {
   return randomBytes(bytes).toString('hex')
 }
 
-/** Standard Webhooks (Dodo Payments) signature verification. */
+/** Standard Webhooks (Polar, etc.) signature verification. */
 export function verifyStandardWebhook(
   rawBody: string,
   headers: { id: string; timestamp: string; signature: string },

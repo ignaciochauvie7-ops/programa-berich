@@ -371,7 +371,7 @@ export function QuizPage() {
     const pesoIdealKg = weightUnit === 'kg' ? pesoIdeal : Math.round(pesoIdeal * 0.453592)
 
     try {
-      const res = await fetch('/api/dodo/checkout', {
+      const res = await fetch('/api/polar/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
