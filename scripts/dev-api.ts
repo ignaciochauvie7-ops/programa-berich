@@ -1,6 +1,6 @@
 /**
  * Servidor local de /api para desarrollo (sin Vercel CLI).
- * Carga .env.local y enruta igual que Vercel.
+ * Carga .env.local y delega al router central api/index.ts.
  */
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { readFileSync, existsSync } from 'node:fs'
@@ -60,16 +60,16 @@ async function sendResponse(res: ServerResponse, response: Response) {
   res.end(buf)
 }
 
-async function resolveHandler(pathname: string): Promise<Handler | null> {
-  const rel = pathname.replace(/^\/api\/?/, '').replace(/\/$/, '')
-  const candidates = rel
-    ? [join(ROOT, 'api', `${rel}.ts`), join(ROOT, 'api', rel, 'index.ts')]
-    : []
+let cachedHandler: Handler | null = null
 
-  for (const filePath of candidates) {
-    if (!existsSync(filePath)) continue
-    const mod = (await import(pathToFileURL(filePath).href)) as { default?: Handler }
-    if (typeof mod.default === 'function') return mod.default
+async function getHandler(): Promise<Handler | null> {
+  if (cachedHandler) return cachedHandler
+  const filePath = join(ROOT, 'api', 'index.ts')
+  if (!existsSync(filePath)) return null
+  const mod = (await import(pathToFileURL(filePath).href)) as { default?: Handler }
+  if (typeof mod.default === 'function') {
+    cachedHandler = mod.default
+    return cachedHandler
   }
   return null
 }
@@ -88,7 +88,7 @@ const server = createServer(async (req, res) => {
   }
 
   try {
-    const handler = await resolveHandler(url.pathname)
+    const handler = await getHandler()
     if (!handler) {
       res.writeHead(404, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ error: 'not found' }))
