@@ -32,7 +32,7 @@ Si ves *"token inválido o venció"* en el quiz: el token expiró (ej. 30 días)
 
 | Campo | Valor |
 |-------|--------|
-| URL (prod) | `https://programa-berich.vercel.app/api/polar/webhook` |
+| URL (prod) | `https://programaberich.fit/api/polar/webhook` |
 | URL (local + ngrok) | `https://xxxx.ngrok-free.app/api/polar/webhook` |
 | Eventos | `order.paid`, `checkout.updated` |
 
