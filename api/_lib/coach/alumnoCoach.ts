@@ -38,6 +38,58 @@ export async function getCoachProfile(
   return data as CoachProfile
 }
 
+export function parseSetupRefFromText(text: string): string | null {
+  const match = text.match(/\bref[:\s]+([a-f0-9]{8})\b/i)
+  return match?.[1]?.toLowerCase() ?? null
+}
+
+export async function findPendingProfileByRef(
+  admin: SupabaseClient,
+  ref: string,
+): Promise<(CoachProfile & { nombre: string | null; email: string }) | null> {
+  const normalized = ref.trim().toLowerCase()
+  if (!/^[a-f0-9]{8}$/.test(normalized)) return null
+
+  const { data, error } = await admin
+    .from('alumno_coach_profile')
+    .select('*, alumnos!inner(email, nombre, activo)')
+    .is('phone_e164', null)
+    .like('alumno_id', `${normalized}%`)
+    .maybeSingle()
+
+  if (error || !data) return null
+
+  const row = data as CoachProfile & { alumnos: { email: string; nombre: string | null; activo: boolean } }
+  if (!row.alumnos.activo || !row.coach_active || !row.setup_completed_at) return null
+
+  return {
+    ...row,
+    email: row.alumnos.email,
+    nombre: row.alumnos.nombre,
+  }
+}
+
+export async function attachPhoneToProfile(
+  admin: SupabaseClient,
+  alumnoId: string,
+  phoneE164: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const { error } = await admin
+    .from('alumno_coach_profile')
+    .update({ phone_e164: phoneE164, updated_at: new Date().toISOString() })
+    .eq('alumno_id', alumnoId)
+    .is('phone_e164', null)
+
+  if (error) {
+    if (error.code === '23505') {
+      return { ok: false, error: 'phone already linked' }
+    }
+    return { ok: false, error: error.message }
+  }
+
+  return { ok: true }
+}
+
 export async function findProfileByPhone(
   admin: SupabaseClient,
   phoneE164: string,

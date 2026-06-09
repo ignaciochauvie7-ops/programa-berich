@@ -80,8 +80,8 @@ Ver paso a paso: `docs/DOMAIN_SETUP.md`
 
 ## Flujo alumno (post-pago)
 
-1. Polar cobra → webhook → alumno `activo = true` + mail Resend.
-2. Mail → `https://programaberich.fit/activar-cuenta` → contraseña → `/programa`.
+1. Polar cobra → webhook → alumno `activo = false` (pendiente) + mail Resend.
+2. Mail → `https://programaberich.fit/activar-cuenta` → contraseña → alumno `activo = true` → `/configurar-perfil` → `/programa`.
 
 ## Pruebas rápidas
 

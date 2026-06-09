@@ -37,6 +37,7 @@ async function handler(request: Request): Promise<Response> {
     .from('alumno_coach_profile')
     .select('*, alumnos!inner(email, nombre, activo)')
     .eq('coach_active', true)
+    .not('phone_e164', 'is', null)
 
   if (error) {
     console.error('[coach cron]', error)

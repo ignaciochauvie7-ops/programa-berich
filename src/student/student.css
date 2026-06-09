@@ -129,7 +129,11 @@
 }
 
 .student-auth__card--wide {
-  max-width: 480px;
+  max-width: 520px;
+}
+
+.coach-setup {
+  text-align: left;
 }
 
 .coach-setup__label {
@@ -160,15 +164,66 @@
   background: rgba(0, 229, 255, 0.14);
 }
 
+.coach-setup__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.coach-setup__option {
+  width: 100%;
+  text-align: left;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.72rem 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.coach-setup__option--on {
+  border-color: rgba(0, 229, 255, 0.65);
+  background: rgba(0, 229, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.2);
+}
+
+.coach-setup__whatsapp-block {
+  margin-top: 0.25rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.coach-setup__whatsapp-title {
+  margin: 0 0 0.35rem;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.coach-setup__whatsapp-hint {
+  margin: 0 0 0.85rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
 .coach-setup__opt-in {
   display: flex;
   align-items: flex-start;
   gap: 0.55rem;
-  margin: 0.5rem 0 1.25rem;
+  margin: 0;
   color: #cccccc;
   font-size: 0.88rem;
   line-height: 1.4;
   text-align: left;
+  cursor: pointer;
 }
 
 .coach-setup__opt-in input {
@@ -201,26 +256,30 @@
   font-size: 0.84rem;
 }
 
-.coach-setup__activity {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: left;
+
+.coach-setup__done {
+  text-align: center;
 }
 
-.coach-setup__radio {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.85);
+.coach-setup__done .coach-setup__wa-button {
+  margin: 0.5rem 0 1rem;
+}
+
+.coach-setup__program-link {
+  display: inline-block;
+  color: rgba(0, 229, 255, 0.92);
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.coach-setup__program-link:hover {
+  text-decoration: underline;
+}
+
+.coach-setup__wa-missing {
+  margin: 0.5rem 0 1rem;
+  color: #ff9b9b;
   font-size: 0.88rem;
-  line-height: 1.35;
-  cursor: pointer;
-}
-
-.coach-setup__radio input {
-  margin-top: 0.15rem;
-  flex-shrink: 0;
 }
 
 .student-auth__password-toggle svg {
@@ -353,6 +412,23 @@
   transform: translateX(-130%);
   animation: student-button-shimmer 2.2s ease-in-out infinite;
   pointer-events: none;
+}
+
+.student-auth__button.coach-setup__wa-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 0 18px rgba(37, 211, 102, 0.28);
+}
+
+.student-auth__button.coach-setup__wa-button:hover {
+  transform: scale(1.03);
+  filter: brightness(1.05);
+  box-shadow: 0 0 22px rgba(37, 211, 102, 0.4);
 }
 
 .student-auth__hint {

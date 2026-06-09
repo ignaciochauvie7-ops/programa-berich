@@ -16,7 +16,7 @@ export type ProactiveJobType =
 
 export type CoachProfile = {
   alumno_id: string
-  phone_e164: string
+  phone_e164: string | null
   timezone: string
   training_days: number[]
   preferred_hour: string

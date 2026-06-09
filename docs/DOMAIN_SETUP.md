@@ -2,6 +2,43 @@
 
 Guía para mails de invitación (Resend), sitio (Vercel) y links de activación (Supabase).
 
+## 0. Diagnóstico — el mail llega pero el botón no abre la app
+
+**Síntoma:** Resend está **Verified** y el mail llega, pero el link del botón no carga o no muestra la activación.
+
+**Causa habitual:** `programaberich.fit` todavía **no apunta a Vercel**. El sitio vive en `programa-berich.vercel.app`, pero los mails usan `ACTIVATION_PUBLIC_URL=https://programaberich.fit`.
+
+Comprobación rápida:
+
+| URL | Debe |
+|-----|------|
+| `https://programa-berich.vercel.app/activar-cuenta` | Abrir la pantalla "Activá tu cuenta" |
+| `https://programaberich.fit/activar-cuenta` | Lo mismo (solo cuando el dominio esté en Vercel) |
+
+Si la primera funciona y la segunda no → falta conectar el dominio en Vercel + DNS en Namecheap.
+
+**Solución permanente (recomendada):** sección **2** de esta guía (Add Domain en Vercel + DNS).
+
+**Solución temporal** (mientras migrás el dominio): en **Vercel → Environment Variables → Production**:
+
+```env
+APP_PUBLIC_URL=https://programa-berich.vercel.app
+ACTIVATION_PUBLIC_URL=https://programa-berich.vercel.app
+```
+
+Redeploy. Los mails de compra usarán el link de Vercel hasta que `programaberich.fit` figure **Valid** en Domains.
+
+**Namecheap (DNS):** borrá o reemplazá el registro **A** que apunta a parking (ej. `162.255.119.53`). Vercel suele pedir:
+
+| Tipo | Host | Valor |
+|------|------|--------|
+| `A` | `@` | `76.76.21.21` |
+| `CNAME` | `www` | `cname.vercel-dns.com` |
+
+Usá los valores exactos que te muestre Vercel al agregar el dominio.
+
+**Nota:** el mail de prueba (`npm run test:resend`) usa un link sin token de Supabase; aunque el dominio funcione, verás "abrí el link del mail". El mail real de compra trae el link completo de invitación.
+
 ## 1. Resend — verificar dominio (obligatorio para mails a clientes)
 
 1. [resend.com](https://resend.com) → **Domains** → **Add Domain**

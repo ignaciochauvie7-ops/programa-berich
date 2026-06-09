@@ -32,24 +32,52 @@ export async function grantProgramAccess(params: {
     .eq('source', params.source)
     .maybeSingle()
 
+  const provisionOptions = {
+    source: params.source,
+    productSlug,
+    nombre: params.nombre?.trim() || undefined,
+    activo: false as const,
+  }
+
   if (existingEntitlement) {
     const { data: existingAlumno } = await admin
       .from('alumnos')
-      .select('id')
+      .select('id, activo')
       .eq('email', email)
       .maybeSingle()
-    console.info('[grantProgramAccess] ya provisionado', email, params.source)
+
     if (existingAlumno?.id) {
+      console.info('[grantProgramAccess] ya provisionado', email, params.source, existingAlumno.activo ? 'activo' : 'pendiente')
+
+      if (!existingAlumno.activo) {
+        const retry = await provisionAlumnoInvite(admin, email, provisionOptions)
+        if (retry.ok === false) {
+          return { ok: false, error: retry.error, status: 500 }
+        }
+        if (!retry.mailSent) {
+          console.warn('[grantProgramAccess] reintento sin mail', email)
+        }
+        if (params.quizSnapshot) {
+          const saved = await saveQuizProfileForAlumno(admin, retry.alumno.id, params.quizSnapshot)
+          if (saved.ok === false) {
+            console.error('[grantProgramAccess] quiz profile', saved.error, email)
+          }
+        }
+        return { ok: true, alumnoId: retry.alumno.id }
+      }
+
+      if (params.quizSnapshot) {
+        const saved = await saveQuizProfileForAlumno(admin, existingAlumno.id, params.quizSnapshot)
+        if (saved.ok === false) {
+          console.error('[grantProgramAccess] quiz profile', saved.error, email)
+        }
+      }
+
       return { ok: true, alumnoId: existingAlumno.id }
     }
   }
 
-  const result = await provisionAlumnoInvite(admin, email, {
-    source: params.source,
-    productSlug,
-    nombre: params.nombre?.trim() || undefined,
-    activo: false,
-  })
+  const result = await provisionAlumnoInvite(admin, email, provisionOptions)
 
   if (result.ok === false) {
     return { ok: false, error: result.error, status: 500 }

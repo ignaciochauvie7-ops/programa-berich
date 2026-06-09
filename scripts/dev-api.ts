@@ -2,6 +2,9 @@
  * Servidor local de /api para desarrollo (sin Vercel CLI).
  * Carga .env.local y delega al router central api/index.ts.
  */
+// Solo dev local: en algunos Windows falla TLS a Supabase (antivirus/proxy).
+process.env.NODE_TLS_REJECT_UNAUTHORIZED ??= '0'
+
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { readFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'

@@ -40,8 +40,9 @@ async function handler(request: Request): Promise<Response> {
     return json({ error: 'Tenés que aceptar recibir mensajes por WhatsApp.' }, 400)
   }
 
-  const phone = normalizePhoneE164(String(body.phone ?? ''))
-  if (!phone) {
+  const phoneRaw = String(body.phone ?? '').trim()
+  const phone = phoneRaw ? normalizePhoneE164(phoneRaw) : null
+  if (phoneRaw && !phone) {
     return json({ error: 'Teléfono inválido. Incluí código de país, ej. +59899123456.' }, 400)
   }
 
@@ -102,7 +103,7 @@ async function handler(request: Request): Promise<Response> {
     return json({ error: 'No se pudo guardar tu perfil.' }, 500)
   }
 
-  if (isWhatsAppConfigured()) {
+  if (phone && isWhatsAppConfigured()) {
     const name = displayName(alumno.nombre, alumno.email)
     const waterL = formatLiters(targets.water_ml_base)
     const welcome = quiz
@@ -125,7 +126,7 @@ async function handler(request: Request): Promise<Response> {
     }
   }
 
-  return json({ ok: true })
+  return json({ ok: true, alumno_id: alumno.id, setup_ref: alumno.id.slice(0, 8) })
 }
 
 export default webHandler(handler)

@@ -12,7 +12,8 @@
     "dev:api": "tsx scripts/dev-api.ts",
     "build": "tsc -b && tsc -p api/tsconfig.json --noEmit && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:resend": "tsx scripts/test-resend.ts"
   },
   "dependencies": {
     "@types/node": "^24.12.2",

@@ -49,6 +49,10 @@ export async function sendProactiveMessage(
   job: ProactiveJobType,
   quiz: QuizProfile | null,
 ): Promise<{ sent: boolean; reason?: string }> {
+  if (!profile.phone_e164) {
+    return { sent: false, reason: 'no phone' }
+  }
+
   const tz = profile.timezone || 'America/Montevideo'
   const now = new Date()
   const local = localParts(now, tz)
@@ -103,6 +107,8 @@ export async function handleInboundText(
   text: string,
   waMessageId: string | null,
 ): Promise<void> {
+  if (!profile.phone_e164) return
+
   const now = new Date().toISOString()
   const quiz = await getQuizProfile(admin, profile.alumno_id)
 

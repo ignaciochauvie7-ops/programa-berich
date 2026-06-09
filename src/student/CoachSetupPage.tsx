@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
 import { supabase } from '../auth/supabaseClient'
 import activationLogo from '../../supabase/IMG_3353.jpg'
@@ -37,17 +37,34 @@ type SetupSummary = {
   } | null
 }
 
+type ProfileStatus = {
+  complete?: boolean
+  phone_linked?: boolean
+  setup_ref?: string
+}
+
+const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, '')
+
+function buildWhatsAppUrl(setupRef: string): string | null {
+  if (!WHATSAPP_NUMBER) return null
+  const text = encodeURIComponent(
+    `Hola, acabo de entrar al Programa Berich y quiero activar mi acompañamiento. Ref: ${setupRef}`,
+  )
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
+}
+
 export function CoachSetupPage() {
   const { configured, loading, session, user } = useAuth()
   const [checking, setChecking] = useState(true)
-  const [alreadyComplete, setAlreadyComplete] = useState(false)
-  const [phone, setPhone] = useState('')
+  const [profileStatus, setProfileStatus] = useState<ProfileStatus | null>(null)
   const [trainingDays, setTrainingDays] = useState<number[]>([1, 3, 5])
   const [activityLevel, setActivityLevel] = useState<ActivityLevel>('moderate')
   const [summary, setSummary] = useState<SetupSummary | null>(null)
   const [optIn, setOptIn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [setupRef, setSetupRef] = useState<string | null>(null)
+  const [whatsappDone, setWhatsappDone] = useState(false)
 
   useEffect(() => {
     if (!configured || loading || !user || !session) {
@@ -61,8 +78,10 @@ export function CoachSetupPage() {
           headers: { Authorization: `Bearer ${session.access_token}` },
         })
         if (res.ok) {
-          const body = (await res.json()) as { complete?: boolean }
-          if (body.complete) setAlreadyComplete(true)
+          const body = (await res.json()) as ProfileStatus
+          setProfileStatus(body)
+          if (body.setup_ref) setSetupRef(body.setup_ref)
+          if (body.complete && body.phone_linked) setWhatsappDone(true)
         }
       } catch {
         /* ignore */
@@ -73,7 +92,8 @@ export function CoachSetupPage() {
   }, [configured, loading, session, user])
 
   useEffect(() => {
-    if (!session || checking || alreadyComplete) return
+    if (!session || checking || whatsappDone) return
+    if (profileStatus?.complete && profileStatus.phone_linked) return
 
     void (async () => {
       try {
@@ -87,7 +107,7 @@ export function CoachSetupPage() {
         /* ignore */
       }
     })()
-  }, [session, activityLevel, checking, alreadyComplete])
+  }, [session, activityLevel, checking, whatsappDone, profileStatus?.complete, profileStatus?.phone_linked])
 
   if (!configured) {
     return (
@@ -114,12 +134,22 @@ export function CoachSetupPage() {
     return <Navigate to="/login" replace state={{ from: '/configurar-perfil' }} />
   }
 
-  if (alreadyComplete) {
+  if (profileStatus?.complete && profileStatus.phone_linked) {
     return <Navigate to="/programa" replace />
   }
 
   function toggleDay(day: number) {
     setTrainingDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]))
+  }
+
+  function openWhatsApp(ref: string) {
+    const url = buildWhatsAppUrl(ref)
+    if (!url) {
+      setError('WhatsApp no está configurado todavía. Avisale al equipo.')
+      return false
+    }
+    window.open(url, '_blank', 'noopener,noreferrer')
+    return true
   }
 
   async function onSubmit(e: FormEvent) {
@@ -133,6 +163,11 @@ export function CoachSetupPage() {
       return
     }
 
+    if (trainingDays.length < 1) {
+      setError('Elegí al menos un día de entrenamiento.')
+      return
+    }
+
     setBusy(true)
 
     try {
@@ -143,7 +178,6 @@ export function CoachSetupPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          phone,
           training_days: trainingDays,
           activity_level: activityLevel,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Montevideo',
@@ -151,26 +185,69 @@ export function CoachSetupPage() {
         }),
       })
 
-      const body = (await res.json()) as { error?: string }
+      const body = (await res.json()) as { error?: string; setup_ref?: string }
       if (!res.ok) {
         setError(body.error ?? 'No se pudo guardar tu perfil.')
         setBusy(false)
         return
       }
 
-      setAlreadyComplete(true)
+      const ref = body.setup_ref ?? setupRef
+      if (!ref) {
+        setError('No se pudo preparar el enlace de WhatsApp.')
+        setBusy(false)
+        return
+      }
+
+      setSetupRef(ref)
+      setProfileStatus({ complete: true, phone_linked: false, setup_ref: ref })
+
+      if (openWhatsApp(ref)) {
+        setWhatsappDone(true)
+      }
+      setBusy(false)
     } catch {
       setError('Error de red. Intentá de nuevo.')
       setBusy(false)
     }
   }
 
+  if (whatsappDone || (profileStatus?.complete && !profileStatus.phone_linked)) {
+    const ref = setupRef ?? profileStatus?.setup_ref
+    const waUrl = ref ? buildWhatsAppUrl(ref) : null
+
+    return (
+      <div className="student-auth">
+        <div className="student-auth__card student-auth__card--wide coach-setup__done">
+          <img className="student-auth__logo" src={activationLogo} alt="Berich" />
+          <h1>¡Casi listo!</h1>
+          <p>
+            Guardamos tu perfil. Ahora escribinos por WhatsApp para activar el acompañamiento — te vamos a responder
+            desde ahí.
+          </p>
+
+          {waUrl ? (
+            <a className="student-auth__button coach-setup__wa-button" href={waUrl} target="_blank" rel="noopener noreferrer">
+              Abrir WhatsApp
+            </a>
+          ) : (
+            <p className="coach-setup__wa-missing">Falta configurar el número de WhatsApp del programa.</p>
+          )}
+
+          <Link className="coach-setup__program-link" to="/programa">
+            Ir al programa
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="student-auth">
-      <form className="student-auth__card student-auth__card--wide" onSubmit={onSubmit}>
+      <form className="student-auth__card student-auth__card--wide coach-setup" onSubmit={onSubmit}>
         <img className="student-auth__logo" src={activationLogo} alt="Berich" />
         <h1>Tu acompañamiento personalizado</h1>
-        <p>Completá estos datos para que te escribamos por WhatsApp con recordatorios según tu perfil del programa.</p>
+        <p>Contanos cómo vas a entrenar y después activá el seguimiento por WhatsApp.</p>
 
         {summary?.has_quiz && summary.preview ? (
           <div className="coach-setup__summary">
@@ -189,24 +266,8 @@ export function CoachSetupPage() {
           </div>
         ) : null}
 
-        {error ? <div className="student-auth__error">{error}</div> : null}
-
         <div className="student-auth__field">
-          <label htmlFor="coach-phone">WhatsApp (con código de país)</label>
-          <input
-            id="coach-phone"
-            type="tel"
-            inputMode="tel"
-            placeholder="+59899123456"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-            disabled={busy}
-          />
-        </div>
-
-        <div className="student-auth__field">
-          <label className="coach-setup__label">¿Qué días vas a entrenar?</label>
+          <span className="coach-setup__label">¿Qué días vas a entrenar?</span>
           <div className="coach-setup__days">
             {DAY_OPTIONS.map((day) => (
               <button
@@ -223,32 +284,43 @@ export function CoachSetupPage() {
         </div>
 
         <div className="student-auth__field">
-          <label className="coach-setup__label">¿Cuánta actividad física hacés por semana?</label>
-          <div className="coach-setup__activity">
+          <span className="coach-setup__label">¿Cuánta actividad física hacés por semana?</span>
+          <div className="coach-setup__options">
             {ACTIVITY_OPTIONS.map((opt) => (
-              <label key={opt.value} className="coach-setup__radio">
-                <input
-                  type="radio"
-                  name="activity"
-                  value={opt.value}
-                  checked={activityLevel === opt.value}
-                  onChange={() => setActivityLevel(opt.value)}
-                  disabled={busy}
-                />
-                <span>{opt.label}</span>
-              </label>
+              <button
+                key={opt.value}
+                type="button"
+                className={
+                  'coach-setup__option' + (activityLevel === opt.value ? ' coach-setup__option--on' : '')
+                }
+                onClick={() => setActivityLevel(opt.value)}
+                disabled={busy}
+                aria-pressed={activityLevel === opt.value}
+              >
+                {opt.label}
+              </button>
             ))}
           </div>
         </div>
 
-        <label className="coach-setup__opt-in">
-          <input type="checkbox" checked={optIn} onChange={(e) => setOptIn(e.target.checked)} disabled={busy} />
-          <span>Acepto recibir mensajes de acompañamiento del Programa Berich por WhatsApp.</span>
-        </label>
+        <div className="coach-setup__whatsapp-block">
+          <p className="coach-setup__whatsapp-title">Último paso: WhatsApp</p>
+          <p className="coach-setup__whatsapp-hint">
+            Al tocar el botón se abre WhatsApp con un mensaje listo para enviar. Así vinculamos tu número y podemos
+            escribirte con recordatorios personalizados.
+          </p>
+
+          <label className="coach-setup__opt-in">
+            <input type="checkbox" checked={optIn} onChange={(e) => setOptIn(e.target.checked)} disabled={busy} />
+            <span>Acepto recibir mensajes de acompañamiento del Programa Berich por WhatsApp.</span>
+          </label>
+        </div>
+
+        {error ? <div className="student-auth__error">{error}</div> : null}
 
         <div className="student-auth__actions">
-          <button type="submit" className="student-auth__button" disabled={busy}>
-            {busy ? 'Guardando…' : 'Continuar al programa'}
+          <button type="submit" className="student-auth__button coach-setup__wa-button" disabled={busy}>
+            {busy ? 'Guardando…' : 'Activar por WhatsApp'}
           </button>
         </div>
       </form>

@@ -1,7 +1,12 @@
 import { webHandler } from '../_lib/webHandler.js'
 import { json } from '../_lib/json.js'
 import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
-import { findProfileByPhone } from '../_lib/coach/alumnoCoach.js'
+import {
+  attachPhoneToProfile,
+  findPendingProfileByRef,
+  findProfileByPhone,
+  parseSetupRefFromText,
+} from '../_lib/coach/alumnoCoach.js'
 import { handleInboundText } from '../_lib/coach/proactive.js'
 import { normalizePhoneE164 } from '../_lib/coach/phone.js'
 import { verifyWebhookChallenge, verifyWebhookSignature } from '../_lib/whatsapp/verifyWebhook.js'
@@ -60,7 +65,19 @@ async function handler(request: Request): Promise<Response> {
     const phone = normalizePhoneE164(`+${message.from}`)
     if (!phone) continue
 
-    const profile = await findProfileByPhone(admin, phone)
+    let profile = await findProfileByPhone(admin, phone)
+    if (!profile) {
+      const ref = parseSetupRefFromText(message.text.body)
+      if (ref) {
+        const pending = await findPendingProfileByRef(admin, ref)
+        if (pending) {
+          const linked = await attachPhoneToProfile(admin, pending.alumno_id, phone)
+          if (linked.ok) {
+            profile = { ...pending, phone_e164: phone }
+          }
+        }
+      }
+    }
     if (!profile) continue
 
     try {
