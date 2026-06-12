@@ -10,6 +10,7 @@ import { CoachSetupPage } from './student/CoachSetupPage'
 import { PurchaseSuccessPage } from './student/PurchaseSuccessPage'
 import { StudentInviteSignupPage } from './student/StudentInviteSignupPage'
 import { StudentLoginPage } from './student/StudentLoginPage'
+import { StudentAreaRoute } from './student/StudentAreaRoute'
 import { StudentProgramRoute } from './student/StudentProgramRoute'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
       <Route path="/configurar-perfil" element={<CoachSetupPage />} />
       <Route path="/ingresar" element={<StudentLoginPage />} />
       <Route path="/crear-cuenta" element={<StudentInviteSignupPage />} />
+      <Route path="/programa/mi-perfil" element={<StudentAreaRoute page="profile" />} />
       <Route path="/programa" element={<StudentProgramRoute />} />
       <Route path="/programa/:slug" element={<StudentProgramRoute />} />
       <Route path="*" element={<NotFoundPage />} />

@@ -3,6 +3,7 @@ import invitePreview from './_invite/preview.js'
 import inviteSignup from './_invite/signup.js'
 import price from './_price.js'
 import coachProfile from './_coach/profile.js'
+import coachMyProfile from './_coach/my-profile.js'
 import coachEnroll from './_coach/enroll.js'
 import coachSetupSummary from './_coach/setup-summary.js'
 import coachCron from './_coach/cron.js'
@@ -21,6 +22,7 @@ const routes = new Map<string, RouteHandler>([
   ['/api/invite/signup', inviteSignup as unknown as RouteHandler],
   ['/api/price', price as unknown as RouteHandler],
   ['/api/coach/profile', coachProfile as unknown as RouteHandler],
+  ['/api/coach/my-profile', coachMyProfile as unknown as RouteHandler],
   ['/api/coach/enroll', coachEnroll as unknown as RouteHandler],
   ['/api/coach/setup-summary', coachSetupSummary as unknown as RouteHandler],
   ['/api/coach/cron', coachCron as unknown as RouteHandler],
