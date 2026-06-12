@@ -7,7 +7,6 @@ import { supabase } from '../auth/supabaseClient'
 import { BerichProgramView } from '../program/BerichProgramView'
 import { BERICH_PROGRAM_SLUG } from '../program/berichProgramData'
 import '../dashboard/dashboard.css'
-import { AffiliateSection } from './AffiliateSection'
 import './student.css'
 
 function StudentProgramAuthenticated({ slug }: { slug: string }) {
@@ -194,7 +193,6 @@ function StudentProgramAuthenticated({ slug }: { slug: string }) {
       </header>
       <main className="student-program__main">
         <BerichProgramView key={user.id} variant="student" progressNamespace={user.id} />
-        {!isAdminUser(user) ? <AffiliateSection /> : null}
       </main>
     </div>
   )

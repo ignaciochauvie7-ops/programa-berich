@@ -21,8 +21,6 @@ export async function grantProgramAccess(params: {
     return { ok: false, error: 'server misconfigured: supabase', status: 500 }
   }
 
-  await admin.from('affiliates').upsert({ email }, { onConflict: 'email', ignoreDuplicates: true })
-
   const productSlug = process.env.PRODUCT_SLUG ?? 'berich-completo'
   const { data: existingEntitlement } = await admin
     .from('entitlements')

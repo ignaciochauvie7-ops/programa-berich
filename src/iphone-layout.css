@@ -211,16 +211,6 @@
     max-width: calc(100% - 1rem);
   }
 
-  .student-affiliate__stats {
-    grid-template-columns: 1fr 1fr !important;
-  }
-
-  .student-affiliate input[type='text'] {
-    width: 100% !important;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
   /* —— Panel admin /control (solo dentro .admin-app) —— */
   .admin-app {
     width: 100%;
@@ -352,19 +342,6 @@
     justify-content: center;
   }
 
-  .admin-app .admin-affiliate-periods {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-
-  .admin-app .admin-affiliate-periods .admin-btn {
-    flex: 1 1 calc(50% - 0.25rem);
-    min-width: 0;
-    justify-content: center;
-    padding: 0.55rem 0.5rem !important;
-    font-size: 0.82rem;
-  }
 
   .admin-app .admin-cards,
   .admin-app .admin-cards--stats {
@@ -564,17 +541,9 @@
     font-size: 10px;
   }
 
-  .student-affiliate__stats {
-    grid-template-columns: 1fr !important;
-  }
-
   .admin-app .admin-cards,
   .admin-app .admin-cards--stats {
     grid-template-columns: 1fr !important;
-  }
-
-  .admin-app .admin-affiliate-periods .admin-btn {
-    flex: 1 1 100%;
   }
 
   .admin-app .admin-sidebar__nav {

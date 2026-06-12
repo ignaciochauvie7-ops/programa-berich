@@ -1,8 +1,4 @@
 import { webHandler } from './_lib/webHandler.js'
-import affiliatesMarkPaid from './_affiliates/mark-paid.js'
-import affiliatesMe from './_affiliates/me.js'
-import affiliatesRecordSale from './_affiliates/record-sale.js'
-import affiliatesStats from './_affiliates/stats.js'
 import invitePreview from './_invite/preview.js'
 import inviteSignup from './_invite/signup.js'
 import price from './_price.js'
@@ -21,10 +17,6 @@ import health from './_health/index.js'
 type RouteHandler = (req: Request) => Promise<Response>
 
 const routes = new Map<string, RouteHandler>([
-  ['/api/affiliates/mark-paid', affiliatesMarkPaid as unknown as RouteHandler],
-  ['/api/affiliates/me', affiliatesMe as unknown as RouteHandler],
-  ['/api/affiliates/record-sale', affiliatesRecordSale as unknown as RouteHandler],
-  ['/api/affiliates/stats', affiliatesStats as unknown as RouteHandler],
   ['/api/invite/preview', invitePreview as unknown as RouteHandler],
   ['/api/invite/signup', inviteSignup as unknown as RouteHandler],
   ['/api/price', price as unknown as RouteHandler],
