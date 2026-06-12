@@ -43,6 +43,40 @@ export function parseSetupRefFromText(text: string): string | null {
   return match?.[1]?.toLowerCase() ?? null
 }
 
+/** Mensaje prellenado al abrir wa.me desde /configurar-perfil. */
+export function isWhatsAppActivationMessage(text: string): boolean {
+  const normalized = text.toLowerCase()
+  return (
+    normalized.includes('programa berich') &&
+    (normalized.includes('acompañamiento') || normalized.includes('acompanamiento'))
+  )
+}
+
+export async function findPendingProfileForActivation(
+  admin: SupabaseClient,
+): Promise<(CoachProfile & { nombre: string | null; email: string }) | null> {
+  const { data, error } = await admin
+    .from('alumno_coach_profile')
+    .select('*, alumnos!inner(email, nombre, activo)')
+    .is('phone_e164', null)
+    .eq('coach_active', true)
+    .not('setup_completed_at', 'is', null)
+    .order('setup_completed_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error || !data) return null
+
+  const row = data as CoachProfile & { alumnos: { email: string; nombre: string | null; activo: boolean } }
+  if (!row.alumnos.activo) return null
+
+  return {
+    ...row,
+    email: row.alumnos.email,
+    nombre: row.alumnos.nombre,
+  }
+}
+
 export async function findPendingProfileByRef(
   admin: SupabaseClient,
   ref: string,

@@ -38,7 +38,7 @@ Principal obstáculo que marcó: ${quiz.impediment}`
   if (profile.calorie_target != null && profile.water_ml_base != null) {
     profileBlock += `
 Referencia calórica diaria: ~${formatKcal(profile.calorie_target)} kcal (tope sugerido ~${formatKcal(profile.calorie_cap ?? profile.calorie_target)} kcal)
-Agua base: ~${formatLiters(profile.water_ml_base)}L/día (+1L extra en días de entreno)
+Agua base: ~${formatLiters(profile.water_ml_base)}L/día (+${formatLiters(profile.water_ml_training_extra ?? 500)}L extra en días de entreno)
 Pasos orientativos: ${profile.steps_target ?? 3000}/día`
   }
 

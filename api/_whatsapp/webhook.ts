@@ -4,10 +4,13 @@ import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
 import {
   attachPhoneToProfile,
   findPendingProfileByRef,
+  findPendingProfileForActivation,
   findProfileByPhone,
+  isWhatsAppActivationMessage,
   parseSetupRefFromText,
 } from '../_lib/coach/alumnoCoach.js'
 import { handleInboundText } from '../_lib/coach/proactive.js'
+import { sendWelcomeAfterPhoneLink } from '../_lib/coach/welcomeMessage.js'
 import { normalizePhoneE164 } from '../_lib/coach/phone.js'
 import { verifyWebhookChallenge, verifyWebhookSignature } from '../_lib/whatsapp/verifyWebhook.js'
 
@@ -66,19 +69,29 @@ async function handler(request: Request): Promise<Response> {
     if (!phone) continue
 
     let profile = await findProfileByPhone(admin, phone)
+    let justLinked = false
+
     if (!profile) {
       const ref = parseSetupRefFromText(message.text.body)
-      if (ref) {
-        const pending = await findPendingProfileByRef(admin, ref)
-        if (pending) {
-          const linked = await attachPhoneToProfile(admin, pending.alumno_id, phone)
-          if (linked.ok) {
-            profile = { ...pending, phone_e164: phone }
-          }
+      let pending = ref ? await findPendingProfileByRef(admin, ref) : null
+
+      if (!pending && isWhatsAppActivationMessage(message.text.body)) {
+        pending = await findPendingProfileForActivation(admin)
+      }
+
+      if (pending) {
+        const linked = await attachPhoneToProfile(admin, pending.alumno_id, phone)
+        if (linked.ok) {
+          profile = { ...pending, phone_e164: phone }
+          justLinked = true
+          await sendWelcomeAfterPhoneLink(admin, profile, profile.nombre, profile.email)
         }
       }
     }
+
     if (!profile) continue
+
+    if (justLinked && isWhatsAppActivationMessage(message.text.body)) continue
 
     try {
       await handleInboundText(admin, profile, message.text.body.trim(), message.id ?? null)

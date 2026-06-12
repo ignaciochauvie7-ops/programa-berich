@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { displayName, saveCoachMessage, touchProfileTimestamps } from './alumnoCoach.js'
+import { displayName, isWhatsAppActivationMessage, saveCoachMessage, touchProfileTimestamps } from './alumnoCoach.js'
 import { buildProactiveText } from './messageTemplates.js'
 import { getQuizProfile } from './quizProfile.js'
 import { buildSystemPrompt } from './systemPrompt.js'
@@ -10,6 +10,8 @@ import { isWhatsAppConfigured, sendWhatsAppTemplate, sendWhatsAppText } from '..
 const MS_24H = 24 * 60 * 60 * 1000
 const SEND_START_HOUR = 8
 const SEND_END_HOUR = 20
+const REPLY_DELAY_MIN_MS = 12 * 60 * 1000
+const REPLY_DELAY_MAX_MS = 18 * 60 * 1000
 
 function hashSeed(...parts: string[]): number {
   let hash = 0
@@ -101,6 +103,31 @@ export async function sendProactiveMessage(
   return { sent: true }
 }
 
+function replyDelayMs(): number {
+  const span = REPLY_DELAY_MAX_MS - REPLY_DELAY_MIN_MS
+  return REPLY_DELAY_MIN_MS + Math.floor(Math.random() * span)
+}
+
+async function scheduleInboundReply(admin: SupabaseClient, alumnoId: string): Promise<void> {
+  const scheduledFor = new Date(Date.now() + replyDelayMs()).toISOString()
+
+  await admin
+    .from('coach_scheduled_sends')
+    .delete()
+    .eq('alumno_id', alumnoId)
+    .eq('job_type', 'inbound_reply')
+    .is('sent_at', null)
+
+  await admin.from('coach_scheduled_sends').insert({
+    alumno_id: alumnoId,
+    job_type: 'inbound_reply',
+    scheduled_for: scheduledFor,
+    sent_at: null,
+    skipped_reason: null,
+  })
+}
+
+/** Guarda el mensaje entrante y programa respuesta (~12–18 min) para que no sea instantánea. */
 export async function handleInboundText(
   admin: SupabaseClient,
   profile: CoachProfile & { nombre: string | null; email: string },
@@ -110,7 +137,6 @@ export async function handleInboundText(
   if (!profile.phone_e164) return
 
   const now = new Date().toISOString()
-  const quiz = await getQuizProfile(admin, profile.alumno_id)
 
   await saveCoachMessage(admin, {
     alumnoId: profile.alumno_id,
@@ -126,43 +152,129 @@ export async function handleInboundText(
     last_user_reply_at: now,
   })
 
-  const { data: recent } = await admin
+  if (isWhatsAppActivationMessage(text)) return
+
+  await scheduleInboundReply(admin, profile.alumno_id)
+}
+
+async function latestUnansweredInbound(
+  admin: SupabaseClient,
+  alumnoId: string,
+): Promise<{ body: string; created_at: string } | null> {
+  const { data: inbound } = await admin
     .from('coach_messages')
-    .select('direction, body')
-    .eq('alumno_id', profile.alumno_id)
+    .select('body, created_at')
+    .eq('alumno_id', alumnoId)
+    .eq('direction', 'inbound')
     .order('created_at', { ascending: false })
-    .limit(12)
+    .limit(1)
+    .maybeSingle()
 
-  const history =
-    (recent ?? [])
-      .reverse()
-      .slice(0, -1)
-      .map((row) => ({
-        role: row.direction === 'inbound' ? ('user' as const) : ('assistant' as const),
-        content: row.body as string,
-      })) ?? []
+  if (!inbound) return null
 
-  const systemPrompt = buildSystemPrompt(profile, profile.nombre, profile.email, quiz)
-  const reply = await generateCoachReply(systemPrompt, history, text)
+  const { data: replied } = await admin
+    .from('coach_messages')
+    .select('id')
+    .eq('alumno_id', alumnoId)
+    .eq('direction', 'outbound')
+    .eq('message_type', 'reply')
+    .gt('created_at', inbound.created_at)
+    .limit(1)
+    .maybeSingle()
 
-  const replyText = reply.ok
-    ? reply.text
-    : 'Dame un segundito y te respondo en un ratito. Si es urgente, contame un poco más de contexto.'
+  if (replied) return null
+  return inbound as { body: string; created_at: string }
+}
 
-  const sendResult = await sendWhatsAppText(profile.phone_e164, replyText)
+export async function processPendingInboundReplies(
+  admin: SupabaseClient,
+): Promise<{ sent: number; skipped: number }> {
+  const nowIso = new Date().toISOString()
+  const { data: dueRows } = await admin
+    .from('coach_scheduled_sends')
+    .select('id, alumno_id, scheduled_for')
+    .eq('job_type', 'inbound_reply')
+    .is('sent_at', null)
+    .lte('scheduled_for', nowIso)
 
-  await saveCoachMessage(admin, {
-    alumnoId: profile.alumno_id,
-    direction: 'outbound',
-    messageType: 'reply',
-    body: replyText,
-    waMessageId: sendResult.ok ? (sendResult.messageId ?? null) : null,
-    status: sendResult.ok ? 'sent' : 'failed',
-  })
+  let sent = 0
+  let skipped = 0
 
-  if (sendResult.ok) {
-    await touchProfileTimestamps(admin, profile.alumno_id, { last_outbound_at: new Date().toISOString() })
+  for (const row of dueRows ?? []) {
+    const { data: profileRow } = await admin
+      .from('alumno_coach_profile')
+      .select('*, alumnos!inner(email, nombre, activo)')
+      .eq('alumno_id', row.alumno_id)
+      .maybeSingle()
+
+    if (!profileRow) {
+      await markScheduledSend(admin, row.alumno_id, 'inbound_reply', row.scheduled_for, false, 'no profile')
+      skipped += 1
+      continue
+    }
+
+    const alumno = profileRow.alumnos as { email: string; nombre: string | null; activo: boolean }
+    const profile = profileRow as CoachProfile & { nombre: string | null; email: string }
+    profile.nombre = alumno.nombre
+    profile.email = alumno.email
+
+    if (!alumno.activo || !profile.phone_e164 || !profile.coach_active) {
+      await markScheduledSend(admin, row.alumno_id, 'inbound_reply', row.scheduled_for, false, 'inactive')
+      skipped += 1
+      continue
+    }
+
+    const pending = await latestUnansweredInbound(admin, profile.alumno_id)
+    if (!pending || isWhatsAppActivationMessage(pending.body)) {
+      await markScheduledSend(admin, row.alumno_id, 'inbound_reply', row.scheduled_for, false, 'no pending question')
+      skipped += 1
+      continue
+    }
+
+    const quiz = await getQuizProfile(admin, profile.alumno_id)
+    const { data: recent } = await admin
+      .from('coach_messages')
+      .select('direction, body')
+      .eq('alumno_id', profile.alumno_id)
+      .order('created_at', { ascending: false })
+      .limit(12)
+
+    const history =
+      (recent ?? [])
+        .reverse()
+        .slice(0, -1)
+        .map((msg) => ({
+          role: msg.direction === 'inbound' ? ('user' as const) : ('assistant' as const),
+          content: msg.body as string,
+        })) ?? []
+
+    const systemPrompt = buildSystemPrompt(profile, profile.nombre, profile.email, quiz)
+    const reply = await generateCoachReply(systemPrompt, history, pending.body)
+    const replyText = reply.ok
+      ? reply.text
+      : 'Dame un segundito y te respondo en un ratito. Si es urgente, contame un poco más de contexto.'
+
+    const sendResult = await sendWhatsAppText(profile.phone_e164, replyText)
+    await saveCoachMessage(admin, {
+      alumnoId: profile.alumno_id,
+      direction: 'outbound',
+      messageType: 'reply',
+      body: replyText,
+      waMessageId: sendResult.ok ? (sendResult.messageId ?? null) : null,
+      status: sendResult.ok ? 'sent' : 'failed',
+    })
+
+    if (sendResult.ok) {
+      await touchProfileTimestamps(admin, profile.alumno_id, { last_outbound_at: new Date().toISOString() })
+      await markScheduledSend(admin, row.alumno_id, 'inbound_reply', row.scheduled_for, true)
+      sent += 1
+    } else {
+      await markScheduledSend(admin, row.alumno_id, 'inbound_reply', row.scheduled_for, false, sendResult.error)
+      skipped += 1
+    }
   }
+
+  return { sent, skipped }
 }
 
 function localParts(date: Date, timeZone: string) {

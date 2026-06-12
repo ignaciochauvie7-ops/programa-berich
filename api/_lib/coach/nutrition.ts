@@ -62,7 +62,7 @@ export function computeCoachTargets(
     calorie_target,
     calorie_cap,
     water_ml_base,
-    water_ml_training_extra: 1000,
+    water_ml_training_extra: 500,
     steps_target,
   }
 }

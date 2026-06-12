@@ -46,7 +46,8 @@ export function buildProactiveText(job: ProactiveJobType, ctx: BuildContext): st
       const baseL = formatLiters(waterBase)
       if (isTrainingDay) {
         const totalL = formatLiters(waterBase + waterExtra)
-        return `${name}, hoy con entreno apuntá a unos ${totalL}L de agua (${baseL}L base + un litro extra). ¿Ya tomaste un vaso ahora? No hace falta que "lleves cuenta" al milímetro, solo no te olvides.`
+        const extraL = formatLiters(waterExtra)
+        return `${name}, hoy con entreno apuntá a unos ${totalL}L de agua (${baseL}L base + ${extraL}L extra). ¿Ya tomaste un vaso ahora? No hace falta que "lleves cuenta" al milímetro, solo no te olvides.`
       }
       return `${name}, tu meta de agua hoy son unos ${baseL}L (según tu peso). ¿Ya tomaste algo en la mañana? Mandame un ok cuando tomes el primer vaso grande.`
     }

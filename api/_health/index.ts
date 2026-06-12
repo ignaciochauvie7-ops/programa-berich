@@ -3,6 +3,7 @@ import { json } from '../_lib/json.js'
 import { getActivationOrigin } from '../_lib/auth.js'
 import { appPublicOrigin } from '../_lib/appOrigin.js'
 import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
+import { isWhatsAppConfigured } from '../_lib/whatsapp/client.js'
 
 function envOk(key: string): boolean {
   return Boolean(process.env[key]?.trim())
@@ -36,7 +37,14 @@ async function handler(request: Request): Promise<Response> {
     activation_public_url: getActivationOrigin(),
     vite_supabase_url: envOk('VITE_SUPABASE_URL'),
     vite_supabase_anon: envOk('VITE_SUPABASE_ANON_KEY'),
+    vite_whatsapp_number: envOk('VITE_WHATSAPP_NUMBER'),
+    whatsapp_api: isWhatsAppConfigured(),
+    openai_api_key: envOk('OPENAI_API_KEY'),
+    coach_cron_secret: envOk('COACH_CRON_SECRET') || envOk('CRON_SECRET'),
   }
+
+  const coachWhatsappReady =
+    checks.whatsapp_api && checks.openai_api_key && checks.coach_cron_secret && checks.vite_whatsapp_number
 
   const requiredForPurchaseFlow = [
     checks.supabase_url,
@@ -70,9 +78,16 @@ async function handler(request: Request): Promise<Response> {
     )
   }
 
+  if (!coachWhatsappReady) {
+    hints.push(
+      'Coach WhatsApp: configurá WHATSAPP_*, OPENAI_API_KEY, VITE_WHATSAPP_NUMBER y COACH_CRON_SECRET (o CRON_SECRET en Vercel Cron).',
+    )
+  }
+
   return json({
     ok: purchaseFlowReady,
     purchase_flow_ready: purchaseFlowReady,
+    coach_whatsapp_ready: coachWhatsappReady,
     checks: { ...checks, resend_sandbox_domain: resendUsesSandboxDomain },
     hints,
   })

@@ -13,6 +13,7 @@ export type ProactiveJobType =
   | 'impediment_support'
   | 'weekly_check'
   | 'reengagement'
+  | 'inbound_reply'
 
 export type CoachProfile = {
   alumno_id: string
