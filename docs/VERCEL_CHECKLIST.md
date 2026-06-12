@@ -31,17 +31,6 @@ Build del repo: `tsc -b && vite build`. Node 20 en `.nvmrc`.
 | `POLAR_ENVIRONMENT` | `production` |
 | `PRODUCT_SLUG` | `berich-completo` |
 
-### Acompañamiento WhatsApp (opcional)
-
-| Variable | Uso |
-|----------|-----|
-| `OPENAI_API_KEY` | Respuestas conversacionales |
-| `OPENAI_MODEL` | Opcional, default `gpt-4o-mini` |
-| `WHATSAPP_*` | Meta Cloud API |
-| `COACH_CRON_SECRET` | Proteger `/api/coach/cron` |
-
-**Meta webhook:** `https://programaberich.fit/api/whatsapp/webhook`
-
 ## Supabase — Authentication → URL Configuration
 
 | Campo | Valor |
@@ -83,8 +72,44 @@ Ver paso a paso: `docs/DOMAIN_SETUP.md`
 1. Polar cobra → webhook → alumno `activo = false` (pendiente) + mail Resend.
 2. Mail → `https://programaberich.fit/activar-cuenta` → contraseña → alumno `activo = true` → `/configurar-perfil` → `/programa`.
 
-## Pruebas rápidas
+## Diagnóstico rápido (producción)
+
+Abrí en el navegador (o `curl -k` si el SSL local falla):
+
+**https://programaberich.fit/api/health**
+
+Debe devolver `"purchase_flow_ready": true`. Si es `false`, faltan variables en Vercel → **Redeploy**.
+
+## Error SSL en Chrome (`NET::ERR_CERT_AUTHORITY_INVALID`)
+
+1. Vercel → **Domains** → `programaberich.fit` → **Refresh**
+2. Si sigue rojo/amarillo: quitá el dominio y volvé a agregarlo
+3. Namecheap: solo registro **A** `@` → `216.198.79.1` (sin redirect ni parking)
+4. Esperá 15–60 min a que termine *Generating SSL Certificate*
+5. Mientras tanto, probá en incógnito u otro dispositivo/red
+
+El sitio puede responder en API aunque Chrome marque error (antivirus/proxy local).
+
+## Polar webhook (crítico)
+
+El webhook **tiene que apuntar directo** a:
+
+`https://programaberich.fit/api/polar/webhook`
+
+**No uses** `programa-berich.vercel.app` si ese dominio redirige 307 a `.fit` — Polar puede fallar al seguir el redirect y **no se envía el mail**.
+
+Eventos: `order.paid`, `checkout.updated`
+
+## Pruebas locales
+
+```bash
+npm run test:resend -- tu@mail.com
+npm run test:provision -- tu@mail.com
+```
+
+## Pruebas rápidas (producción)
 
 - Quiz → checkout → pago → mail desde `hola@programaberich.fit`
 - Link mail → `/activar-cuenta` en **programaberich.fit**
 - Polar → Webhooks → delivery **200**
+- `/api/health` → `purchase_flow_ready: true`

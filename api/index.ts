@@ -15,6 +15,7 @@ import alumnosActivate from './_alumnos/activate.js'
 import whatsappWebhook from './_whatsapp/webhook.js'
 import polarCheckout from './_polar/checkout.js'
 import polarWebhook from './_polar/webhook.js'
+import health from './_health/index.js'
 
 type RouteHandler = (req: Request) => Promise<Response>
 
@@ -35,6 +36,7 @@ const routes = new Map<string, RouteHandler>([
   ['/api/whatsapp/webhook', whatsappWebhook as unknown as RouteHandler],
   ['/api/polar/checkout', polarCheckout as unknown as RouteHandler],
   ['/api/polar/webhook', polarWebhook as unknown as RouteHandler],
+  ['/api/health', health as unknown as RouteHandler],
 ])
 
 async function router(request: Request): Promise<Response> {

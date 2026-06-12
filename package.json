@@ -13,7 +13,8 @@
     "build": "tsc -b && tsc -p api/tsconfig.json --noEmit && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:resend": "tsx scripts/test-resend.ts"
+    "test:resend": "tsx scripts/test-resend.ts",
+    "test:provision": "tsx scripts/test-provision-flow.ts"
   },
   "dependencies": {
     "@types/node": "^24.12.2",
