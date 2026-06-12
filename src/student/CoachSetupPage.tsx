@@ -33,10 +33,10 @@ type ProfileStatus = {
 
 const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, '')
 
-function buildWhatsAppUrl(setupRef: string): string | null {
+function buildWhatsAppUrl(): string | null {
   if (!WHATSAPP_NUMBER) return null
   const text = encodeURIComponent(
-    `Hola, acabo de entrar al Programa Berich y quiero activar mi acompañamiento. Ref: ${setupRef}`,
+    'Hola, acabo de entrar al Programa Berich y quiero activar mi acompañamiento con este numero',
   )
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
 }
@@ -111,8 +111,8 @@ export function CoachSetupPage() {
     setTrainingDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]))
   }
 
-  function openWhatsApp(ref: string) {
-    const url = buildWhatsAppUrl(ref)
+  function openWhatsApp() {
+    const url = buildWhatsAppUrl()
     if (!url) {
       setError('WhatsApp no está configurado todavía. Avisale al equipo.')
       return false
@@ -171,7 +171,7 @@ export function CoachSetupPage() {
       setSetupRef(ref)
       setProfileStatus({ complete: true, phone_linked: false, setup_ref: ref })
 
-      if (openWhatsApp(ref)) {
+      if (openWhatsApp()) {
         setWhatsappDone(true)
       }
       setBusy(false)
@@ -182,8 +182,7 @@ export function CoachSetupPage() {
   }
 
   if (whatsappDone || (profileStatus?.complete && !profileStatus.phone_linked)) {
-    const ref = setupRef ?? profileStatus?.setup_ref
-    const waUrl = ref ? buildWhatsAppUrl(ref) : null
+    const waUrl = buildWhatsAppUrl()
 
     return (
       <div className="student-auth">
