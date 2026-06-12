@@ -25,18 +25,6 @@ const ACTIVITY_OPTIONS = [
 
 type ActivityLevel = (typeof ACTIVITY_OPTIONS)[number]['value']
 
-type SetupSummary = {
-  has_quiz: boolean
-  goal?: string
-  impediment?: string
-  weight_kg?: number
-  preview?: {
-    calorie_target_label: string
-    water_liters: string
-    steps_target: number
-  } | null
-}
-
 type ProfileStatus = {
   complete?: boolean
   phone_linked?: boolean
@@ -59,7 +47,6 @@ export function CoachSetupPage() {
   const [profileStatus, setProfileStatus] = useState<ProfileStatus | null>(null)
   const [trainingDays, setTrainingDays] = useState<number[]>([1, 3, 5])
   const [activityLevel, setActivityLevel] = useState<ActivityLevel>('moderate')
-  const [summary, setSummary] = useState<SetupSummary | null>(null)
   const [optIn, setOptIn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -90,24 +77,6 @@ export function CoachSetupPage() {
       }
     })()
   }, [configured, loading, session, user])
-
-  useEffect(() => {
-    if (!session || checking || whatsappDone) return
-    if (profileStatus?.complete && profileStatus.phone_linked) return
-
-    void (async () => {
-      try {
-        const res = await fetch(`/api/coach/setup-summary?activity_level=${activityLevel}`, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        })
-        if (res.ok) {
-          setSummary((await res.json()) as SetupSummary)
-        }
-      } catch {
-        /* ignore */
-      }
-    })()
-  }, [session, activityLevel, checking, whatsappDone, profileStatus?.complete, profileStatus?.phone_linked])
 
   if (!configured) {
     return (
@@ -248,23 +217,6 @@ export function CoachSetupPage() {
         <img className="student-auth__logo" src={activationLogo} alt="Berich" />
         <h1>Tu acompañamiento personalizado</h1>
         <p>Contanos cómo vas a entrenar y después activá el seguimiento por WhatsApp.</p>
-
-        {summary?.has_quiz && summary.preview ? (
-          <div className="coach-setup__summary">
-            <p>
-              Según tu evaluación: objetivo <strong>{summary.goal}</strong>
-              {summary.weight_kg ? ` · ${summary.weight_kg} kg` : ''}.
-            </p>
-            <p>
-              Referencia diaria: <strong>{summary.preview.calorie_target_label} kcal</strong>, agua{' '}
-              <strong>~{summary.preview.water_liters} L</strong>, pasos orientativos{' '}
-              <strong>{summary.preview.steps_target.toLocaleString('es-UY')}</strong>.
-            </p>
-            {summary.impediment ? (
-              <p className="coach-setup__impediment">Enfocamos tips para: {summary.impediment}</p>
-            ) : null}
-          </div>
-        ) : null}
 
         <div className="student-auth__field">
           <span className="coach-setup__label">¿Qué días vas a entrenar?</span>
