@@ -4,20 +4,14 @@ import { getQuizProfile } from './quizProfile.js'
 import type { CoachProfile } from './types.js'
 import { isWhatsAppConfigured, sendWhatsAppText } from '../whatsapp/client.js'
 
-function welcomeLabel(sex: 'hombre' | 'mujer' | null | undefined): string {
-  if (sex === 'mujer') return 'Bienvenida'
-  if (sex === 'hombre') return 'Bienvenido'
-  return 'Bienvenido/a'
-}
-
 /** Mensaje cálido del día 1 tras vincular WhatsApp — sin metas ni números. */
 export function buildWelcomeMessage(params: {
   nombre: string | null
   email: string
-  sex?: 'hombre' | 'mujer' | null
+  sex: 'hombre' | 'mujer'
 }): string {
   const name = displayName(params.nombre, params.email)
-  const label = welcomeLabel(params.sex)
+  const label = params.sex === 'mujer' ? 'Bienvenida' : 'Bienvenido'
 
   return `¡Hola ${name}! Qué bueno que estés en el Programa Berich, ${label}.
 
@@ -45,7 +39,9 @@ export async function sendWelcomeAfterPhoneLink(
   if ((count ?? 0) > 0) return false
 
   const quiz = await getQuizProfile(admin, profile.alumno_id)
-  const text = buildWelcomeMessage({ nombre, email, sex: quiz?.sex ?? null })
+  if (!quiz?.sex) return false
+
+  const text = buildWelcomeMessage({ nombre, email, sex: quiz.sex })
   const send = await sendWhatsAppText(profile.phone_e164, text)
   if (!send.ok) return false
 

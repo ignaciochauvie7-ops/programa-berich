@@ -104,10 +104,14 @@ async function handler(request: Request): Promise<Response> {
   }
 
   if (phone && isWhatsAppConfigured()) {
+    if (!quiz?.sex) {
+      return json({ ok: true, alumno_id: alumno.id, setup_ref: alumno.id.slice(0, 8) })
+    }
+
     const welcome = buildWelcomeMessage({
       nombre: alumno.nombre,
       email: alumno.email,
-      sex: quiz?.sex ?? null,
+      sex: quiz.sex,
     })
     const send = await sendWhatsAppText(phone, welcome)
     if (send.ok) {
