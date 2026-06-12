@@ -50,19 +50,31 @@ async function handler(request: Request): Promise<Response> {
     checks.activation_public_url?.startsWith('https://'),
   ]
 
-  const purchaseFlowReady = requiredForPurchaseFlow.every(Boolean)
+  const resendFrom = checks.resend_from.toLowerCase()
+  const resendUsesSandboxDomain = resendFrom.includes('@resend.dev')
+
+  const purchaseFlowReady =
+    requiredForPurchaseFlow.every(Boolean) && !resendUsesSandboxDomain
+
+  const hints: string[] = []
+  if (resendUsesSandboxDomain) {
+    hints.push(
+      'RESEND_FROM en Vercel usa onboarding@resend.dev (solo permite enviar a tu mail de Resend). Cambiá a: Programa Berich <hola@programaberich.fit> y redeploy.',
+    )
+  }
+  if (!purchaseFlowReady && hints.length === 0) {
+    hints.push(
+      'Faltan variables en Vercel Production o el deploy no las cargó. Redeploy después de guardar.',
+      'Polar webhook debe apuntar a https://programaberich.fit/api/polar/webhook',
+      'Supabase → Redirect URLs debe incluir https://programaberich.fit/activar-cuenta',
+    )
+  }
 
   return json({
     ok: purchaseFlowReady,
     purchase_flow_ready: purchaseFlowReady,
-    checks,
-    hints: purchaseFlowReady
-      ? []
-      : [
-          'Faltan variables en Vercel Production o el deploy no las cargó. Redeploy después de guardar.',
-          'Polar webhook debe apuntar a https://programaberich.fit/api/polar/webhook',
-          'Supabase → Redirect URLs debe incluir https://programaberich.fit/activar-cuenta',
-        ],
+    checks: { ...checks, resend_sandbox_domain: resendUsesSandboxDomain },
+    hints,
   })
 }
 
