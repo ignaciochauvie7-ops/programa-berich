@@ -2,18 +2,7 @@ export type CoachGoal = 'Ganar músculo' | 'Perder grasa' | 'Recomposición corp
 
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active'
 
-export type ProactiveJobType =
-  | 'training_reminder'
-  | 'hydration'
-  | 'nutrition'
-  | 'nutrition_am'
-  | 'nutrition_pm'
-  | 'steps_reminder'
-  | 'weekend_boost'
-  | 'impediment_support'
-  | 'weekly_check'
-  | 'reengagement'
-  | 'inbound_reply'
+export type ProactiveJobType = 'daily_digest'
 
 export type CoachProfile = {
   alumno_id: string

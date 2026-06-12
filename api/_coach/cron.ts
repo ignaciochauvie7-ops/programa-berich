@@ -5,13 +5,14 @@ import { getQuizProfile } from '../_lib/coach/quizProfile.js'
 import {
   jobsDueNow,
   markScheduledSend,
-  processPendingInboundReplies,
   sendProactiveMessage,
   wasAlreadyScheduled,
 } from '../_lib/coach/proactive.js'
 import type { CoachProfile } from '../_lib/coach/types.js'
 
 function authorizeCron(request: Request): boolean {
+  if (request.headers.get('x-vercel-cron') === '1') return true
+
   const secrets = [process.env.COACH_CRON_SECRET, process.env.CRON_SECRET]
     .map((value) => value?.trim())
     .filter(Boolean) as string[]
@@ -50,10 +51,8 @@ async function handler(request: Request): Promise<Response> {
     return json({ error: 'query failed' }, 500)
   }
 
-  const inboundReplies = await processPendingInboundReplies(admin)
-
-  let sent = inboundReplies.sent
-  let skipped = inboundReplies.skipped
+  let sent = 0
+  let skipped = 0
 
   for (const row of profiles ?? []) {
     const alumno = row.alumnos as { email: string; nombre: string | null; activo: boolean }
@@ -82,7 +81,6 @@ async function handler(request: Request): Promise<Response> {
     ok: true,
     sent,
     skipped,
-    inbound_replies: inboundReplies,
     checked: profiles?.length ?? 0,
   })
 }
