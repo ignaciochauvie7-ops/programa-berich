@@ -1,58 +1,29 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { formatKcal, formatLiters, type CoachTargets } from './nutrition.js'
 import { displayName, saveCoachMessage, touchProfileTimestamps } from './alumnoCoach.js'
 import { getQuizProfile } from './quizProfile.js'
-import type { CoachGoal, CoachProfile, QuizProfile } from './types.js'
+import type { CoachProfile } from './types.js'
 import { isWhatsAppConfigured, sendWhatsAppText } from '../whatsapp/client.js'
 
-const DAY_LABELS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb']
-
-function formatTrainingDays(days: number[]): string {
-  const sorted = [...new Set(days)].sort((a, b) => a - b)
-  if (!sorted.length) return ''
-  const labels = sorted.map((d) => DAY_LABELS[d] ?? String(d))
-  if (labels.length === 1) return labels[0]!
-  return `${labels.slice(0, -1).join(', ')} y ${labels[labels.length - 1]}`
+function welcomeLabel(sex: 'hombre' | 'mujer' | null | undefined): string {
+  if (sex === 'mujer') return 'Bienvenida'
+  if (sex === 'hombre') return 'Bienvenido'
+  return 'Bienvenido/a'
 }
 
-/** Mensaje estándar del día 1 tras vincular WhatsApp. */
+/** Mensaje cálido del día 1 tras vincular WhatsApp — sin metas ni números. */
 export function buildWelcomeMessage(params: {
   nombre: string | null
   email: string
-  goal: CoachGoal
-  targets: CoachTargets
-  trainingDays: number[]
-  quiz: QuizProfile | null
+  sex?: 'hombre' | 'mujer' | null
 }): string {
   const name = displayName(params.nombre, params.email)
-  const goal = params.goal.toLowerCase()
-  const kcal = formatKcal(params.targets.calorie_target)
-  const water = formatLiters(params.targets.water_ml_base)
-  const steps = new Intl.NumberFormat('es-UY').format(params.targets.steps_target)
-  const days = formatTrainingDays(params.trainingDays)
+  const label = welcomeLabel(params.sex)
 
-  let msg = `¡Bienvenido al Programa Berich, ${name}! Ya quedó todo armado con tus datos del funnel`
+  return `¡Hola ${name}! Qué bueno que estés en el Programa Berich, ${label}.
 
-  if (params.quiz) {
-    msg += `: objetivo ${goal}, referencia ~${kcal} kcal y ~${water}L de agua por día`
-  } else {
-    msg += `: objetivo ${goal}, referencia ~${kcal} kcal y ~${water}L de agua por día`
-  }
+Cuando puedas, entrá al programa y mirá los primeros módulos a tu ritmo para irte familiarizando. Ahí está todo lo que necesitas explicado paso a paso.
 
-  if (days) {
-    msg += `. Tus días de entreno: ${days}`
-  }
-
-  msg += `. Pasos orientativos: ${steps}/día.`
-
-  if (params.targets.water_ml_training_extra > 0) {
-    const extraL = formatLiters(params.targets.water_ml_training_extra)
-    msg += ` En días de entreno sumá ~${extraL}L extra de agua.`
-  }
-
-  msg += ` Por acá te mando recordatorios útiles y, si tenés dudas, escribime cuando quieras.`
-
-  return msg
+Por acá te voy a acompañar para que sea más fácil sostener el ritmo. ¡Muchos éxitos con el arranque!`
 }
 
 export async function sendWelcomeAfterPhoneLink(
@@ -69,27 +40,12 @@ export async function sendWelcomeAfterPhoneLink(
     .eq('alumno_id', profile.alumno_id)
     .eq('direction', 'outbound')
     .eq('message_type', 'text')
-    .ilike('body', '¡Bienvenido al Programa Berich%')
+    .ilike('body', '¡Hola %! Qué bueno que estés en el Programa Berich%')
 
   if ((count ?? 0) > 0) return false
 
   const quiz = await getQuizProfile(admin, profile.alumno_id)
-  const text = buildWelcomeMessage({
-    nombre,
-    email,
-    goal: profile.goal,
-    targets: {
-      maintenance_kcal: profile.maintenance_kcal ?? 0,
-      calorie_target: profile.calorie_target ?? 0,
-      calorie_cap: profile.calorie_cap ?? 0,
-      water_ml_base: profile.water_ml_base ?? 0,
-      water_ml_training_extra: profile.water_ml_training_extra ?? 500,
-      steps_target: profile.steps_target ?? 3000,
-    },
-    trainingDays: profile.training_days,
-    quiz,
-  })
-
+  const text = buildWelcomeMessage({ nombre, email, sex: quiz?.sex ?? null })
   const send = await sendWhatsAppText(profile.phone_e164, text)
   if (!send.ok) return false
 

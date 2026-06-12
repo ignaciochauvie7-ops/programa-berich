@@ -4,11 +4,11 @@ import { getRequestUser } from '../_lib/auth.js'
 import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
 import { findAlumnoForUser } from '../_lib/coach/alumnoCoach.js'
 import { normalizePhoneE164 } from '../_lib/coach/phone.js'
-import { computeCoachTargets, formatKcal, formatLiters } from '../_lib/coach/nutrition.js'
+import { computeCoachTargets } from '../_lib/coach/nutrition.js'
 import { getQuizProfile } from '../_lib/coach/quizProfile.js'
 import type { ActivityLevel, CoachGoal } from '../_lib/coach/types.js'
 import { isWhatsAppConfigured, sendWhatsAppText } from '../_lib/whatsapp/client.js'
-import { displayName } from '../_lib/coach/alumnoCoach.js'
+import { buildWelcomeMessage } from '../_lib/coach/welcomeMessage.js'
 
 const ACTIVITY_LEVELS: ActivityLevel[] = ['sedentary', 'light', 'moderate', 'active', 'very_active']
 
@@ -104,11 +104,11 @@ async function handler(request: Request): Promise<Response> {
   }
 
   if (phone && isWhatsAppConfigured()) {
-    const name = displayName(alumno.nombre, alumno.email)
-    const waterL = formatLiters(targets.water_ml_base)
-    const welcome = quiz
-      ? `Hola ${name}, soy tu acompañamiento del Programa Berich. Ya quedó todo listo según lo que marcaste en el quiz: objetivo ${goal.toLowerCase()}, referencia ~${formatKcal(targets.calorie_target)} kcal y ~${waterL}L de agua por día. Te escribo por acá para ayudarte. ¿En qué te puedo dar una mano hoy?`
-      : `Hola ${name}, soy tu acompañamiento del Programa Berich. Ya quedó todo listo: te escribo por acá para ayudarte con entrenamiento y alimentación. ¿En qué te puedo dar una mano hoy?`
+    const welcome = buildWelcomeMessage({
+      nombre: alumno.nombre,
+      email: alumno.email,
+      sex: quiz?.sex ?? null,
+    })
     const send = await sendWhatsAppText(phone, welcome)
     if (send.ok) {
       await admin.from('coach_messages').insert({

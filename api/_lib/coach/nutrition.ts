@@ -41,16 +41,16 @@ export function computeCoachTargets(
 
   switch (goal) {
     case 'Perder grasa':
-      calorie_target = maintenance - 400
-      calorie_cap = maintenance - 150
+      calorie_target = maintenance - 500
+      calorie_cap = maintenance - 200
       break
     case 'Ganar músculo':
-      calorie_target = maintenance + 250
-      calorie_cap = maintenance + 400
+      calorie_target = maintenance + 350
+      calorie_cap = maintenance + 500
       break
     case 'Recomposición corporal':
-      calorie_target = maintenance
-      calorie_cap = maintenance + 150
+      calorie_target = maintenance - 100
+      calorie_cap = maintenance + 50
       break
   }
 

@@ -1,4 +1,5 @@
 import { ACTIVITY_LABELS, formatKcal, formatLiters } from './nutrition.js'
+import { PROGRAM_REDIRECT_RULES, PROGRAM_TOPICS_BLOCK } from './programKnowledge.js'
 import type { ActivityLevel, CoachProfile, QuizProfile } from './types.js'
 import { displayName } from './alumnoCoach.js'
 
@@ -46,6 +47,8 @@ Pasos orientativos: ${profile.steps_target ?? 3000}/día`
 
 ${profileBlock}
 
+${PROGRAM_TOPICS_BLOCK}
+
 Reglas:
 - Español rioplatense (vos, tenés, etc.).
 - Mensajes cortos (2-4 oraciones salvo que pidan detalle).
@@ -54,5 +57,6 @@ Reglas:
 - NO inventes cuánta agua o calorías ya consumió el alumno; solo recordá metas y hábitos.
 - Si marcó ansiedad/hambre, priorizá tips prácticos (proteína, agua, evitar picoteo) con tono empático.
 - Personalizá con su nombre (${name}) y su obstáculo cuando aplique.
-- Si preguntan algo médico grave, recomendá consultar un profesional de salud.`
+- Si preguntan algo médico grave, recomendá consultar un profesional de salud.
+${PROGRAM_REDIRECT_RULES}`
 }
