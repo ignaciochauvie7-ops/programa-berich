@@ -49,7 +49,7 @@ async function handler(request: Request): Promise<Response> {
 
   const variant = typeof body.variant === 'string' ? body.variant.trim().slice(0, 32) : ''
   const origin = appPublicOrigin()
-  const successUrl = origin ? `${origin}/login?checkout=success` : undefined
+  const successUrl = origin ? `${origin}/compra-exitosa?checkout_id={CHECKOUT_ID}` : undefined
 
   const metadata: Record<string, string> = { source: 'quiz' }
   if (variant) metadata.quiz_variant = variant

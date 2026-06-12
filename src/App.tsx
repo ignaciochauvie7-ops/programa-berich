@@ -7,6 +7,7 @@ import { QuizPage } from './funnel/QuizPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { AccountActivationPage } from './student/AccountActivationPage'
 import { CoachSetupPage } from './student/CoachSetupPage'
+import { PurchaseSuccessPage } from './student/PurchaseSuccessPage'
 import { StudentInviteSignupPage } from './student/StudentInviteSignupPage'
 import { StudentLoginPage } from './student/StudentLoginPage'
 import { StudentProgramRoute } from './student/StudentProgramRoute'
@@ -22,6 +23,7 @@ export default function App() {
       </Route>
       <Route path="/control" element={<Navigate to="/control/funnels" replace />} />
       <Route path="/dashboard/*" element={<Navigate to="/control" replace />} />
+      <Route path="/compra-exitosa" element={<PurchaseSuccessPage />} />
       <Route path="/login" element={<StudentLoginPage />} />
       <Route path="/activar-cuenta" element={<AccountActivationPage />} />
       <Route path="/configurar-perfil" element={<CoachSetupPage />} />

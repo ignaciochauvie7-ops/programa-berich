@@ -10,7 +10,7 @@ export async function grantProgramAccess(params: {
   quizVariant?: string | null
   quizSnapshot?: QuizSnapshotInput | null
   nombre?: string | null
-}): Promise<{ ok: true; alumnoId: string } | { ok: false; error: string; status: number }> {
+}): Promise<{ ok: true; alumnoId: string; mailSent: boolean } | { ok: false; error: string; status: number }> {
   const email = normalizeEmail(params.email)
   if (!email.includes('@')) {
     return { ok: false, error: 'invalid email', status: 400 }
@@ -63,7 +63,7 @@ export async function grantProgramAccess(params: {
             console.error('[grantProgramAccess] quiz profile', saved.error, email)
           }
         }
-        return { ok: true, alumnoId: retry.alumno.id }
+        return { ok: true, alumnoId: retry.alumno.id, mailSent: retry.mailSent }
       }
 
       if (params.quizSnapshot) {
@@ -73,7 +73,7 @@ export async function grantProgramAccess(params: {
         }
       }
 
-      return { ok: true, alumnoId: existingAlumno.id }
+      return { ok: true, alumnoId: existingAlumno.id, mailSent: false }
     }
   }
 
@@ -96,5 +96,5 @@ export async function grantProgramAccess(params: {
     console.info('[grantProgramAccess] quiz_variant sin snapshot completo', params.quizVariant, email)
   }
 
-  return { ok: true, alumnoId: result.alumno.id }
+  return { ok: true, alumnoId: result.alumno.id, mailSent: result.mailSent }
 }

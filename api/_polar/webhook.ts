@@ -1,18 +1,7 @@
 import { webHandler } from '../_lib/webHandler.js'
 import { verifyStandardWebhook } from '../_lib/crypto.js'
-import { parseQuizSnapshotFromMetadata } from '../_lib/coach/quizProfile.js'
-import { grantProgramAccess } from '../_lib/grantProgramAccess.js'
+import { fulfillPolarPurchase } from '../_lib/fulfillPolarPurchase.js'
 import { json } from '../_lib/json.js'
-import { sendMetaPurchaseEvent } from '../_lib/metaCapi.js'
-import {
-  readAmountValue,
-  readCurrency,
-  readMetadataVariant,
-  readPaymentCustomerEmail,
-  readPaymentCustomerName,
-  readPaymentId,
-  readPaymentMetadata,
-} from '../_lib/paymentCustomer.js'
 import { polarWebhookSecret } from '../_lib/polarConfig.js'
 
 type PolarWebhookEvent = {
@@ -37,52 +26,12 @@ function isPaidWebhookEvent(eventType: string, data: Record<string, unknown>): b
 }
 
 async function handlePurchase(data: Record<string, unknown>, eventType: string): Promise<Response> {
-  const emailRaw = readPaymentCustomerEmail(data)
-  if (!emailRaw) {
-    console.error('[polar webhook] sin email en', eventType, data.id)
-    return json({ error: 'order without email' }, 400)
-  }
-
-  const metadata = readPaymentMetadata(data)
-  const quizVariant = readMetadataVariant(metadata)
-  const quizSnapshot = parseQuizSnapshotFromMetadata(metadata)
-  if (!quizVariant && !quizSnapshot) {
-    console.warn('[polar webhook]', eventType, 'sin quiz_variant ni quiz_json en metadata')
-  }
-
-  const customerName = readPaymentCustomerName(data)
-
-  const result = await grantProgramAccess({
-    email: emailRaw,
-    source: 'polar',
-    quizVariant: quizSnapshot?.variant ?? quizVariant,
-    quizSnapshot,
-    nombre: customerName,
-  })
-
+  const result = await fulfillPolarPurchase(data, `webhook:${eventType}`)
   if (result.ok === false) {
-    console.error('[polar webhook] grantProgramAccess', result.error, emailRaw)
     return json({ error: result.error }, result.status)
   }
 
-  console.info('[polar webhook] alumno provisionado', emailRaw, eventType)
-
-  const paymentId = readPaymentId(data) ?? `order-${Date.now()}`
-  const amountValue = readAmountValue(data)
-  const amount = amountValue > 999 ? amountValue / 100 : amountValue
-  const currency = readCurrency(data)
-  const metaResult = await sendMetaPurchaseEvent({
-    email: emailRaw,
-    eventId: `polar_${paymentId}`,
-    value: amount,
-    currency,
-    eventSourceUrl: process.env.APP_PUBLIC_URL?.trim(),
-  })
-  if (metaResult.ok === false) {
-    console.error('[polar webhook] meta purchase event', metaResult.error)
-  }
-
-  return json({ ok: true, quiz_variant: quizVariant ?? null })
+  return json({ ok: true, email: result.email, mail_sent: result.mailSent })
 }
 
 async function handler(request: Request): Promise<Response> {

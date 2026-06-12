@@ -24,6 +24,9 @@ export function readPaymentCustomerEmail(data: Record<string, unknown>): string 
   const customerEmail = readString(data.customer_email)
   if (customerEmail?.includes('@')) return customerEmail
 
+  const buyerEmail = readString(data.buyer_email)
+  if (buyerEmail?.includes('@')) return buyerEmail
+
   for (const key of ['customer', 'billing', 'buyer'] as const) {
     const block = data[key]
     if (block && typeof block === 'object' && block !== null) {
@@ -36,6 +39,18 @@ export function readPaymentCustomerEmail(data: Record<string, unknown>): string 
   if (user && typeof user === 'object' && user !== null) {
     const email = readString((user as { email?: unknown }).email)
     if (email?.includes('@')) return email
+  }
+
+  const order = data.order
+  if (order && typeof order === 'object' && order !== null) {
+    const nested = readPaymentCustomerEmail(order as Record<string, unknown>)
+    if (nested) return nested
+  }
+
+  const checkout = data.checkout
+  if (checkout && typeof checkout === 'object' && checkout !== null) {
+    const nested = readPaymentCustomerEmail(checkout as Record<string, unknown>)
+    if (nested) return nested
   }
 
   return null

@@ -282,6 +282,25 @@
   font-size: 0.88rem;
 }
 
+.purchase-success__resend {
+  margin-top: 1rem;
+}
+
+.purchase-success__login-hint {
+  margin-top: 1.25rem;
+}
+
+.student-auth__email-badge {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  background: rgba(0, 229, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.92rem;
+}
+
 .student-auth__password-toggle svg {
   display: block;
   filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.85));

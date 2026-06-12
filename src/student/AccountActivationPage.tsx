@@ -208,6 +208,11 @@ export function AccountActivationPage() {
         ) : (
           <>
             <p>{intro}</p>
+            {user.email ? (
+              <p className="student-auth__email-badge">
+                Cuenta: <strong>{user.email}</strong>
+              </p>
+            ) : null}
             {error ? <div className="student-auth__error">{error}</div> : null}
             <PasswordField
               id="activate-password"
