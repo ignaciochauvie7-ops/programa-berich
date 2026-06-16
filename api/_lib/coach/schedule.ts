@@ -78,14 +78,10 @@ function seededPickDays(alumnoId: string, weekKey: string, count: number): numbe
   return selected
 }
 
-export function isDigestDay(alumnoId: string, date: Date, timeZone: string): boolean {
+/** Lunes a sábado: un recordatorio por día (domingo off). */
+export function isDigestDay(_alumnoId: string, date: Date, timeZone: string): boolean {
   const local = localParts(date, timeZone)
-  if (local.day === WEEKDAY_SUN) return false
-
-  const weekKey = localWeekKey(date, timeZone)
-  const count = weeklyDigestCount(alumnoId, weekKey)
-  const days = seededPickDays(alumnoId, weekKey, count)
-  return days.includes(local.day)
+  return local.day !== WEEKDAY_SUN
 }
 
 /** No enviar recordatorios hasta el primer día de entreno (incluido hoy si le toca). */

@@ -1,9 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-/** Techo mensual por alumno (recordatorios push proactivos). */
+/** Techo mensual por alumno (recordatorios push proactivos; ~6/semana). */
 export const COACH_MONTHLY_LIMITS = {
-  proactive: 24,
-  totalOutbound: 26,
+  proactive: 28,
+  totalOutbound: 30,
 } as const
 
 export function monthKey(date: Date, timeZone: string): string {
