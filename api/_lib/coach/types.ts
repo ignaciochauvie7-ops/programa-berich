@@ -7,6 +7,7 @@ export type ProactiveJobType = 'daily_digest'
 export type CoachProfile = {
   alumno_id: string
   phone_e164: string | null
+  push_subscription: Record<string, unknown> | null
   timezone: string
   training_days: number[]
   preferred_hour: string

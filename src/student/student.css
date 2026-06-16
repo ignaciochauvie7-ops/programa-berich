@@ -214,6 +214,39 @@
   text-align: left;
 }
 
+.coach-setup__ios-tip {
+  margin: 0 0 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 193, 7, 0.25);
+  background: rgba(255, 193, 7, 0.06);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.coach-setup__ios-tip summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #ffd86b;
+}
+
+.coach-setup__ios-tip ol {
+  margin: 0.65rem 0 0.5rem;
+  padding-left: 1.15rem;
+}
+
+.coach-setup__ios-tip li + li {
+  margin-top: 0.35rem;
+}
+
+.coach-setup__ios-tip-note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.8rem;
+}
+
 .coach-setup__opt-in {
   display: flex;
   align-items: flex-start;
@@ -433,22 +466,16 @@
   pointer-events: none;
 }
 
-.student-auth__button.coach-setup__wa-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  background: linear-gradient(135deg, #25d366, #128c7e);
-  color: #ffffff;
-  font-weight: 800;
-  box-shadow: 0 0 18px rgba(37, 211, 102, 0.28);
+.coach-setup__wa-button {
+  background: linear-gradient(135deg, #00e5ff, #00b8d4) !important;
+  color: #071012 !important;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.28) !important;
 }
 
-.student-auth__button.coach-setup__wa-button:hover {
-  transform: scale(1.03);
-  filter: brightness(1.05);
-  box-shadow: 0 0 22px rgba(37, 211, 102, 0.4);
+.coach-setup__wa-button:hover {
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.4) !important;
 }
+
 
 .student-auth__hint {
   margin-top: 0.95rem;
@@ -734,6 +761,103 @@
 
 .student-profile__status {
   color: rgba(216, 255, 240, 0.7);
+}
+
+.student-profile__card--push {
+  border-color: rgba(0, 229, 255, 0.28);
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.08), rgba(0, 0, 0, 0.2));
+}
+
+.student-profile__push-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.student-profile__push-header h2 {
+  margin: 0;
+}
+
+.student-profile__push-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.student-profile__push-badge--on {
+  background: rgba(0, 230, 118, 0.16);
+  color: #9dffc8;
+}
+
+.student-profile__push-badge--off {
+  background: rgba(255, 193, 7, 0.14);
+  color: #ffd86b;
+}
+
+.student-profile__push-lead {
+  margin: 0 0 0.85rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.student-profile__push-note {
+  margin: 0 0 0.85rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.student-profile__push-note--ok {
+  color: rgba(157, 255, 200, 0.88);
+}
+
+.student-profile__ios-title {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: #ffd86b;
+}
+
+.student-profile__ios-tip.coach-setup__ios-tip--open {
+  margin-bottom: 0.85rem;
+}
+
+.student-profile__video-link {
+  display: inline-block;
+  margin-top: 0.55rem;
+  color: #00e5ff;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.student-profile__push-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.student-profile__push-button {
+  width: auto;
+  min-width: 200px;
+  min-height: 48px;
+  padding: 0.75rem 1.1rem;
+  font-size: 0.92rem;
+}
+
+.student-profile__push-button--secondary {
+  background: transparent;
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  box-shadow: none;
+}
+
+.student-profile__push-button--secondary::after {
+  display: none;
 }
 
 @media (max-width: 768px) {

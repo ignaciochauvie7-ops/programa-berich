@@ -12,6 +12,7 @@ import {
   type ActivityLevel,
   type GoalOption,
 } from './coachProfileOptions'
+import { PushNotificationsPanel } from './PushNotificationsPanel'
 
 type QuizData = {
   sex: 'hombre' | 'mujer'
@@ -27,7 +28,7 @@ type QuizData = {
 type CoachData = {
   training_days: number[]
   activity_level: ActivityLevel | null
-  phone_linked: boolean
+  push_subscribed: boolean
   calorie_target: number | null
   calorie_cap: number | null
   water_ml_base: number | null
@@ -208,7 +209,7 @@ export function StudentProfilePage() {
         <div>
           <h1>Mi perfil</h1>
           <p className="student-profile__subtitle">
-            Estos datos personalizan tus recordatorios por WhatsApp. Si algo cambia, actualizalo acá.
+            Estos datos personalizan tus recordatorios push. Si algo cambia, actualizalo acá.
           </p>
         </div>
         {!editing ? (
@@ -223,6 +224,15 @@ export function StudentProfilePage() {
 
       {!editing ? (
         <div className="student-profile__sections">
+          {coach && session?.access_token ? (
+            <PushNotificationsPanel
+              accessToken={session.access_token}
+              pushSubscribed={coach.push_subscribed}
+              variant="profile"
+              onSubscribed={() => void loadProfile()}
+            />
+          ) : null}
+
           <section className="student-profile__card">
             <h2>Evaluación inicial</h2>
             <FieldRow label="Sexo" value={quiz.sex === 'mujer' ? 'Mujer' : 'Hombre'} />
@@ -241,7 +251,6 @@ export function StudentProfilePage() {
               <h2>Entrenamiento</h2>
               <FieldRow label="Días de entreno" value={dayLabels(coach.training_days)} />
               <FieldRow label="Actividad semanal" value={activityLabel(coach.activity_level)} />
-              <FieldRow label="WhatsApp" value={coach.phone_linked ? 'Vinculado' : 'Pendiente de activar'} />
             </section>
           ) : null}
 

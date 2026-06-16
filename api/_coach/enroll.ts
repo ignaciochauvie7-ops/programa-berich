@@ -2,18 +2,14 @@ import { webHandler } from '../_lib/webHandler.js'
 import { json } from '../_lib/json.js'
 import { getRequestUser } from '../_lib/auth.js'
 import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
-import { findAlumnoForUser } from '../_lib/coach/alumnoCoach.js'
-import { normalizePhoneE164 } from '../_lib/coach/phone.js'
+import { findAlumnoForUser, getCoachProfile } from '../_lib/coach/alumnoCoach.js'
 import { computeCoachTargets } from '../_lib/coach/nutrition.js'
 import { getQuizProfile } from '../_lib/coach/quizProfile.js'
 import type { ActivityLevel, CoachGoal } from '../_lib/coach/types.js'
-import { isWhatsAppConfigured, sendWhatsAppText } from '../_lib/whatsapp/client.js'
-import { buildWelcomeMessage } from '../_lib/coach/welcomeMessage.js'
 
 const ACTIVITY_LEVELS: ActivityLevel[] = ['sedentary', 'light', 'moderate', 'active', 'very_active']
 
 type Body = {
-  phone?: string
   training_days?: number[]
   timezone?: string
   activity_level?: ActivityLevel
@@ -37,13 +33,7 @@ async function handler(request: Request): Promise<Response> {
   }
 
   if (!body.opt_in) {
-    return json({ error: 'Tenés que aceptar recibir mensajes por WhatsApp.' }, 400)
-  }
-
-  const phoneRaw = String(body.phone ?? '').trim()
-  const phone = phoneRaw ? normalizePhoneE164(phoneRaw) : null
-  if (phoneRaw && !phone) {
-    return json({ error: 'Teléfono inválido. Incluí código de país, ej. +59899123456.' }, 400)
+    return json({ error: 'Tenés que aceptar recibir notificaciones de acompañamiento.' }, 400)
   }
 
   const trainingDays = (body.training_days ?? []).filter((d) => Number.isInteger(d) && d >= 0 && d <= 6)
@@ -76,7 +66,6 @@ async function handler(request: Request): Promise<Response> {
   const { error: upsertError } = await admin.from('alumno_coach_profile').upsert(
     {
       alumno_id: alumno.id,
-      phone_e164: phone,
       timezone,
       training_days: [...new Set(trainingDays)].sort((a, b) => a - b),
       goal,
@@ -96,41 +85,11 @@ async function handler(request: Request): Promise<Response> {
   )
 
   if (upsertError) {
-    if (upsertError.code === '23505') {
-      return json({ error: 'Ese número de WhatsApp ya está registrado en otra cuenta.' }, 409)
-    }
     console.error('[coach enroll]', upsertError)
     return json({ error: 'No se pudo guardar tu perfil.' }, 500)
   }
 
-  if (phone && isWhatsAppConfigured()) {
-    if (!quiz?.sex) {
-      return json({ ok: true, alumno_id: alumno.id, setup_ref: alumno.id.slice(0, 8) })
-    }
-
-    const welcome = buildWelcomeMessage({
-      nombre: alumno.nombre,
-      email: alumno.email,
-      sex: quiz.sex,
-    })
-    const send = await sendWhatsAppText(phone, welcome)
-    if (send.ok) {
-      await admin.from('coach_messages').insert({
-        alumno_id: alumno.id,
-        direction: 'outbound',
-        message_type: 'text',
-        body: welcome,
-        wa_message_id: send.messageId,
-        status: 'sent',
-      })
-      await admin
-        .from('alumno_coach_profile')
-        .update({ last_outbound_at: now, updated_at: now })
-        .eq('alumno_id', alumno.id)
-    }
-  }
-
-  return json({ ok: true, alumno_id: alumno.id, setup_ref: alumno.id.slice(0, 8) })
+  return json({ ok: true, alumno_id: alumno.id })
 }
 
 export default webHandler(handler)

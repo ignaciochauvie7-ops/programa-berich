@@ -5,11 +5,11 @@ import price from './_price.js'
 import coachProfile from './_coach/profile.js'
 import coachMyProfile from './_coach/my-profile.js'
 import coachEnroll from './_coach/enroll.js'
+import coachSubscribe from './_coach/subscribe.js'
 import coachSetupSummary from './_coach/setup-summary.js'
 import coachCron from './_coach/cron.js'
 import alumnos from './_alumnos/index.js'
 import alumnosActivate from './_alumnos/activate.js'
-import whatsappWebhook from './_whatsapp/webhook.js'
 import polarCheckout from './_polar/checkout.js'
 import polarWebhook from './_polar/webhook.js'
 import polarConfirm from './_polar/confirm.js'
@@ -24,11 +24,11 @@ const routes = new Map<string, RouteHandler>([
   ['/api/coach/profile', coachProfile as unknown as RouteHandler],
   ['/api/coach/my-profile', coachMyProfile as unknown as RouteHandler],
   ['/api/coach/enroll', coachEnroll as unknown as RouteHandler],
+  ['/api/coach/subscribe', coachSubscribe as unknown as RouteHandler],
   ['/api/coach/setup-summary', coachSetupSummary as unknown as RouteHandler],
   ['/api/coach/cron', coachCron as unknown as RouteHandler],
   ['/api/alumnos', alumnos as unknown as RouteHandler],
   ['/api/alumnos/activate', alumnosActivate as unknown as RouteHandler],
-  ['/api/whatsapp/webhook', whatsappWebhook as unknown as RouteHandler],
   ['/api/polar/checkout', polarCheckout as unknown as RouteHandler],
   ['/api/polar/webhook', polarWebhook as unknown as RouteHandler],
   ['/api/polar/confirm', polarConfirm as unknown as RouteHandler],

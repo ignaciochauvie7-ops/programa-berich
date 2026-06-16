@@ -1,21 +1,18 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { displayName, isWhatsAppActivationMessage, saveCoachMessage, touchProfileTimestamps } from './alumnoCoach.js'
+import { displayName, saveCoachMessage, touchProfileTimestamps } from './alumnoCoach.js'
 import { canSendProactive } from './limits.js'
 import { buildDailyDigest } from './messageTemplates.js'
 import { isDigestDay, isPastFirstTrainingDay, localDateKey, localParts } from './schedule.js'
 import type { CoachProfile, ProactiveJobType, QuizProfile } from './types.js'
-import { isWhatsAppConfigured, sendWhatsAppTemplate, sendWhatsAppText } from '../whatsapp/client.js'
+import { isPushConfigured, sendPushNotification } from '../push/client.js'
+import type { PushSubscriptionPayload } from '../push/types.js'
 
-const MS_24H = 24 * 60 * 60 * 1000
-
-function withinMessagingWindow(profile: CoachProfile): boolean {
-  const ref = profile.last_user_reply_at ?? profile.last_inbound_at
-  if (!ref) return false
-  return Date.now() - new Date(ref).getTime() < MS_24H
-}
-
-function templateForDigest(): string | null {
-  return process.env.WHATSAPP_TEMPLATE_DAILY_DIGEST?.trim() || null
+function parseSubscription(profile: CoachProfile): PushSubscriptionPayload | null {
+  const raw = profile.push_subscription
+  if (!raw || typeof raw !== 'object') return null
+  const sub = raw as PushSubscriptionPayload
+  if (!sub.endpoint || !sub.keys?.p256dh || !sub.keys?.auth) return null
+  return sub
 }
 
 export async function sendProactiveMessage(
@@ -27,8 +24,13 @@ export async function sendProactiveMessage(
   quiz: QuizProfile | null,
   now = new Date(),
 ): Promise<{ sent: boolean; reason?: string }> {
-  if (!profile.phone_e164) {
-    return { sent: false, reason: 'no phone' }
+  const subscription = parseSubscription(profile)
+  if (!subscription) {
+    return { sent: false, reason: 'no push subscription' }
+  }
+
+  if (!isPushConfigured()) {
+    return { sent: false, reason: 'push not configured' }
   }
 
   const tz = profile.timezone || 'America/Montevideo'
@@ -51,23 +53,20 @@ export async function sendProactiveMessage(
   }
 
   const name = displayName(nombre, email)
-  let result: { ok: boolean; messageId?: string | null; error?: string }
+  const result = await sendPushNotification(subscription, {
+    title: 'Programa Berich',
+    body: text,
+    url: '/programa',
+  })
 
-  if (withinMessagingWindow(profile)) {
-    result = await sendWhatsAppText(profile.phone_e164, text)
-  } else {
-    const template = templateForDigest()
-    if (template) {
-      result = await sendWhatsAppTemplate(profile.phone_e164, template, 'es', [name])
-    } else if (!isWhatsAppConfigured()) {
-      return { sent: false, reason: 'whatsapp not configured' }
-    } else {
-      return { sent: false, reason: 'outside 24h window, no template' }
+  if (!result.ok) {
+    if (result.expired) {
+      await admin
+        .from('alumno_coach_profile')
+        .update({ push_subscription: null, updated_at: new Date().toISOString() })
+        .eq('alumno_id', profile.alumno_id)
     }
-  }
-
-  if (result.ok === false) {
-    return { sent: false, reason: result.error ?? 'send failed' }
+    return { sent: false, reason: result.error }
   }
 
   const nowIso = now.toISOString()
@@ -76,40 +75,12 @@ export async function sendProactiveMessage(
     direction: 'outbound',
     messageType: 'proactive',
     body: text,
-    waMessageId: result.messageId ?? null,
+    waMessageId: null,
     status: 'sent',
   })
   await touchProfileTimestamps(admin, profile.alumno_id, { last_outbound_at: nowIso })
 
   return { sent: true }
-}
-
-/** Guarda mensajes entrantes (sin responder por WhatsApp). */
-export async function handleInboundText(
-  admin: SupabaseClient,
-  profile: CoachProfile & { nombre: string | null; email: string },
-  text: string,
-  waMessageId: string | null,
-): Promise<void> {
-  if (!profile.phone_e164) return
-
-  const now = new Date().toISOString()
-
-  await saveCoachMessage(admin, {
-    alumnoId: profile.alumno_id,
-    direction: 'inbound',
-    messageType: 'text',
-    body: text,
-    waMessageId,
-    status: 'received',
-  })
-
-  await touchProfileTimestamps(admin, profile.alumno_id, {
-    last_inbound_at: now,
-    last_user_reply_at: now,
-  })
-
-  if (isWhatsAppActivationMessage(text)) return
 }
 
 /** Recordatorio diario: corre 1 vez al día vía cron de Vercel. */

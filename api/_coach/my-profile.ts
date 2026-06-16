@@ -78,7 +78,7 @@ async function getProfilePayload(admin: ReturnType<typeof getSupabaseAdmin>, alu
           training_days: coach.training_days,
           activity_level: coach.activity_level,
           timezone: coach.timezone,
-          phone_linked: Boolean(coach.phone_e164),
+          push_subscribed: Boolean(coach.push_subscription),
           coach_active: coach.coach_active,
           maintenance_kcal: coach.maintenance_kcal,
           calorie_target: coach.calorie_target,
@@ -138,7 +138,7 @@ async function handler(request: Request): Promise<Response> {
 
   const coach = await getCoachProfile(admin, alumno.id)
   if (!coach) {
-    return json({ error: 'Completá primero la configuración de WhatsApp.' }, 404)
+    return json({ error: 'Completá primero la configuración de acompañamiento.' }, 404)
   }
 
   const sex = body.sex === 'hombre' || body.sex === 'mujer' ? body.sex : quiz.sex

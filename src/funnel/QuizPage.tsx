@@ -156,7 +156,7 @@ const faqItems = [
   },
   {
     question: '¿Qué pasa si tengo dudas durante el programa?',
-    answer: 'El Plan Guiado incluye acceso directo por WhatsApp para resolver cualquier duda durante 6 meses.',
+    answer: 'El Plan Guiado incluye recordatorios personalizados en tu navegador para sostenerte en el plan durante 6 meses.',
   },
 ]
 

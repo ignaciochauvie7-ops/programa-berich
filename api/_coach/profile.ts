@@ -29,8 +29,7 @@ async function handler(request: Request): Promise<Response> {
   return json({
     complete: Boolean(profile.setup_completed_at),
     coach_active: profile.coach_active,
-    phone_linked: Boolean(profile.phone_e164),
-    setup_ref: alumno.id.slice(0, 8),
+    push_subscribed: Boolean(profile.push_subscription),
     alumno_id: alumno.id,
   })
 }

@@ -14,17 +14,20 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:resend": "tsx scripts/test-resend.ts",
-    "test:provision": "tsx scripts/test-provision-flow.ts"
+    "test:provision": "tsx scripts/test-provision-flow.ts",
+    "generate:vapid": "tsx scripts/generate-vapid-keys.ts",
+    "generate:icons": "tsx scripts/generate-pwa-icons.ts"
   },
   "dependencies": {
-    "@types/node": "^24.12.2",
     "@supabase/supabase-js": "^2.105.3",
-    "typescript": "~6.0.2",
+    "@types/node": "^24.12.2",
     "framer-motion": "^12.38.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.2",
-    "reactflow": "^11.11.4"
+    "reactflow": "^11.11.4",
+    "typescript": "~6.0.2",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -37,6 +40,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "sharp": "^0.35.1",
     "tsx": "^4.21.0",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10"

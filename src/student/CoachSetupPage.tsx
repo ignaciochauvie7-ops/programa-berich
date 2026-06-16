@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
-import { supabase } from '../auth/supabaseClient'
+import { isPushSupported, registerServiceWorker, subscribeToCoachPush } from '../lib/pushNotifications'
 import activationLogo from '../../supabase/IMG_3353.jpg'
 import './student.css'
 
@@ -27,18 +27,7 @@ type ActivityLevel = (typeof ACTIVITY_OPTIONS)[number]['value']
 
 type ProfileStatus = {
   complete?: boolean
-  phone_linked?: boolean
-  setup_ref?: string
-}
-
-const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined)?.replace(/\D/g, '')
-
-function buildWhatsAppUrl(): string | null {
-  if (!WHATSAPP_NUMBER) return null
-  const text = encodeURIComponent(
-    'Hola, acabo de entrar al Programa Berich y quiero activar mi acompañamiento con este numero',
-  )
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
+  push_subscribed?: boolean
 }
 
 export function CoachSetupPage() {
@@ -50,8 +39,12 @@ export function CoachSetupPage() {
   const [optIn, setOptIn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [setupRef, setSetupRef] = useState<string | null>(null)
-  const [whatsappDone, setWhatsappDone] = useState(false)
+  const [pushDone, setPushDone] = useState(false)
+  const pushSupported = isPushSupported()
+
+  useEffect(() => {
+    void registerServiceWorker()
+  }, [])
 
   useEffect(() => {
     if (!configured || loading || !user || !session) {
@@ -67,8 +60,7 @@ export function CoachSetupPage() {
         if (res.ok) {
           const body = (await res.json()) as ProfileStatus
           setProfileStatus(body)
-          if (body.setup_ref) setSetupRef(body.setup_ref)
-          if (body.complete && body.phone_linked) setWhatsappDone(true)
+          if (body.complete && body.push_subscribed) setPushDone(true)
         }
       } catch {
         /* ignore */
@@ -103,7 +95,7 @@ export function CoachSetupPage() {
     return <Navigate to="/login" replace state={{ from: '/configurar-perfil' }} />
   }
 
-  if (profileStatus?.complete && profileStatus.phone_linked) {
+  if (profileStatus?.complete && profileStatus.push_subscribed) {
     return <Navigate to="/programa" replace />
   }
 
@@ -111,24 +103,14 @@ export function CoachSetupPage() {
     setTrainingDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]))
   }
 
-  function openWhatsApp() {
-    const url = buildWhatsAppUrl()
-    if (!url) {
-      setError('WhatsApp no está configurado todavía. Avisale al equipo.')
-      return false
-    }
-    window.open(url, '_blank', 'noopener,noreferrer')
-    return true
-  }
-
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
 
-    if (!supabase || !session) return
+    if (!session) return
 
     if (!optIn) {
-      setError('Tenés que aceptar recibir mensajes por WhatsApp.')
+      setError('Tenés que aceptar recibir notificaciones de acompañamiento.')
       return
     }
 
@@ -137,10 +119,15 @@ export function CoachSetupPage() {
       return
     }
 
+    if (!pushSupported) {
+      setError('Tu navegador no soporta notificaciones push. Probá con Chrome o Edge en el celular o la compu.')
+      return
+    }
+
     setBusy(true)
 
     try {
-      const res = await fetch('/api/coach/enroll', {
+      const enrollRes = await fetch('/api/coach/enroll', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -154,26 +141,23 @@ export function CoachSetupPage() {
         }),
       })
 
-      const body = (await res.json()) as { error?: string; setup_ref?: string }
-      if (!res.ok) {
-        setError(body.error ?? 'No se pudo guardar tu perfil.')
+      const enrollBody = (await enrollRes.json()) as { error?: string }
+      if (!enrollRes.ok) {
+        setError(enrollBody.error ?? 'No se pudo guardar tu perfil.')
         setBusy(false)
         return
       }
 
-      const ref = body.setup_ref ?? setupRef
-      if (!ref) {
-        setError('No se pudo preparar el enlace de WhatsApp.')
+      const pushResult = await subscribeToCoachPush(session.access_token)
+      if (!pushResult.ok) {
+        setProfileStatus({ complete: true, push_subscribed: false })
+        setError(pushResult.error ?? 'No se pudieron activar las notificaciones.')
         setBusy(false)
         return
       }
 
-      setSetupRef(ref)
-      setProfileStatus({ complete: true, phone_linked: false, setup_ref: ref })
-
-      if (openWhatsApp()) {
-        setWhatsappDone(true)
-      }
+      setProfileStatus({ complete: true, push_subscribed: true })
+      setPushDone(true)
       setBusy(false)
     } catch {
       setError('Error de red. Intentá de nuevo.')
@@ -181,28 +165,25 @@ export function CoachSetupPage() {
     }
   }
 
-  if (whatsappDone || (profileStatus?.complete && !profileStatus.phone_linked)) {
-    const waUrl = buildWhatsAppUrl()
-
+  if (pushDone || (profileStatus?.complete && !profileStatus.push_subscribed)) {
     return (
       <div className="student-auth">
         <div className="student-auth__card student-auth__card--wide coach-setup__done">
           <img className="student-auth__logo" src={activationLogo} alt="Berich" />
-          <h1>¡Casi listo!</h1>
-          <p>
-            Guardamos tu perfil. Ahora escribinos por WhatsApp para activar el acompañamiento — te vamos a responder
-            desde ahí.
-          </p>
-
-          {waUrl ? (
-            <a className="student-auth__button coach-setup__wa-button" href={waUrl} target="_blank" rel="noopener noreferrer">
-              Abrir WhatsApp
-            </a>
+          <h1>¡Listo!</h1>
+          {pushDone ? (
+            <p>
+              Guardamos tu perfil y activamos las notificaciones. Te vamos a acompañar con recordatorios
+              personalizados según tu plan.
+            </p>
           ) : (
-            <p className="coach-setup__wa-missing">Falta configurar el número de WhatsApp del programa.</p>
+            <p>
+              Guardamos tu perfil. Activá las notificaciones del navegador para recibir recordatorios
+              personalizados.
+            </p>
           )}
 
-          <Link className="coach-setup__program-link" to="/programa">
+          <Link className="student-auth__button coach-setup__wa-button" to="/programa">
             Ir al programa
           </Link>
         </div>
@@ -215,7 +196,7 @@ export function CoachSetupPage() {
       <form className="student-auth__card student-auth__card--wide coach-setup" onSubmit={onSubmit}>
         <img className="student-auth__logo" src={activationLogo} alt="Berich" />
         <h1>Tu acompañamiento personalizado</h1>
-        <p>Contanos cómo vas a entrenar y después activá el seguimiento por WhatsApp.</p>
+        <p>Contanos cómo vas a entrenar y activá las notificaciones para recibir recordatorios.</p>
 
         <div className="student-auth__field">
           <span className="coach-setup__label">¿Qué días vas a entrenar?</span>
@@ -255,15 +236,29 @@ export function CoachSetupPage() {
         </div>
 
         <div className="coach-setup__whatsapp-block">
-          <p className="coach-setup__whatsapp-title">Último paso: WhatsApp</p>
+          <p className="coach-setup__whatsapp-title">Último paso: notificaciones</p>
           <p className="coach-setup__whatsapp-hint">
-            Al tocar el botón se abre WhatsApp con un mensaje listo para enviar. Así vinculamos tu número y podemos
-            escribirte con recordatorios personalizados.
+            Al continuar, tu navegador te va a pedir permiso para enviarte recordatorios de agua, calorías, pasos y
+            días de entrenamiento según tu perfil.
           </p>
+
+          <details className="coach-setup__ios-tip">
+            <summary>¿Tenés iPhone? Leé esto antes de activar</summary>
+            <ol>
+              <li>En Safari, tocá Compartir (cuadrado con flecha).</li>
+              <li>Elegí <strong>Agregar a inicio</strong>.</li>
+              <li>Abrí el programa desde el ícono Berich en tu pantalla de inicio.</li>
+              <li>Volvé acá y activá las notificaciones.</li>
+            </ol>
+            <p className="coach-setup__ios-tip-note">
+              En iPhone las notificaciones solo funcionan si entrás desde el ícono de la pantalla de inicio, no desde
+              Safari normal.
+            </p>
+          </details>
 
           <label className="coach-setup__opt-in">
             <input type="checkbox" checked={optIn} onChange={(e) => setOptIn(e.target.checked)} disabled={busy} />
-            <span>Acepto recibir mensajes de acompañamiento del Programa Berich por WhatsApp.</span>
+            <span>Acepto recibir notificaciones de acompañamiento del Programa Berich.</span>
           </label>
         </div>
 
@@ -271,7 +266,7 @@ export function CoachSetupPage() {
 
         <div className="student-auth__actions">
           <button type="submit" className="student-auth__button coach-setup__wa-button" disabled={busy}>
-            {busy ? 'Guardando…' : 'Activar por WhatsApp'}
+            {busy ? 'Activando…' : 'Activar notificaciones'}
           </button>
         </div>
       </form>

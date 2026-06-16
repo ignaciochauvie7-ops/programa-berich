@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-/** Techo mensual por alumno (solo recordatorios WhatsApp, sin IA). */
+/** Techo mensual por alumno (recordatorios push proactivos). */
 export const COACH_MONTHLY_LIMITS = {
   proactive: 24,
   totalOutbound: 26,
