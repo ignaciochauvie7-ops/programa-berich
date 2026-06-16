@@ -34,7 +34,7 @@ Si ves *"token inválido o venció"* en el quiz: el token expiró (ej. 30 días)
 |-------|--------|
 | URL (prod) | `https://programaberich.fit/api/polar/webhook` |
 | URL (local + ngrok) | `https://xxxx.ngrok-free.app/api/polar/webhook` |
-| Eventos | `order.paid`, `checkout.updated` |
+| Eventos | `order.paid`, `checkout.updated`, `subscription.created`, `subscription.updated`, `subscription.canceled` |
 
 Copiá el **secret** → `POLAR_WEBHOOK_SECRET`.
 

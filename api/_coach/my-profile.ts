@@ -8,6 +8,39 @@ import { getQuizProfile } from '../_lib/coach/quizProfile.js'
 import { syncCoachTargetsForAlumno } from '../_lib/coach/syncCoachTargets.js'
 import type { ActivityLevel, CoachGoal } from '../_lib/coach/types.js'
 
+const TRIAL_DAYS = 30
+
+/**
+ * Returns the trial status for the frontend:
+ *  'active'   – inside the 30-day free window
+ *  'expiring' – 3 or fewer days left in the trial
+ *  'expired'  – trial ended, no subscription
+ *  'subscribed' – has an active Polar subscription
+ */
+function computeTrialStatus(
+  purchasedAt: string | null | undefined,
+  subscriptionStatus: 'active' | 'canceled' | null,
+): { status: 'active' | 'expiring' | 'expired' | 'subscribed'; days_left: number | null; trial_ends_at: string | null } {
+  if (subscriptionStatus === 'active') {
+    return { status: 'subscribed', days_left: null, trial_ends_at: null }
+  }
+
+  if (!purchasedAt) {
+    return { status: 'active', days_left: TRIAL_DAYS, trial_ends_at: null }
+  }
+
+  const trialEnd = new Date(new Date(purchasedAt).getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000)
+  const daysLeft = Math.ceil((trialEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+
+  if (daysLeft <= 0) {
+    return { status: 'expired', days_left: 0, trial_ends_at: trialEnd.toISOString() }
+  }
+  if (daysLeft <= 3) {
+    return { status: 'expiring', days_left: daysLeft, trial_ends_at: trialEnd.toISOString() }
+  }
+  return { status: 'active', days_left: daysLeft, trial_ends_at: trialEnd.toISOString() }
+}
+
 const GOALS: CoachGoal[] = ['Ganar músculo', 'Perder grasa', 'Recomposición corporal']
 const ACTIVITY_LEVELS: ActivityLevel[] = ['sedentary', 'light', 'moderate', 'active', 'very_active']
 
@@ -86,6 +119,7 @@ async function getProfilePayload(admin: ReturnType<typeof getSupabaseAdmin>, alu
           water_ml_base: coach.water_ml_base,
           water_ml_training_extra: coach.water_ml_training_extra,
           steps_target: coach.steps_target,
+          ...computeTrialStatus(quiz.purchased_at, coach.coach_subscription_status),
         }
       : null,
     targets: coach?.calorie_target

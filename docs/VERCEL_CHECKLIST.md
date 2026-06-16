@@ -27,6 +27,7 @@ Build del repo: `tsc -b && vite build`. Node 20 en `.nvmrc`.
 | `RESEND_FROM` | `Programa Berich <hola@programaberich.fit>` |
 | `POLAR_ACCESS_TOKEN` | Checkout + API Polar |
 | `POLAR_PRODUCT_ID` | Producto one-time **49 USD** |
+| `POLAR_SUBSCRIPTION_PRODUCT_ID` | Producto suscripción mensual (dejar vacío hasta tenerlo) |
 | `POLAR_WEBHOOK_SECRET` | Webhook Polar |
 | `POLAR_ENVIRONMENT` | `production` |
 | `PRODUCT_SLUG` | `berich-completo` |

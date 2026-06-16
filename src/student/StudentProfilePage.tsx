@@ -13,6 +13,9 @@ import {
   type GoalOption,
 } from './coachProfileOptions'
 import { PushNotificationsPanel } from './PushNotificationsPanel'
+import { UpgradePanel } from './UpgradePanel'
+
+type TrialStatus = 'active' | 'expiring' | 'expired' | 'subscribed'
 
 type QuizData = {
   sex: 'hombre' | 'mujer'
@@ -33,6 +36,8 @@ type CoachData = {
   calorie_cap: number | null
   water_ml_base: number | null
   steps_target: number | null
+  status?: TrialStatus
+  days_left?: number | null
 }
 
 type TargetsData = {
@@ -224,6 +229,15 @@ export function StudentProfilePage() {
 
       {!editing ? (
         <div className="student-profile__sections">
+          {coach && session?.access_token && (coach.status === 'expiring' || coach.status === 'expired') ? (
+            <UpgradePanel
+              accessToken={session.access_token}
+              status={coach.status}
+              daysLeft={coach.days_left ?? null}
+              variant="profile"
+            />
+          ) : null}
+
           {coach && session?.access_token ? (
             <PushNotificationsPanel
               accessToken={session.access_token}

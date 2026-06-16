@@ -19,6 +19,8 @@ export type CoachProfile = {
   last_outbound_at: string | null
   last_user_reply_at: string | null
   activity_level: ActivityLevel | null
+  coach_subscription_status: 'active' | 'canceled' | null
+  trial_notified_at: string | null
   maintenance_kcal: number | null
   calorie_target: number | null
   calorie_cap: number | null
@@ -38,6 +40,7 @@ export type QuizProfile = {
   goal: CoachGoal
   impediment: string
   impediment_path: 'musculo' | 'grasa-recomp'
+  purchased_at: string | null
 }
 
 export type AlumnoRow = {

@@ -951,3 +951,117 @@
     overflow-x: hidden;
   }
 }
+
+/* ─── Upgrade / subscription banner ─────────────────────────── */
+
+.upgrade-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(90deg, rgba(255, 165, 0, 0.12), rgba(255, 100, 0, 0.08));
+  border-bottom: 1px solid rgba(255, 165, 0, 0.25);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.upgrade-banner__text {
+  flex: 1 1 180px;
+}
+
+.upgrade-banner__btn {
+  flex-shrink: 0;
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 165, 0, 0.55);
+  background: rgba(255, 140, 0, 0.18);
+  color: #ffd07a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.upgrade-banner__btn:hover:not(:disabled) {
+  background: rgba(255, 140, 0, 0.3);
+  border-color: rgba(255, 165, 0, 0.85);
+}
+
+.upgrade-banner__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.upgrade-banner__error {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #ff8080;
+}
+
+/* ─── Upgrade panel card in Mi perfil ───────────────────────── */
+
+.upgrade-panel {
+  border-color: rgba(255, 165, 0, 0.3) !important;
+  background: linear-gradient(145deg, rgba(30, 22, 8, 0.98), rgba(20, 14, 4, 0.98)) !important;
+}
+
+.upgrade-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.upgrade-panel__header h2 {
+  margin: 0;
+}
+
+.upgrade-panel__badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.upgrade-panel__badge--warn {
+  background: rgba(255, 165, 0, 0.18);
+  border: 1px solid rgba(255, 165, 0, 0.4);
+  color: #ffd07a;
+}
+
+.upgrade-panel__badge--off {
+  background: rgba(255, 80, 80, 0.12);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff9090;
+}
+
+.upgrade-panel__desc {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+}
+
+.upgrade-panel__list {
+  margin: 0 0 1.25rem;
+  padding-left: 1.2rem;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.upgrade-panel__btn {
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.6), rgba(255, 80, 0, 0.5)) !important;
+  border-color: rgba(255, 130, 0, 0.6) !important;
+  box-shadow: 0 0 18px rgba(255, 120, 0, 0.2) !important;
+}
+
+.upgrade-panel__btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.75), rgba(255, 80, 0, 0.65)) !important;
+}

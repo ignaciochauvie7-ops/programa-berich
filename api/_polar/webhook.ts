@@ -3,6 +3,8 @@ import { verifyStandardWebhook } from '../_lib/crypto.js'
 import { fulfillPolarPurchase } from '../_lib/fulfillPolarPurchase.js'
 import { json } from '../_lib/json.js'
 import { polarWebhookSecret } from '../_lib/polarConfig.js'
+import { getSupabaseAdmin, normalizeEmail } from '../_lib/supabaseAdmin.js'
+import { readPaymentCustomerEmail } from '../_lib/paymentCustomer.js'
 
 type PolarWebhookEvent = {
   type?: string
@@ -25,6 +27,12 @@ function isPaidWebhookEvent(eventType: string, data: Record<string, unknown>): b
   return false
 }
 
+function isActiveSubscription(data: Record<string, unknown>): boolean {
+  const status = data.status
+  if (typeof status !== 'string') return false
+  return ['active', 'trialing'].includes(status.toLowerCase())
+}
+
 async function handlePurchase(data: Record<string, unknown>, eventType: string): Promise<Response> {
   const result = await fulfillPolarPurchase(data, `webhook:${eventType}`)
   if (result.ok === false) {
@@ -32,6 +40,62 @@ async function handlePurchase(data: Record<string, unknown>, eventType: string):
   }
 
   return json({ ok: true, email: result.email, mail_sent: result.mailSent })
+}
+
+/**
+ * Handles subscription.created / subscription.updated / subscription.canceled
+ * Updates coach_subscription_status and coach_active accordingly.
+ */
+async function handleSubscriptionEvent(
+  data: Record<string, unknown>,
+  eventType: string,
+): Promise<Response> {
+  const admin = getSupabaseAdmin()
+  if (!admin) return json({ error: 'server misconfigured' }, 500)
+
+  const emailRaw = readPaymentCustomerEmail(data)
+  if (!emailRaw) {
+    console.warn('[polar webhook] subscription event sin email', eventType)
+    return json({ ok: true, ignored: 'no email' })
+  }
+
+  const email = normalizeEmail(emailRaw)
+
+  const { data: alumno } = await admin
+    .from('alumnos')
+    .select('id')
+    .ilike('email', email)
+    .maybeSingle()
+
+  if (!alumno?.id) {
+    console.warn('[polar webhook] subscription event: alumno no encontrado', email)
+    return json({ ok: true, ignored: 'alumno not found' })
+  }
+
+  const isActive = isActiveSubscription(data)
+  const isCanceled =
+    eventType === 'subscription.canceled' ||
+    (typeof data.status === 'string' && ['canceled', 'cancelled', 'revoked', 'inactive'].includes(data.status.toLowerCase()))
+
+  const subscriptionStatus: 'active' | 'canceled' = isCanceled && !isActive ? 'canceled' : 'active'
+  const coachActive = subscriptionStatus === 'active'
+
+  const { error } = await admin
+    .from('alumno_coach_profile')
+    .update({
+      coach_subscription_status: subscriptionStatus,
+      coach_active: coachActive,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('alumno_id', alumno.id)
+
+  if (error) {
+    console.error('[polar webhook] subscription update error', error, email)
+    return json({ error: 'db update failed' }, 500)
+  }
+
+  console.info('[polar webhook] subscription updated', email, subscriptionStatus)
+  return json({ ok: true, email, status: subscriptionStatus })
 }
 
 async function handler(request: Request): Promise<Response> {
@@ -68,6 +132,10 @@ async function handler(request: Request): Promise<Response> {
 
   if (isPaidWebhookEvent(eventType, data)) {
     return handlePurchase(data, eventType)
+  }
+
+  if (['subscription.created', 'subscription.updated', 'subscription.canceled'].includes(eventType)) {
+    return handleSubscriptionEvent(data, eventType)
   }
 
   return json({ ok: true, ignored: eventType || 'unknown' })

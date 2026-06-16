@@ -20,6 +20,11 @@ export function polarProductId(): string | null {
   return id || null
 }
 
+export function polarSubscriptionProductId(): string | null {
+  const id = process.env.POLAR_SUBSCRIPTION_PRODUCT_ID?.trim()
+  return id || null
+}
+
 export function polarWebhookSecret(): string | null {
   const secret = process.env.POLAR_WEBHOOK_SECRET?.trim()
   return secret || null

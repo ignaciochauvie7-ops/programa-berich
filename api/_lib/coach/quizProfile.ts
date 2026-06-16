@@ -78,22 +78,32 @@ export async function saveQuizProfileForAlumno(
   alumnoId: string,
   snapshot: QuizSnapshotInput,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const { error } = await admin.from('alumno_quiz_profile').upsert(
-    {
-      alumno_id: alumnoId,
-      quiz_variant: snapshot.variant,
-      sex: snapshot.sex,
-      age_range: snapshot.age_range,
-      height_cm: snapshot.height_cm,
-      weight_kg: snapshot.weight_kg,
-      peso_ideal_kg: snapshot.peso_ideal_kg,
-      goal: snapshot.goal,
-      impediment: snapshot.impediment,
-      impediment_path: snapshot.impediment_path,
-      purchased_at: new Date().toISOString(),
-    },
-    { onConflict: 'alumno_id' },
-  )
+  // Check if the profile already exists so we don't overwrite purchased_at
+  const { data: existing } = await admin
+    .from('alumno_quiz_profile')
+    .select('alumno_id')
+    .eq('alumno_id', alumnoId)
+    .maybeSingle()
+
+  const payload: Record<string, unknown> = {
+    alumno_id: alumnoId,
+    quiz_variant: snapshot.variant,
+    sex: snapshot.sex,
+    age_range: snapshot.age_range,
+    height_cm: snapshot.height_cm,
+    weight_kg: snapshot.weight_kg,
+    peso_ideal_kg: snapshot.peso_ideal_kg,
+    goal: snapshot.goal,
+    impediment: snapshot.impediment,
+    impediment_path: snapshot.impediment_path,
+  }
+
+  // Only set purchased_at on first insert, never overwrite it
+  if (!existing) {
+    payload.purchased_at = new Date().toISOString()
+  }
+
+  const { error } = await admin.from('alumno_quiz_profile').upsert(payload, { onConflict: 'alumno_id' })
 
   if (error) {
     console.error('[saveQuizProfile]', error)
