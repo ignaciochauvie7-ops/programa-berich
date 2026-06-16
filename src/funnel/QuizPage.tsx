@@ -801,12 +801,12 @@ export function QuizPage() {
 
           <section className="quiz-plan">
             <p className="quiz-plan__eyebrow">Tu plan personalizado está listo</p>
-            <h2>Programa Berich Completo</h2>
-            <div className="quiz-plan__price-block">
-              <p className="quiz-plan__price">{PROGRAM_USD_PRICE} USD</p>
-              <p className="quiz-plan__price-trust">Pago Seguro</p>
-              <p className="quiz-plan__price-sub">Puedes pagar en la moneda de tu país</p>
+            <div className="quiz-plan__title-block">
+              <h2>Programa Berich Completo</h2>
+              <p className="quiz-plan__addon">+ Acompañamiento Diario</p>
             </div>
+            <p className="quiz-plan__price">{PROGRAM_USD_PRICE} USD</p>
+            <p className="quiz-plan__currency-note">Puedes pagar en la moneda de tu país</p>
             {checkoutError ? <div className="quiz-plan__error">{checkoutError}</div> : null}
             <button
               type="button"
@@ -814,9 +814,9 @@ export function QuizPage() {
               onClick={() => void startCheckout()}
               disabled={checkoutBusy}
             >
-              {checkoutBusy ? 'Redirigiendo al pago…' : 'Quiero empezar ahora'}
+              {checkoutBusy ? 'Redirigiendo al pago…' : 'OBTENER ACCESO INMEDIATO'}
             </button>
-            <p className="quiz-plan__note">Pago único. Acceso de por vida.</p>
+            <p className="quiz-plan__note">🔒 Pago seguro · Acceso de por vida</p>
           </section>
 
           <section className="quiz-faq">

@@ -698,6 +698,12 @@
   letter-spacing: 0;
 }
 
+.quiz-plan__title-block {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+
 .quiz-plan h2 {
   color: #ffffff;
   font-size: clamp(1.45rem, 7vw, 2.35rem);
@@ -705,12 +711,13 @@
   letter-spacing: 0;
 }
 
-.quiz-plan__price-block {
-  display: grid;
-  gap: 8px;
-  justify-items: center;
+.quiz-plan__addon {
   margin: 0;
-  padding: 0;
+  color: color-mix(in srgb, var(--quiz-accent) 90%, #ffffff);
+  font-size: clamp(1rem, 4vw, 1.22rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
 }
 
 .quiz-plan__price {
@@ -721,21 +728,17 @@
   letter-spacing: -0.02em;
 }
 
-.quiz-plan__price-trust {
+.quiz-plan__currency-note {
   margin: 0;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: clamp(0.95rem, 3.2vw, 1.08rem);
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
-}
-
-.quiz-plan__price-sub {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.52);
-  font-size: clamp(0.82rem, 2.8vw, 0.92rem);
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
   line-height: 1.35;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  padding: 6px 14px;
 }
 
 .quiz-plan__button {
@@ -792,9 +795,10 @@
 }
 
 .quiz-plan__note {
-  color: rgba(255, 255, 255, 0.56);
-  font-size: 0.86rem;
-  font-weight: 650;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .quiz-faq {
