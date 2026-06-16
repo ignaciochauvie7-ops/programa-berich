@@ -155,8 +155,8 @@ const faqItems = [
     answer: 'Sí. Una vez que comprás, el acceso al contenido es permanente.',
   },
   {
-    question: '¿Qué pasa si tengo dudas durante el programa?',
-    answer: 'El Plan Guiado incluye recordatorios personalizados en tu navegador para sostenerte en el plan durante 6 meses.',
+    question: '¿Qué incluye el acompañamiento diario?',
+    answer: 'El programa incluye un mes de acompañamiento diario: recordatorios personalizados en tu navegador para agua, calorías, pasos y días de entrenamiento según tu perfil. Después del primer mes podés seguir con el acompañamiento de forma opcional.',
   },
 ]
 
