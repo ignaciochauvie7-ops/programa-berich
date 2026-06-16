@@ -860,6 +860,29 @@
   display: none;
 }
 
+.student-profile__push-button--danger {
+  min-width: 200px;
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 120, 120, 0.45);
+  background: rgba(255, 80, 80, 0.08);
+  color: #ffb4b4;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.student-profile__push-button--danger:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.14);
+}
+
+.student-profile__push-button--danger:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .student-program--with-sidebar {
     flex-direction: column;

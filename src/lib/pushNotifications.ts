@@ -78,3 +78,24 @@ async function subscribeInternal(
   if (!res.ok) return { ok: false, error: body.error ?? 'No se pudo guardar la suscripción.' }
   return { ok: true }
 }
+
+export async function unsubscribeFromCoachPush(accessToken: string): Promise<{ ok: boolean; error?: string }> {
+  if (isPushSupported()) {
+    try {
+      const registration = await navigator.serviceWorker.ready
+      const subscription = await registration.pushManager.getSubscription()
+      if (subscription) await subscription.unsubscribe()
+    } catch {
+      /* seguir: igual limpiamos en el servidor */
+    }
+  }
+
+  const res = await fetch('/api/coach/unsubscribe', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+
+  const body = (await res.json()) as { error?: string }
+  if (!res.ok) return { ok: false, error: body.error ?? 'No se pudieron desactivar las notificaciones.' }
+  return { ok: true }
+}

@@ -4,6 +4,7 @@ import {
   registerServiceWorker,
   resubscribeToCoachPush,
   subscribeToCoachPush,
+  unsubscribeFromCoachPush,
 } from '../lib/pushNotifications'
 
 const IOS_VIDEO_URL = (import.meta.env.VITE_IOS_PUSH_VIDEO_URL as string | undefined)?.trim()
@@ -68,8 +69,31 @@ export function PushNotificationsPanel({
     onSubscribed?.()
   }
 
+  async function handleDeactivate() {
+    const confirmed = window.confirm(
+      '¿Desactivar los recordatorios push? Seguís con acceso al programa; solo dejás de recibir avisos de agua, calorías y entrenamiento.',
+    )
+    if (!confirmed) return
+
+    setBusy(true)
+    setError(null)
+    setMessage(null)
+
+    const result = await unsubscribeFromCoachPush(accessToken)
+    setBusy(false)
+
+    if (!result.ok) {
+      setError(result.error ?? 'No se pudieron desactivar las notificaciones.')
+      return
+    }
+
+    setMessage('Notificaciones desactivadas. Podés volver a activarlas cuando quieras desde acá.')
+    onSubscribed?.()
+  }
+
   const showIosWarning = ios && !standalone
   const showReactivate = pushSubscribed && (showIosWarning || variant === 'profile')
+  const showDeactivate = pushSubscribed && variant === 'profile'
 
   return (
     <section
@@ -141,6 +165,17 @@ export function PushNotificationsPanel({
               onClick={() => void handleActivate(true)}
             >
               {busy ? 'Reactivando…' : 'Reactivar notificaciones'}
+            </button>
+          ) : null}
+
+          {showDeactivate ? (
+            <button
+              type="button"
+              className="student-profile__push-button student-profile__push-button--danger"
+              disabled={busy}
+              onClick={() => void handleDeactivate()}
+            >
+              {busy ? 'Desactivando…' : 'Desactivar notificaciones'}
             </button>
           ) : null}
         </div>

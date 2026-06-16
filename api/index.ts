@@ -6,6 +6,7 @@ import coachProfile from './_coach/profile.js'
 import coachMyProfile from './_coach/my-profile.js'
 import coachEnroll from './_coach/enroll.js'
 import coachSubscribe from './_coach/subscribe.js'
+import coachUnsubscribe from './_coach/unsubscribe.js'
 import coachSetupSummary from './_coach/setup-summary.js'
 import coachCron from './_coach/cron.js'
 import alumnos from './_alumnos/index.js'
@@ -25,6 +26,7 @@ const routes = new Map<string, RouteHandler>([
   ['/api/coach/my-profile', coachMyProfile as unknown as RouteHandler],
   ['/api/coach/enroll', coachEnroll as unknown as RouteHandler],
   ['/api/coach/subscribe', coachSubscribe as unknown as RouteHandler],
+  ['/api/coach/unsubscribe', coachUnsubscribe as unknown as RouteHandler],
   ['/api/coach/setup-summary', coachSetupSummary as unknown as RouteHandler],
   ['/api/coach/cron', coachCron as unknown as RouteHandler],
   ['/api/alumnos', alumnos as unknown as RouteHandler],
