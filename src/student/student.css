@@ -928,9 +928,3 @@
     overflow-x: hidden;
   }
 }
-
-@media (max-width: 390px) {
-  .student-sidebar__nav {
-    grid-template-columns: 1fr;
-  }
-}

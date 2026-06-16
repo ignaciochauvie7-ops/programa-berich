@@ -211,6 +211,24 @@
     max-width: calc(100% - 1rem);
   }
 
+  .student-sidebar__nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+    width: 100%;
+  }
+
+  .student-sidebar__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.65rem 0.5rem;
+    text-align: center;
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+
   /* —— Panel admin /control (solo dentro .admin-app) —— */
   .admin-app {
     width: 100%;
